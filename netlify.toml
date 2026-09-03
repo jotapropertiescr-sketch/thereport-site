@@ -1,0 +1,13 @@
+# THE REPORT - Netlify configuration
+# Site files live in public/. Functions live in netlify/functions/, which is
+# deliberately OUTSIDE public/ so Netlify runs them as code instead of
+# serving them as static files. That separation is what the drag-and-drop
+# deploy could not do.
+
+[build]
+  publish = "public"
+  command = ""
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
