@@ -71,12 +71,23 @@ async function upsertContact({ email, name, phone }) {
   return created.id;
 }
 
-// Pulls the custom checkout answers into a flat object.
-function readCustomFields(session) {
+// Pulls the buyer's answers into a flat object.
+// Sessions created by intake.js carry everything in metadata, since the form
+// already collected it. Older payment-link sessions carry it in custom_fields.
+// Both shapes are read so nothing is lost either way.
+function readAnswers(session) {
   const out = {};
+
   for (const f of session.custom_fields || []) {
     out[f.key] = f.text?.value ?? f.dropdown?.value ?? f.numeric?.value ?? '';
   }
+
+  const m = session.metadata || {};
+  if (m.property_or_zones && !out.propertyaddress) out.propertyaddress = m.property_or_zones;
+  for (const key of ['entity', 'hoa', 'agent_or_attorney', 'timeline', 'referral_source', 'client_notes']) {
+    if (m[key]) out[key] = m[key];
+  }
+
   return out;
 }
 
@@ -134,7 +145,7 @@ exports.handler = async (event) => {
 
   const session = stripeEvent.data.object;
   const tier = session.metadata?.tier || 'unknown';
-  const fields = readCustomFields(session);
+  const fields = readAnswers(session);
   const email = session.customer_details?.email;
   const amount = (session.amount_total || 0) / 100;
 
@@ -142,7 +153,8 @@ exports.handler = async (event) => {
   const isAddon = Boolean(ADDON_VALUES[tier]);
 
   try {
-    let dealId = session.client_reference_id;
+    // intake.js sets both, so either one identifies the deal it created.
+    let dealId = session.client_reference_id || session.metadata?.hs_deal_id || null;
 
     // No deal id means they bought from a direct link rather than the intake
     // form. Build the record from scratch so nothing is lost.
