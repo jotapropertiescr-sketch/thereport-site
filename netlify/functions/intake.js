@@ -41,6 +41,15 @@ const PRICES = {
   briefing_discounted: { price: 'price_1UBF5zANWNWwClOG3lajGJq2', mode: 'subscription' },
 };
 
+// THE BRIEFING as an add-on. The discounted rate is earned by buying a Full
+// Edition in the same transaction, which is why the tier decides the price
+// here on the server rather than trusting anything the browser sends.
+function briefingAddonFor(tier) {
+  return tier === 'full_edition'
+    ? { key: 'briefing_discounted', price: PRICES.briefing_discounted.price }
+    : { key: 'briefing_standard',   price: PRICES.briefing_standard.price };
+}
+
 const TIER_VALUES = {
   area_edition:    'Area Edition ($150)',
   records_edition: 'Records Editon ($250)',
@@ -207,6 +216,7 @@ exports.handler = async (event) => {
     timeline = '',
     notes = '',
     referral_source = '',
+    add_briefing = '',
   } = form;
 
   if (!email || !tier || !PRICES[tier]) {
@@ -216,6 +226,13 @@ exports.handler = async (event) => {
   const [firstname, ...restOfName] = name.trim().split(/\s+/);
   const lastname = restOfName.join(' ');
   const isArea = tier === 'area_edition';
+
+  // The buyer ticked the add-on box. Only meaningful on the four report
+  // tiers; someone subscribing to THE BRIEFING alone cannot add it twice.
+  const wantsBriefing =
+    (add_briefing === 'yes' || add_briefing === 'on' || add_briefing === true) &&
+    PRICES[tier].mode === 'payment';
+  const briefing = wantsBriefing ? briefingAddonFor(tier) : null;
 
   let dealId = null;
 
@@ -237,9 +254,13 @@ exports.handler = async (event) => {
       referral_source: REFERRAL_MAP[referral_source] || SOURCE_WEBSITE,
     };
 
-    // A request is EITHER a tier OR an add-on. Never guess across the two.
+    // The request itself is EITHER a tier OR an add-on. Never guess across
+    // the two. A BRIEFING subscription bought alongside a tier is recorded
+    // separately, in addons_purchased.
     if (TIER_VALUES[tier]) dealProps.report_tier = TIER_VALUES[tier];
     else if (ADDON_VALUES[tier]) dealProps.addons_purchased = ADDON_VALUES[tier];
+
+    if (briefing) dealProps.addons_purchased = ADDON_VALUES[briefing.key];
 
     // For Area Edition the property box holds zones, not an address.
     if (property && !isArea) dealProps.property_address = property;
@@ -287,7 +308,15 @@ exports.handler = async (event) => {
       phone,
     });
 
-    const { price, mode } = PRICES[tier];
+    const { price } = PRICES[tier];
+
+    // Adding a recurring item forces the whole session into subscription
+    // mode. Stripe allows a one-time price to ride along in that mode, so
+    // the report and the subscription are bought in a single transaction.
+    const mode = briefing ? 'subscription' : PRICES[tier].mode;
+
+    const lineItems = [{ price, quantity: 1 }];
+    if (briefing) lineItems.push({ price: briefing.price, quantity: 1 });
 
     // Everything the buyer already told us rides along as metadata, so the
     // checkout screen asks for nothing except payment details.
@@ -302,12 +331,13 @@ exports.handler = async (event) => {
       timeline: clip(timeline),
       referral_source: clip(referral_source),
       client_notes: clip(notes),
+      briefing_addon: briefing ? briefing.key : 'none',
     };
 
     const params = {
       mode,
       customer: customerId,
-      line_items: [{ price, quantity: 1 }],
+      line_items: lineItems,
       success_url: SUCCESS_URL,
       cancel_url: CANCEL_URL,
       billing_address_collection: 'required',

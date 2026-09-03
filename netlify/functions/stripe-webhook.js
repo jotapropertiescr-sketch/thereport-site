@@ -152,6 +152,12 @@ exports.handler = async (event) => {
   const isTier = Boolean(TIER_VALUES[tier]);
   const isAddon = Boolean(ADDON_VALUES[tier]);
 
+  // A BRIEFING subscription bought alongside a report rides in metadata.
+  const briefingKey = session.metadata?.briefing_addon;
+  const briefingAddon = briefingKey && briefingKey !== 'none' && ADDON_VALUES[briefingKey]
+    ? briefingKey
+    : null;
+
   try {
     // intake.js sets both, so either one identifies the deal it created.
     let dealId = session.client_reference_id || session.metadata?.hs_deal_id || null;
@@ -174,6 +180,7 @@ exports.handler = async (event) => {
       };
       if (isTier) props.report_tier = TIER_VALUES[tier];
       if (isAddon) props.addons_purchased = ADDON_VALUES[tier];
+      if (briefingAddon) props.addons_purchased = ADDON_VALUES[briefingAddon];
       if (fields.propertyaddress) props.property_address = fields.propertyaddress;
 
       const deal = await hs('/crm/v3/objects/deals', 'POST', {
@@ -193,6 +200,7 @@ exports.handler = async (event) => {
       // but a direct-link purchase or an edited link could differ.
       if (isTier) props.report_tier = TIER_VALUES[tier];
       if (isAddon) props.addons_purchased = ADDON_VALUES[tier];
+      if (briefingAddon) props.addons_purchased = ADDON_VALUES[briefingAddon];
       if (fields.propertyaddress) props.property_address = fields.propertyaddress;
       await hs(`/crm/v3/objects/deals/${dealId}`, 'PATCH', { properties: props });
     }
@@ -212,6 +220,7 @@ exports.handler = async (event) => {
       `PAYMENT RECEIVED\n` +
       `Amount: $${amount.toFixed(2)} ${(session.currency || 'usd').toUpperCase()}\n` +
       `${classification}\n` +
+      (briefingAddon ? `Add-on purchased: ${ADDON_VALUES[briefingAddon]}\n` : '') +
       `Stripe session: ${session.id}\n` +
       `Paid: ${paidAt}\n\n` +
       `TERMS ACCEPTANCE\n` +
@@ -253,6 +262,33 @@ exports.handler = async (event) => {
         types: [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: 216 }],
       }],
     });
+
+    // Annual Refresh reminder. Eleven months out, so the outreach lands
+    // before the anniversary rather than after it. This is a task for YOU,
+    // not an email to the client: the refresh stays client-initiated, and
+    // nothing here implies THE REPORT is monitoring the property.
+    if (isTier && tier !== 'area_edition') {
+      const ELEVEN_MONTHS = 334 * 24 * 60 * 60 * 1000;
+      await hs('/crm/v3/objects/tasks', 'POST', {
+        properties: {
+          hs_task_subject: `Offer Annual Refresh: ${fields.propertyaddress || 'see deal'}`,
+          hs_task_body:
+            `Eleven months since this report was delivered.\n\n` +
+            `Property: ${fields.propertyaddress || 'see deal'}\n` +
+            `Original tier: ${TIER_VALUES[tier]}\n\n` +
+            `Send the refresh page: https://jotapropertiescr.com/refresh.html\n\n` +
+            `Offer the service, do not imply we have been watching the property. ` +
+            `No language such as "we noticed a change" or "it may be time to re-check."`,
+          hs_task_status: 'NOT_STARTED',
+          hs_task_priority: 'LOW',
+          hs_timestamp: Date.now() + ELEVEN_MONTHS,
+        },
+        associations: [{
+          to: { id: dealId },
+          types: [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: 216 }],
+        }],
+      });
+    }
 
     return { statusCode: 200, body: JSON.stringify({ ok: true, dealId }) };
   } catch (err) {
