@@ -334,6 +334,10 @@
   }
   .form-submit:hover{background:#9C5518;}
   .form-fine{font-size:12px; color:var(--ink-soft); margin-top:12px; text-align:center;}
+  .addon-line{display:flex; gap:11px; align-items:flex-start; cursor:pointer; font-size:14.5px; line-height:1.55;
+    background:var(--paper); border:1px solid var(--line); border-left:3px solid var(--rust); padding:14px 16px;}
+  .addon-line input{margin-top:3px; width:16px; height:16px; flex:none; accent-color:var(--rust); cursor:pointer;}
+  .addon-line b{color:var(--rust); white-space:nowrap;}
   .form-confirm{
     display:none; background:var(--navy); color:var(--white); padding:22px 24px; margin-top:18px;
     font-size:14.5px; border-left:3px solid var(--rust);
@@ -633,6 +637,15 @@
           </div>
         </div>
 
+        <div class="field-row">
+          <div class="field full">
+            <label class="addon-line" for="addBriefing">
+              <input type="checkbox" id="addBriefing" name="add_briefing" value="yes">
+              <span>Add <strong>THE BRIEFING</strong>, a quarterly update on what has changed across the zones we cover. Billed monthly, cancel anytime, never anything about your specific property. <b id="briefingPrice">$9.99/month</b></span>
+            </label>
+          </div>
+        </div>
+
         <button type="submit" class="form-submit">Submit request</button>
         <p class="form-fine">Submitting the request form will take you to a secure checkout for your selected edition at the listed price. You will be asked to accept our <a href="terms.html" style="color:var(--rust);">Terms of Service</a>, which serve as the engagement agreement for the transaction. Once payment is completed, the request cannot be canceled and all payments are final. Please review the Terms of Service for our refund policy.</p>
       </form>
@@ -768,6 +781,14 @@
       tierKeyField.value = btn.getAttribute('data-key');
       summaryTier.style.color = '';
       summaryTier.textContent = tier + ' \u2014 ' + price;
+
+      // THE BRIEFING is discounted when bought alongside a Full Edition.
+      var briefingPrice = document.getElementById('briefingPrice');
+      if (briefingPrice) {
+        briefingPrice.textContent = (btn.getAttribute('data-key') === 'full_edition')
+          ? '$4.99/month with Full Edition'
+          : '$9.99/month';
+      }
       document.getElementById('get-started').scrollIntoView({behavior:'smooth', block:'start'});
     });
   });
