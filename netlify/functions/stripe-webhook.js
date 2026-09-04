@@ -84,6 +84,7 @@ function readAnswers(session) {
 
   const m = session.metadata || {};
   if (m.property_or_zones && !out.propertyaddress) out.propertyaddress = m.property_or_zones;
+  if (m.zone && !out.zone) out.zone = m.zone;
   for (const key of ['entity', 'hoa', 'agent_or_attorney', 'timeline', 'referral_source', 'client_notes']) {
     if (m[key]) out[key] = m[key];
   }
@@ -246,9 +247,9 @@ exports.handler = async (event) => {
       properties: {
         hs_task_subject: `Begin work: ${tier.replace(/_/g, ' ')}`,
         hs_task_body: fields.propertyaddress
-          ? `Property: ${fields.propertyaddress}\n` +
-            `Folio Real: ${fields.folioreal || 'not provided'}\n` +
-            `Zone: ${fields.zone || 'not provided'}\n` +
+          ? `Zone: ${fields.zone || 'not selected'}\n` +
+            `Property location: ${fields.propertyaddress}\n` +
+            (fields.folioreal ? `Folio Real: ${fields.folioreal}\n` : '') +
             (fields.priorreport ? `Prior report date: ${fields.priorreport}\n` : '')
           : `Zones: ${fields.zones || 'see deal'}\n` +
             `Timeline: ${fields.timeline || 'not provided'}\n` +
@@ -274,7 +275,8 @@ exports.handler = async (event) => {
           hs_task_subject: `Offer Annual Refresh: ${fields.propertyaddress || 'see deal'}`,
           hs_task_body:
             `Eleven months since this report was delivered.\n\n` +
-            `Property: ${fields.propertyaddress || 'see deal'}\n` +
+            `Property location: ${fields.propertyaddress || 'see deal'}\n` +
+            `Zone: ${fields.zone || 'not selected'}\n` +
             `Original tier: ${TIER_VALUES[tier]}\n\n` +
             `Send the refresh page: https://jotapropertiescr.com/refresh.html\n\n` +
             `Offer the service, do not imply we have been watching the property. ` +
