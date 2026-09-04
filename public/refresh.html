@@ -113,7 +113,8 @@
     <div class="form-shell">
       <span class="form-tab">Refresh Request</span>
 
-      <form id="refreshForm">
+      <form id="refreshForm" name="refresh-request" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="refresh-request">
         <p style="position:absolute; left:-9999px;" aria-hidden="true">
           <label>Don't fill this out: <input name="bot-field" tabindex="-1" autocomplete="off"></label>
         </p>
@@ -132,6 +133,22 @@
         <div class="field">
           <label for="phone">WhatsApp or phone number</label>
           <input type="tel" id="phone" name="phone" placeholder="Optional">
+        </div>
+
+        <div class="field">
+          <label for="zone">Zone</label>
+          <select id="zone" name="zone">
+            <option value="">Select a zone</option>
+            <option value="escazu">Escazú</option>
+            <option value="santa ana">Santa Ana</option>
+            <option value="lindora">Lindora</option>
+            <option value="san rafael">San Rafael</option>
+            <option value="alajuela">Alajuela</option>
+            <option value="atenas">Atenas</option>
+            <option value="ciudad colon">Ciudad Colón</option>
+            <option value="belen">Belén</option>
+            <option value="other">Other Central Valley</option>
+          </select>
         </div>
 
         <div class="field">
@@ -220,6 +237,13 @@
     btn.textContent = 'Taking you to checkout…';
 
     var payload = Object.fromEntries(new FormData(form));
+
+    // Keep a copy in Netlify Forms as a backup record. Never block on it.
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(new FormData(form)).toString()
+    }).catch(function () { /* backup only */ });
 
     fetch('/.netlify/functions/intake', {
       method: 'POST',
