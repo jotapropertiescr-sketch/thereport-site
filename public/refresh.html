@@ -54,6 +54,16 @@
     border:1px solid var(--line); background:var(--white); color:var(--ink); border-radius:2px;}
   input:focus, textarea:focus{outline:2px solid var(--rust); outline-offset:1px;}
   textarea{min-height:88px; resize:vertical;}
+  .addon{display:flex; gap:11px; align-items:flex-start; cursor:pointer; font-weight:400;
+    font-size:14px; line-height:1.5; background:var(--paper); border:1px solid var(--line);
+    border-left:3px solid var(--rust); padding:13px 15px; margin-bottom:10px;}
+  .addon input{margin-top:3px; width:16px; height:16px; flex:none; accent-color:var(--rust); cursor:pointer;}
+  .addon strong{color:var(--navy);}
+  .addon b{color:var(--rust); font-family:'IBM Plex Mono', monospace; font-size:13px;}
+  .running-total{font-family:'IBM Plex Mono', monospace; font-size:14px; color:var(--navy);
+    text-align:right; padding:10px 2px 0; border-top:1px solid var(--line); margin-top:4px;}
+  .running-total b{color:var(--rust); font-size:16px;}
+  .running-total .saved{display:block; font-size:11.5px; color:var(--ink-soft); margin-top:3px;}
   .submit{width:100%; padding:14px; background:var(--navy); color:var(--white); border:none; border-radius:2px;
     font-family:'IBM Plex Sans', sans-serif; font-weight:700; font-size:15px; cursor:pointer; margin-top:8px;}
   .submit:hover{background:var(--rust);}
@@ -88,15 +98,17 @@
     <p class="muted">This page is for clients who have already received a report from us. If you have not, start with a <a href="index.html#tiers" style="color:var(--rust);">Records Edition or Full Edition</a> instead.</p>
 
     <div class="scope">
-      <h2>What a refresh covers</h2>
+      <h2>Start with the records</h2>
       <ul>
         <li>Title status and any newly recorded liens or encumbrances</li>
         <li>Corporate status of the holding entity, if one applies</li>
         <li>Municipal tax standing</li>
-        <li>A comparison against what your prior report found, so you see what changed</li>
+        <li>A comparison against your prior report, so you see what changed</li>
       </ul>
-      <span class="price">$250 &nbsp;·&nbsp; delivered in 2 to 3 business days</span>
+      <span class="price">$175 &nbsp;·&nbsp; delivered in 2 to 3 business days</span>
     </div>
+
+    <p class="muted" style="margin-bottom:30px;">A year changes more than the records. Add only what may have moved on your property. Select all three and the bundled Full Refresh rate of $575 is applied automatically, saving you $50.</p>
 
     <div class="form-shell">
       <span class="form-tab">Refresh Request</span>
@@ -137,6 +149,30 @@
           <textarea id="notes" name="notes" placeholder="Optional"></textarea>
         </div>
 
+        <div class="field">
+          <label style="margin-bottom:10px;">Add to your refresh</label>
+
+          <label class="addon" for="refreshHoa">
+            <input type="checkbox" id="refreshHoa" name="refresh_hoa" value="yes" data-amount="125">
+            <span><strong>HOA financial health</strong> &nbsp;<b>+$125</b><br>
+            Arrears, special assessments, and current standing. The item most likely to have moved without anyone telling an owner.</span>
+          </label>
+
+          <label class="addon" for="refreshPermit">
+            <input type="checkbox" id="refreshPermit" name="refresh_permit" value="yes" data-amount="100">
+            <span><strong>Permit compliance</strong> &nbsp;<b>+$100</b><br>
+            What has been built or altered since your last report, and whether it was permitted.</span>
+          </label>
+
+          <label class="addon" for="refreshVisit">
+            <input type="checkbox" id="refreshVisit" name="refresh_visit" value="yes" data-amount="225">
+            <span><strong>Site visit and condition snapshot</strong> &nbsp;<b>+$225</b><br>
+            We walk the property and document its current condition. Visual and observational only, not a structural inspection.</span>
+          </label>
+
+          <div class="running-total" id="runningTotal">Your total: <b>$175</b></div>
+        </div>
+
         <input type="hidden" name="tier_key" value="annual_refresh">
         <input type="hidden" name="edition" value="Annual Refresh — $250">
         <input type="hidden" name="referral_source" value="Other">
@@ -158,6 +194,23 @@
 </footer>
 
 <script>
+  // Running total, including the automatic bundle price when all three are on.
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.addon input'));
+  var totalEl = document.getElementById('runningTotal');
+  function updateTotal() {
+    var picked = boxes.filter(function (b) { return b.checked; });
+    if (picked.length === 3) {
+      totalEl.innerHTML = 'Your total: <b>$575</b><span class="saved">Full Refresh bundle applied, you save $50</span>';
+      return;
+    }
+    var sum = picked.reduce(function (acc, b) {
+      return acc + parseInt(b.getAttribute('data-amount'), 10);
+    }, 175);
+    totalEl.innerHTML = 'Your total: <b>$' + sum + '</b>';
+  }
+  boxes.forEach(function (b) { b.addEventListener('change', updateTotal); });
+  updateTotal();
+
   var form = document.getElementById('refreshForm');
   form.addEventListener('submit', function (e) {
     e.preventDefault();
