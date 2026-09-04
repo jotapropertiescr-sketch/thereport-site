@@ -421,7 +421,7 @@
       </div>
     </div>
     <div class="stamp-wrap">
-      <img src="the-report-icon.png" alt="THE REPORT — Independent, Fixed Fee, Verified" style="width:100%; max-width:320px; height:auto; box-shadow:0 20px 50px rgba(0,0,0,0.35);">
+      <img src="the-report-icon.png" alt="THE REPORT: Independent, Fixed Fee, Verified" style="width:100%; max-width:320px; height:auto; box-shadow:0 20px 50px rgba(0,0,0,0.35);">
     </div>
   </div>
 </header>
@@ -519,7 +519,7 @@
 
     <div class="briefing-note">
       <span class="mono">Optional add-on, never bundled</span>
-      THE BRIEFING — $9.99/month ($4.99/month with a Full Edition order), a quarterly update on what's changed across the zones we cover. Opt in anytime, cancel anytime, never anything about your specific property.
+      THE BRIEFING at $9.99/month ($4.99/month with a Full Edition order), a quarterly update on what's changed across the zones we cover. Opt in anytime, cancel anytime, never anything about your specific property.
     </div>
   </div>
 </section>
@@ -536,19 +536,19 @@
         <span class="mono">SAMPLE · AREA EDITION</span>
         <h3>Zone Comparison Report</h3>
         <p style="font-size:14px;color:var(--ink-soft);margin:0;">Santa Ana vs. Atenas, side by side, before choosing a neighborhood.</p>
-        <a href="sample-area-edition-report.pdf" target="_blank" class="sample-link">View sample report →</a>
+        <a href="sample-area-edition-report.pdf" target="_blank" rel="noopener" class="sample-link">View Sample →</a>
       </div>
       <div class="sample-card">
         <span class="mono">SAMPLE · RECORDS EDITION</span>
         <h3>Records Check Report</h3>
         <p style="font-size:14px;color:var(--ink-soft);margin:0;">Title, corporate status, and tax status on one property.</p>
-        <a href="sample-records-edition-report.pdf" target="_blank" class="sample-link">View sample report →</a>
+        <a href="sample-records-edition-report.pdf" target="_blank" rel="noopener" class="sample-link">View Sample →</a>
       </div>
       <div class="sample-card">
         <span class="mono">SAMPLE · FULL EDITION</span>
         <h3>Complete Verification Report</h3>
         <p style="font-size:14px;color:var(--ink-soft);margin:0;">The full report, HOA health, permits, site visit, and more.</p>
-        <a href="sample-full-edition-report.pdf" target="_blank" class="sample-link">View sample report →</a>
+        <a href="sample-full-edition-report.pdf" target="_blank" rel="noopener" class="sample-link">View Sample →</a>
       </div>
     </div>
   </div>
@@ -564,7 +564,7 @@
 
     <div class="form-shell">
       <span class="form-tab">Intake Form</span>
-      <div class="summary-line" id="summaryLine">Requesting: <b id="summaryTier">— select an edition above —</b></div>
+      <div class="summary-line" id="summaryLine">Requesting: <b id="summaryTier">select an edition above</b></div>
 
       <form id="intakeForm" name="report-request" method="POST" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="report-request">
@@ -771,7 +771,7 @@
     <div class="disclaimer-box">
       <p>We are not a concierge service. Each report is a complete, independent engagement on the property and/or area you request. You're always welcome back, for another property, the same one again down the road, or to stay current between purchases through THE BRIEFING, our optional quarterly update on the areas we cover. Whichever you choose is entirely up to you: we'll never chase a renewal, and the report itself never turns into an ongoing arrangement you didn't ask for.</p>
       <p>This service is an independent verification based on the sources listed in each report's delivery manifest. It is not a legal opinion, does not substitute for review by a licensed Costa Rican attorney, and does not guarantee the outcome of any transaction.</p>
-      <div class="fine-print">© THE REPORT — JOTA PROPERTIES CR &nbsp;|&nbsp; <a href="terms.html" style="color:inherit; text-decoration:underline;">Terms of Service</a></div>
+      <div class="fine-print">© THE REPORT &nbsp;·&nbsp; JOTA PROPERTIES CR &nbsp;|&nbsp; <a href="terms.html" style="color:inherit; text-decoration:underline;">Terms of Service</a></div>
     </div>
   </div>
 </footer>
@@ -806,10 +806,10 @@
     btn.addEventListener('click', function(){
       var tier = btn.getAttribute('data-tier');
       var price = btn.getAttribute('data-price');
-      tierField.value = tier + ' \u2014 ' + price;
+      tierField.value = tier + ' \u00b7 ' + price;
       tierKeyField.value = btn.getAttribute('data-key');
       summaryTier.style.color = '';
-      summaryTier.textContent = tier + ' \u2014 ' + price;
+      summaryTier.textContent = tier + ' \u00b7 ' + price;
 
       // THE BRIEFING is discounted when bought alongside a Full Edition.
       var briefingPrice = document.getElementById('briefingPrice');
@@ -831,7 +831,7 @@
     if(!tierKeyField.value){
       document.getElementById('tiers').scrollIntoView({behavior:'smooth', block:'start'});
       summaryTier.style.color = 'var(--rust)';
-      summaryTier.textContent = '\u2014 please select an edition above first \u2014';
+      summaryTier.textContent = 'please select an edition above first';
       return;
     }
 
