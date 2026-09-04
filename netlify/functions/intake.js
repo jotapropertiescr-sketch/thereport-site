@@ -30,6 +30,9 @@ const STRIPE = 'https://api.stripe.com/v1';
 
 const SITE = 'https://jotapropertiescr.com';
 const SUCCESS_URL = `${SITE}/thank-you.html?session_id={CHECKOUT_SESSION_ID}`;
+// Returning clients get their own confirmation: no site visit, one delivery
+// window, and an explicit note on what a refresh does not cover.
+const REFRESH_SUCCESS_URL = `${SITE}/refresh-confirmed.html?session_id={CHECKOUT_SESSION_ID}`;
 const CANCEL_URL = `${SITE}/#get-started`;
 
 // Stripe price IDs. SANDBOX values. Replace all six when you go live.
@@ -37,10 +40,23 @@ const PRICES = {
   area_edition:        { price: 'price_1UAJjgANWNWwClOG8pk5JSlv', mode: 'payment' },
   records_edition:     { price: 'price_1UAJinANWNWwClOGPWLmUdaY', mode: 'payment' },
   full_edition:        { price: 'price_1UAJhJANWNWwClOGrrKSGWTp', mode: 'payment' },
-  annual_refresh:      { price: 'price_1UBF7pANWNWwClOGdHR33mZp', mode: 'payment' },
+  annual_refresh:      { price: 'price_1UC0rDANWNWwClOGXznf6Jou', mode: 'payment' }, // Records Refresh $175
   briefing_standard:   { price: 'price_1UAKIXANWNWwClOGTUhchskz', mode: 'subscription' },
   briefing_discounted: { price: 'price_1UBF5zANWNWwClOG3lajGJq2', mode: 'subscription' },
 };
+
+// Refresh add-ons, sold on top of the $175 Records Refresh base.
+// A returning client picks only what may have moved since their last report.
+const REFRESH_ADDONS = {
+  hoa:    { price: 'price_1UC0rEANWNWwClOGCwRLzVTx', amount: 125, label: 'HOA Financial Health' },
+  permit: { price: 'price_1UC0rKANWNWwClOG2TCZHzCE', amount: 100, label: 'Permit Compliance' },
+  visit:  { price: 'price_1UC0rLANWNWwClOGlSGB39vs', amount: 225, label: 'Site Visit' },
+};
+
+// Taking all three a la carte costs $625. The bundle is $575, so when a client
+// selects everything the server quietly swaps to the cheaper single line item
+// rather than charging them $50 more for the same work.
+const FULL_REFRESH = { price: 'price_1UC0rRANWNWwClOGWucmH8dw', amount: 575 };
 
 // THE BRIEFING as an add-on. The discounted rate is earned by buying a Full
 // Edition in the same transaction, which is why the tier decides the price
@@ -235,6 +251,9 @@ exports.handler = async (event) => {
     referral_source = '',
     add_briefing = '',
     zone = '',
+    refresh_hoa = '',
+    refresh_permit = '',
+    refresh_visit = '',
   } = form;
 
   if (!email || !tier || !PRICES[tier]) {
@@ -247,6 +266,15 @@ exports.handler = async (event) => {
 
   // The buyer ticked the add-on box. Only meaningful on the four report
   // tiers; someone subscribing to THE BRIEFING alone cannot add it twice.
+  // Refresh add-ons only mean anything on a refresh order.
+  const isRefresh = tier === 'annual_refresh';
+  const checked = (v) => v === 'yes' || v === 'on' || v === true;
+  const refreshPicked = isRefresh
+    ? ['hoa', 'permit', 'visit'].filter((k) =>
+        checked({ hoa: refresh_hoa, permit: refresh_permit, visit: refresh_visit }[k]))
+    : [];
+  const isFullRefresh = refreshPicked.length === 3;
+
   const wantsBriefing =
     (add_briefing === 'yes' || add_briefing === 'on' || add_briefing === true) &&
     PRICES[tier].mode === 'payment';
@@ -297,6 +325,11 @@ exports.handler = async (event) => {
       `INTAKE FORM SUBMISSION\n` +
       `Request: ${edition || tier.replace(/_/g, ' ')}\n` +
       `Classified as: ${TIER_VALUES[tier] ? 'Report Tier' : ADDON_VALUES[tier] ? 'Add-On (no tier set)' : 'UNMAPPED - review manually'}\n\n` +
+      (isRefresh
+        ? `Refresh scope: ${isFullRefresh
+            ? 'Full Refresh (records, HOA, permits, site visit) - bundled rate'
+            : ['Records'].concat(refreshPicked.map((k) => REFRESH_ADDONS[k].label)).join(' + ')}\n`
+        : '') +
       `Zone: ${zone || 'not selected'}\n` +
       `${isArea ? 'Zones of interest' : 'Property location'}: ${property || 'not provided'}\n` +
       `Entity: ${entity || 'not provided'}\n` +
@@ -335,7 +368,16 @@ exports.handler = async (event) => {
     // the report and the subscription are bought in a single transaction.
     const mode = briefing ? 'subscription' : PRICES[tier].mode;
 
-    const lineItems = [{ price, quantity: 1 }];
+    let lineItems;
+    if (isFullRefresh) {
+      // All three add-ons selected: one bundled line item at $575.
+      lineItems = [{ price: FULL_REFRESH.price, quantity: 1 }];
+    } else {
+      lineItems = [{ price, quantity: 1 }];
+      for (const key of refreshPicked) {
+        lineItems.push({ price: REFRESH_ADDONS[key].price, quantity: 1 });
+      }
+    }
     if (briefing) lineItems.push({ price: briefing.price, quantity: 1 });
 
     // Everything the buyer already told us rides along as metadata, so the
@@ -353,14 +395,19 @@ exports.handler = async (event) => {
       referral_source: clip(referral_source),
       client_notes: clip(notes),
       briefing_addon: briefing ? briefing.key : 'none',
+      refresh_scope: isRefresh
+        ? (isFullRefresh
+            ? 'Full Refresh (records, HOA, permits, site visit)'
+            : ['Records'].concat(refreshPicked.map((k) => REFRESH_ADDONS[k].label)).join(' + '))
+        : undefined,
     };
 
     const params = {
       mode,
       customer: customerId,
       line_items: lineItems,
-      success_url: SUCCESS_URL,
-      cancel_url: CANCEL_URL,
+      success_url: tier === 'annual_refresh' ? REFRESH_SUCCESS_URL : SUCCESS_URL,
+      cancel_url: tier === 'annual_refresh' ? `${SITE}/refresh.html` : CANCEL_URL,
       billing_address_collection: 'required',
       consent_collection: { terms_of_service: 'required' },
       custom_text: {
