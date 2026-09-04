@@ -19,9 +19,10 @@
 //   addons_purchased   Annual Refresh and both BRIEFING rates
 //   referral_source    "jotapropeties.com" is the stored value
 //
+//   zone               dropdown, values capitalized (see ZONE_VALUES below)
+//
 // report_tier has no Annual Refresh or BRIEFING option, and that is correct.
-// Those are add-ons, not tiers. There is no Zone property on deals, so zone
-// is written into the deal note and carried to Stripe as metadata.
+// Those are add-ons, not tiers.
 // ---------------------------------------------------------------------------
 
 const HS = 'https://api.hubapi.com';
@@ -60,6 +61,22 @@ const ADDON_VALUES = {
   annual_refresh:      'Annual Refresh ($250)',
   briefing_standard:   'The Briefing ($9.99 mo)',
   briefing_discounted: 'The Briefing W/Full Edition ($4.99 mom)',
+};
+
+// Form zone values mapped to the HubSpot Zone property's stored values.
+// HubSpot's values are capitalized. A value that does not match exactly is
+// silently dropped, so keep this map in step with the property.
+const ZONE_VALUES = {
+  'escazu':       'Escazu',
+  'santa ana':    'Santa Ana',
+  'lindora':      'Lindora',
+  'san rafael':   'San Rafael',
+  'alajuela':     'Alajuela',
+  'atenas':       'Atenas',
+  'ciudad colon': 'Ciudad Colon',
+  'belen':        'Belen',
+  'other':        'Other Central Valley',
+  'multiple':     'Multiple Zones',
 };
 
 const HS_PRODUCT_IDS = {
@@ -265,6 +282,7 @@ exports.handler = async (event) => {
 
     // For Area Edition the property box holds zones, not an address.
     if (property && !isArea) dealProps.property_address = property;
+    if (ZONE_VALUES[zone]) dealProps.zone = ZONE_VALUES[zone];
 
     const deal = await hs('/crm/v3/objects/deals', 'POST', {
       properties: dealProps,
