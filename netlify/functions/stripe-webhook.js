@@ -274,7 +274,7 @@ exports.handler = async (event) => {
       (Object.keys(fields).length
         ? Object.entries(fields).map(([k, v]) => `${k}: ${v}`).join('\n')
         : 'none') +
-      `\n\n(Zone is recorded here because deals have no Zone property.)`;
+      ``;
 
     await hs('/crm/v3/objects/notes', 'POST', {
       properties: { hs_note_body: noteBody, hs_timestamp: Date.now() },
@@ -310,16 +310,19 @@ exports.handler = async (event) => {
     // before the anniversary rather than after it. This is a task for YOU,
     // not an email to the client: the refresh stays client-initiated, and
     // nothing here implies THE REPORT is monitoring the property.
-    if (isTier && tier !== 'area_edition') {
+    // Refresh purchases qualify too: a returning client is the likeliest
+    // buyer of the next refresh, and without this they fall out of the
+    // follow-up loop entirely after their second purchase.
+    if (tier !== 'area_edition' && (isTier || tier === 'annual_refresh')) {
       const ELEVEN_MONTHS = 334 * 24 * 60 * 60 * 1000;
       await hs('/crm/v3/objects/tasks', 'POST', {
         properties: {
           hs_task_subject: `Offer Annual Refresh: ${fields.propertyaddress || 'see deal'}`,
           hs_task_body:
-            `Eleven months since this report was delivered.\n\n` +
+            `Eleven months since this ${tier === 'annual_refresh' ? 'refresh' : 'report'} was delivered.\n\n` +
             `Property location: ${fields.propertyaddress || 'see deal'}\n` +
             `Zone: ${fields.zone || 'not selected'}\n` +
-            `Original tier: ${TIER_VALUES[tier]}\n\n` +
+            `Previous purchase: ${TIER_VALUES[tier] || addonValue || tier}\n\n` +
             `Send the refresh page: https://jotapropertiescr.com/refresh.html\n\n` +
             `Offer the service, do not imply we have been watching the property. ` +
             `No language such as "we noticed a change" or "it may be time to re-check."`,
