@@ -18,7 +18,7 @@
 //
 //   report_tier        Area / Records / Full ONLY.
 //   addons_purchased   Annual Refresh and both BRIEFING rates.
-//   No Zone property exists on deals; zone is written into the note.
+//   zone               dropdown, values capitalized (see ZONE_VALUES below).
 // ---------------------------------------------------------------------------
 
 // No npm packages required. Signature verification uses Node's built-in
@@ -38,6 +38,22 @@ const ADDON_VALUES = {
   annual_refresh:      'Annual Refresh ($250)',
   briefing_standard:   'The Briefing ($9.99 mo)',
   briefing_discounted: 'The Briefing W/Full Edition ($4.99 mom)',  // typo: mom
+};
+
+// Form zone values mapped to the HubSpot Zone property's stored values.
+// HubSpot's values are capitalized. A value that does not match exactly is
+// silently dropped, so keep this map in step with the property.
+const ZONE_VALUES = {
+  'escazu':       'Escazu',
+  'santa ana':    'Santa Ana',
+  'lindora':      'Lindora',
+  'san rafael':   'San Rafael',
+  'alajuela':     'Alajuela',
+  'atenas':       'Atenas',
+  'ciudad colon': 'Ciudad Colon',
+  'belen':        'Belen',
+  'other':        'Other Central Valley',
+  'multiple':     'Multiple Zones',
 };
 
 async function hs(path, method, body) {
@@ -183,6 +199,7 @@ exports.handler = async (event) => {
       if (isAddon) props.addons_purchased = ADDON_VALUES[tier];
       if (briefingAddon) props.addons_purchased = ADDON_VALUES[briefingAddon];
       if (fields.propertyaddress) props.property_address = fields.propertyaddress;
+      if (ZONE_VALUES[fields.zone]) props.zone = ZONE_VALUES[fields.zone];
 
       const deal = await hs('/crm/v3/objects/deals', 'POST', {
         properties: props,
@@ -203,6 +220,7 @@ exports.handler = async (event) => {
       if (isAddon) props.addons_purchased = ADDON_VALUES[tier];
       if (briefingAddon) props.addons_purchased = ADDON_VALUES[briefingAddon];
       if (fields.propertyaddress) props.property_address = fields.propertyaddress;
+      if (ZONE_VALUES[fields.zone]) props.zone = ZONE_VALUES[fields.zone];
       await hs(`/crm/v3/objects/deals/${dealId}`, 'PATCH', { properties: props });
     }
 
