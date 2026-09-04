@@ -17,7 +17,8 @@
 // block in intake.js. Keep the two files in sync.
 //
 //   report_tier        Area / Records / Full ONLY.
-//   addons_purchased   Annual Refresh and both BRIEFING rates.
+//   addons_purchased   multi-select: refresh base, refresh add-ons,
+//                      Full Refresh bundle, and both BRIEFING rates.
 //   zone               dropdown, values capitalized (see ZONE_VALUES below).
 // ---------------------------------------------------------------------------
 
@@ -34,10 +35,17 @@ const TIER_VALUES = {
   full_edition:    'Full Edition ($750)',
 };
 
+// HubSpot's "Add-Ons Purchased" stored values, exactly as the property spells
+// them. Must stay identical to the same map in intake.js: a value that does
+// not match character-for-character is silently dropped by HubSpot.
 const ADDON_VALUES = {
-  annual_refresh:      'Annual Refresh ($250)',
-  briefing_standard:   'The Briefing ($9.99 mo)',
-  briefing_discounted: 'The Briefing W/Full Edition ($4.99 mom)',  // typo: mom
+  annual_refresh:      'Annual Refresh $175',
+  briefing_standard:   'The Briefing $9.99',
+  briefing_discounted: 'The Briefing W/Full Edition $4.99 mo',
+  full_refresh:        'Full Refresh $575',
+  hoa:                 'HOA Financial Health $125',
+  permit:              'Permit Compliance $100',
+  visit:               'Site Visit/Condition Check $225',
 };
 
 // Form zone values mapped to the HubSpot Zone property's stored values.
@@ -175,6 +183,24 @@ exports.handler = async (event) => {
     ? briefingKey
     : null;
 
+  // Refresh add-ons ride in metadata as either "full" or a comma-separated
+  // list of keys. Rebuilt here so the deal reflects exactly what was bought,
+  // whichever route the buyer took.
+  const refreshKeys = (session.metadata?.refresh_keys || '').trim();
+  const isFullRefresh = refreshKeys === 'full';
+  const refreshPicked = isFullRefresh
+    ? []
+    : refreshKeys.split(',').map((s) => s.trim()).filter((k) => ADDON_VALUES[k]);
+
+  const addonList = [];
+  if (isFullRefresh) addonList.push(ADDON_VALUES.full_refresh);
+  else {
+    if (isAddon) addonList.push(ADDON_VALUES[tier]);
+    for (const k of refreshPicked) addonList.push(ADDON_VALUES[k]);
+  }
+  if (briefingAddon) addonList.push(ADDON_VALUES[briefingAddon]);
+  const addonValue = addonList.join(';');
+
   try {
     // intake.js sets both, so either one identifies the deal it created.
     let dealId = session.client_reference_id || session.metadata?.hs_deal_id || null;
@@ -196,8 +222,7 @@ exports.handler = async (event) => {
         referral_source: 'Other',
       };
       if (isTier) props.report_tier = TIER_VALUES[tier];
-      if (isAddon) props.addons_purchased = ADDON_VALUES[tier];
-      if (briefingAddon) props.addons_purchased = ADDON_VALUES[briefingAddon];
+      if (addonValue) props.addons_purchased = addonValue;
       if (fields.propertyaddress) props.property_address = fields.propertyaddress;
       if (ZONE_VALUES[fields.zone]) props.zone = ZONE_VALUES[fields.zone];
 
@@ -217,8 +242,7 @@ exports.handler = async (event) => {
       // Confirm classification at payment time. intake.js set this already,
       // but a direct-link purchase or an edited link could differ.
       if (isTier) props.report_tier = TIER_VALUES[tier];
-      if (isAddon) props.addons_purchased = ADDON_VALUES[tier];
-      if (briefingAddon) props.addons_purchased = ADDON_VALUES[briefingAddon];
+      if (addonValue) props.addons_purchased = addonValue;
       if (fields.propertyaddress) props.property_address = fields.propertyaddress;
       if (ZONE_VALUES[fields.zone]) props.zone = ZONE_VALUES[fields.zone];
       await hs(`/crm/v3/objects/deals/${dealId}`, 'PATCH', { properties: props });
@@ -232,7 +256,7 @@ exports.handler = async (event) => {
     const classification = isTier
       ? `Report Tier: ${TIER_VALUES[tier]}`
       : isAddon
-        ? `Add-On: ${ADDON_VALUES[tier]} (no Report Tier set, by design)`
+        ? `Add-On: ${addonValue || ADDON_VALUES[tier]} (no Report Tier set, by design)`
         : `UNMAPPED tier "${tier}" - review this deal manually`;
 
     const noteBody =
