@@ -16,7 +16,8 @@
 // does not match exactly is silently dropped by HubSpot.
 //
 //   report_tier        Area / Records / Full ONLY
-//   addons_purchased   Annual Refresh and both BRIEFING rates
+//   addons_purchased   multi-select: refresh base, refresh add-ons,
+//                      Full Refresh bundle, and both BRIEFING rates.
 //   referral_source    "jotapropeties.com" is the stored value
 //
 //   zone               dropdown, values capitalized (see ZONE_VALUES below)
@@ -50,7 +51,7 @@ const PRICES = {
 const REFRESH_ADDONS = {
   hoa:    { price: 'price_1UC0rEANWNWwClOGCwRLzVTx', amount: 125, label: 'HOA Financial Health' },
   permit: { price: 'price_1UC0rKANWNWwClOG2TCZHzCE', amount: 100, label: 'Permit Compliance' },
-  visit:  { price: 'price_1UC0rLANWNWwClOGlSGB39vs', amount: 225, label: 'Site Visit' },
+  visit:  { price: 'price_1UC0rLANWNWwClOGlSGB39vs', amount: 225, label: 'Site Visit/Condition Check' },
 };
 
 // Taking all three a la carte costs $625. The bundle is $575, so when a client
@@ -73,11 +74,33 @@ const TIER_VALUES = {
   full_edition:    'Full Edition ($750)',
 };
 
+// HubSpot's "Add-Ons Purchased" stored values, exactly as the property spells
+// them. A value that does not match character-for-character is silently
+// dropped by HubSpot, so this map must be edited whenever the property is.
 const ADDON_VALUES = {
-  annual_refresh:      'Annual Refresh ($250)',
-  briefing_standard:   'The Briefing ($9.99 mo)',
-  briefing_discounted: 'The Briefing W/Full Edition ($4.99 mom)',
+  annual_refresh:      'Annual Refresh $175',
+  briefing_standard:   'The Briefing $9.99',
+  briefing_discounted: 'The Briefing W/Full Edition $4.99 mo',
+  full_refresh:        'Full Refresh $575',
+  hoa:                 'HOA Financial Health $125',
+  permit:              'Permit Compliance $100',
+  visit:               'Site Visit/Condition Check $225',
 };
+
+// A refresh order can carry several add-ons at once, so the property value is
+// a semicolon-joined list (HubSpot's multi-select format). The bundle replaces
+// its parts rather than listing all four.
+function addonValueList({ tier, briefingKey, isFullRefresh, refreshPicked }) {
+  const out = [];
+  if (isFullRefresh) {
+    out.push(ADDON_VALUES.full_refresh);
+  } else {
+    if (ADDON_VALUES[tier]) out.push(ADDON_VALUES[tier]);
+    for (const k of refreshPicked || []) if (ADDON_VALUES[k]) out.push(ADDON_VALUES[k]);
+  }
+  if (briefingKey && ADDON_VALUES[briefingKey]) out.push(ADDON_VALUES[briefingKey]);
+  return out;
+}
 
 // Form zone values mapped to the HubSpot Zone property's stored values.
 // HubSpot's values are capitalized. A value that does not match exactly is
@@ -304,9 +327,14 @@ exports.handler = async (event) => {
     // the two. A BRIEFING subscription bought alongside a tier is recorded
     // separately, in addons_purchased.
     if (TIER_VALUES[tier]) dealProps.report_tier = TIER_VALUES[tier];
-    else if (ADDON_VALUES[tier]) dealProps.addons_purchased = ADDON_VALUES[tier];
 
-    if (briefing) dealProps.addons_purchased = ADDON_VALUES[briefing.key];
+    const addons = addonValueList({
+      tier,
+      briefingKey: briefing ? briefing.key : null,
+      isFullRefresh,
+      refreshPicked,
+    });
+    if (addons.length) dealProps.addons_purchased = addons.join(';');
 
     // For Area Edition the property box holds zones, not an address.
     if (property && !isArea) dealProps.property_address = property;
@@ -399,6 +427,11 @@ exports.handler = async (event) => {
         ? (isFullRefresh
             ? 'Full Refresh (records, HOA, permits, site visit)'
             : ['Records'].concat(refreshPicked.map((k) => REFRESH_ADDONS[k].label)).join(' + '))
+        : undefined,
+      // Machine-readable twin of refresh_scope. The webhook rebuilds the
+      // HubSpot add-on list from this rather than parsing the prose above.
+      refresh_keys: isRefresh
+        ? (isFullRefresh ? 'full' : refreshPicked.join(','))
         : undefined,
     };
 
