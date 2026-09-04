@@ -217,6 +217,7 @@ exports.handler = async (event) => {
     notes = '',
     referral_source = '',
     add_briefing = '',
+    zone = '',
   } = form;
 
   if (!email || !tier || !PRICES[tier]) {
@@ -278,7 +279,8 @@ exports.handler = async (event) => {
       `INTAKE FORM SUBMISSION\n` +
       `Request: ${edition || tier.replace(/_/g, ' ')}\n` +
       `Classified as: ${TIER_VALUES[tier] ? 'Report Tier' : ADDON_VALUES[tier] ? 'Add-On (no tier set)' : 'UNMAPPED - review manually'}\n\n` +
-      `${isArea ? 'Zones of interest' : 'Property'}: ${property || 'not provided'}\n` +
+      `Zone: ${zone || 'not selected'}\n` +
+      `${isArea ? 'Zones of interest' : 'Property location'}: ${property || 'not provided'}\n` +
       `Entity: ${entity || 'not provided'}\n` +
       `HOA: ${hoa || 'not provided'}\n` +
       `Agent or attorney: ${agent_or_attorney || 'not provided'}\n` +
@@ -325,6 +327,7 @@ exports.handler = async (event) => {
       hs_deal_id: dealId || '',
       hs_product_id: HS_PRODUCT_IDS[tier] || '',
       property_or_zones: clip(property),
+      zone: clip(zone, 60),
       entity: clip(entity),
       hoa: clip(hoa),
       agent_or_attorney: clip(agent_or_attorney),
