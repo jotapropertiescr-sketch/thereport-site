@@ -607,8 +607,27 @@
 
         <div class="field-row">
           <div class="field full">
-            <label for="property">Property address, or zones of interest if Area Edition</label>
-            <input type="text" id="property" name="property" placeholder="e.g. Santa Ana, or a specific address">
+            <label for="zone">Zone</label>
+            <select id="zone" name="zone">
+              <option value="">Select a zone</option>
+              <option value="escazu">Escazú</option>
+              <option value="santa ana">Santa Ana</option>
+              <option value="lindora">Lindora</option>
+              <option value="sanrafael">San Rafael</option>
+              <option value="alajuela">Alajuela</option>
+              <option value="atenas">Atenas</option>
+              <option value="ciudad colon">Ciudad Colón</option>
+              <option value="belen">Belén</option>
+              <option value="other">Other Central Valley</option>
+              <option value="multiple">Multiple zones (Area Edition)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field full">
+            <label for="property">Property location, or the zones you want compared for an Area Edition</label>
+            <input type="text" id="property" name="property" placeholder="Condominium and unit, development name, or directions from a known landmark">
           </div>
         </div>
 
