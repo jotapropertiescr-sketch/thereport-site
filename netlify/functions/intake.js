@@ -36,28 +36,34 @@ const SUCCESS_URL = `${SITE}/thank-you.html?session_id={CHECKOUT_SESSION_ID}`;
 const REFRESH_SUCCESS_URL = `${SITE}/refresh-confirmed.html?session_id={CHECKOUT_SESSION_ID}`;
 const CANCEL_URL = `${SITE}/#get-started`;
 
-// Stripe price IDs. SANDBOX values. Replace all six when you go live.
+// Stripe price IDs. LIVE values, set 6 September 2026.
+// Sandbox equivalents, kept only for rollback:
+//   area price_1UAJjgANWNWwClOG8pk5JSlv | records price_1UAJinANWNWwClOGPWLmUdaY
+//   full price_1UAJhJANWNWwClOGrrKSGWTp | refresh price_1UC0rDANWNWwClOGXznf6Jou
+//   briefing price_1UAKIXANWNWwClOGTUhchskz | briefing-disc price_1UBF5zANWNWwClOG3lajGJq2
+//   hoa price_1UC0rEANWNWwClOGCwRLzVTx | permit price_1UC0rKANWNWwClOG2TCZHzCE
+//   visit price_1UC0rLANWNWwClOGlSGB39vs | full-refresh price_1UC0rRANWNWwClOGWucmH8dw
 const PRICES = {
-  area_edition:        { price: 'price_1UAJjgANWNWwClOG8pk5JSlv', mode: 'payment' },
-  records_edition:     { price: 'price_1UAJinANWNWwClOGPWLmUdaY', mode: 'payment' },
-  full_edition:        { price: 'price_1UAJhJANWNWwClOGrrKSGWTp', mode: 'payment' },
-  annual_refresh:      { price: 'price_1UC0rDANWNWwClOGXznf6Jou', mode: 'payment' }, // Records Refresh $175
-  briefing_standard:   { price: 'price_1UAKIXANWNWwClOGTUhchskz', mode: 'subscription' },
-  briefing_discounted: { price: 'price_1UBF5zANWNWwClOG3lajGJq2', mode: 'subscription' },
+  area_edition:        { price: 'price_1UCjThAbJGZH8ax8CppydUns', mode: 'payment' },
+  records_edition:     { price: 'price_1UCjTdAbJGZH8ax8IUcDN9eR', mode: 'payment' },
+  full_edition:        { price: 'price_1UCjTiAbJGZH8ax8hydXGDZ1', mode: 'payment' },
+  annual_refresh:      { price: 'price_1UCjTiAbJGZH8ax8i5bnK1TX', mode: 'payment' }, // Records Refresh $175
+  briefing_standard:   { price: 'price_1UCjTdAbJGZH8ax8q8UdWeym', mode: 'subscription' },
+  briefing_discounted: { price: 'price_1UCjTdAbJGZH8ax8kLwO0LZx', mode: 'subscription' },
 };
 
 // Refresh add-ons, sold on top of the $175 Records Refresh base.
 // A returning client picks only what may have moved since their last report.
 const REFRESH_ADDONS = {
-  hoa:    { price: 'price_1UC0rEANWNWwClOGCwRLzVTx', amount: 125, label: 'HOA Financial Health' },
-  permit: { price: 'price_1UC0rKANWNWwClOG2TCZHzCE', amount: 100, label: 'Permit Compliance' },
-  visit:  { price: 'price_1UC0rLANWNWwClOGlSGB39vs', amount: 225, label: 'Site Visit/Condition Check' },
+  hoa:    { price: 'price_1UCjTdAbJGZH8ax8LRX0JNCj', amount: 125, label: 'HOA Financial Health' },
+  permit: { price: 'price_1UCjTeAbJGZH8ax8wM1XmQZ0', amount: 100, label: 'Permit Compliance' },
+  visit:  { price: 'price_1UCjTdAbJGZH8ax8YIaiy136', amount: 225, label: 'Site Visit/Condition Check' },
 };
 
 // Taking all three a la carte costs $625. The bundle is $575, so when a client
 // selects everything the server quietly swaps to the cheaper single line item
 // rather than charging them $50 more for the same work.
-const FULL_REFRESH = { price: 'price_1UC0rRANWNWwClOGWucmH8dw', amount: 575 };
+const FULL_REFRESH = { price: 'price_1UCjTdAbJGZH8ax8mT4XlYT5', amount: 575 };
 
 // THE BRIEFING as an add-on. The discounted rate is earned by buying a Full
 // Edition in the same transaction, which is why the tier decides the price
