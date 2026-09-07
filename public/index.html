@@ -345,6 +345,8 @@
     background:var(--paper); border:1px solid var(--line); border-left:3px solid var(--rust); padding:14px 16px;}
   .addon-line input{margin-top:3px; width:16px; height:16px; flex:none; accent-color:var(--rust); cursor:pointer;}
   .addon-line b{color:var(--rust); white-space:nowrap;}
+  .save-note{font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.04em;
+    color:var(--ink-soft); font-weight:600; white-space:nowrap;}
   .form-confirm{
     display:none; background:var(--navy); color:var(--white); padding:22px 24px; margin-top:18px;
     font-size:14.5px; border-left:3px solid var(--rust);
@@ -673,6 +675,22 @@
           </div>
         </div>
 
+        <div class="field-row" id="bundleRow" hidden>
+          <div class="field full">
+            <label class="addon-line" for="addBundle">
+              <input type="checkbox" id="addBundle" name="add_bundle" value="yes">
+              <span>Add a <strong>Records Edition</strong> check on your top property. Title, corporate status, and tax status on one specific property, alongside the zone comparison. <b>$200</b> <span class="save-note">normally $250, you save $50</span></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="field-row" id="bundlePropertyRow" hidden>
+          <div class="field full">
+            <label for="bundleProperty">The property for your Records Edition check</label>
+            <input type="text" id="bundleProperty" name="bundle_property" placeholder="Address, or the Finca / Folio Real number, whichever you have">
+          </div>
+        </div>
+
         <div class="field-row">
           <div class="field full">
             <label class="addon-line" for="addBriefing">
@@ -805,6 +823,29 @@
     });
   });
 
+  // Area + Records Edition Bundle. The offer row appears only for Area Edition;
+  // the property field appears only once the box is ticked, and is required
+  // from that moment because a Records check needs one named property.
+  var bundleRow = document.getElementById('bundleRow');
+  var bundlePropertyRow = document.getElementById('bundlePropertyRow');
+  var addBundle = document.getElementById('addBundle');
+  var bundleProperty = document.getElementById('bundleProperty');
+
+  function syncBundleProperty(){
+    var on = addBundle.checked && !bundleRow.hidden;
+    bundlePropertyRow.hidden = !on;
+    bundleProperty.required = on;
+    if (!on) bundleProperty.value = '';
+  }
+
+  function syncBundle(isArea){
+    bundleRow.hidden = !isArea;
+    if (!isArea) addBundle.checked = false;
+    syncBundleProperty();
+  }
+
+  addBundle.addEventListener('change', syncBundleProperty);
+
   // Tier select buttons -> scroll to form + fill summary + set hidden fields
   var tierField = document.getElementById('tier');
   var tierKeyField = document.getElementById('tierKey');
@@ -817,6 +858,11 @@
       tierKeyField.value = btn.getAttribute('data-key');
       summaryTier.style.color = '';
       summaryTier.textContent = tier + ' \u00b7 ' + price;
+
+      // The Records Edition bundle is offered only on top of an Area Edition.
+      // Switching tiers clears it, so an unchecked-but-remembered box can never
+      // add $200 to a Records or Full order.
+      syncBundle(btn.getAttribute('data-key') === 'area_edition');
 
       // THE BRIEFING is discounted when bought alongside a Full Edition.
       var briefingPrice = document.getElementById('briefingPrice');
