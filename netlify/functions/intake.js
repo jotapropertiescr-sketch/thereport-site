@@ -65,6 +65,12 @@ const REFRESH_ADDONS = {
 // rather than charging them $50 more for the same work.
 const FULL_REFRESH = { price: 'price_1UCjTdAbJGZH8ax8mT4XlYT5', amount: 575 };
 
+// Area + Records Edition Bundle. A Records Edition check on one named property,
+// sold only alongside an Area Edition, at $200 instead of $250. The server
+// decides eligibility from the tier, never from what the browser sends.
+// Sandbox equivalent for rollback: price_1UD61uANWNWwClOGJCecgImw
+const BUNDLE_RECORDS = { price: 'price_1UD6I7AbJGZH8ax8yKJSjNp3', amount: 200 };
+
 // THE BRIEFING as an add-on. The discounted rate is earned by buying a Full
 // Edition in the same transaction, which is why the tier decides the price
 // here on the server rather than trusting anything the browser sends.
@@ -91,6 +97,7 @@ const ADDON_VALUES = {
   hoa:                 'HOA Financial Health $125',
   permit:              'Permit Compliance $100',
   visit:               'Site Visit/Condition Check $225',
+  bundle_records:      'Records Edition Add-On $200',
 };
 
 // A refresh order can carry several add-ons at once, so the property value is
@@ -281,6 +288,8 @@ exports.handler = async (event) => {
     add_briefing = '',
     zone = '',
     folio_real = '',
+    add_bundle = '',
+    bundle_property = '',
     refresh_hoa = '',
     refresh_permit = '',
     refresh_visit = '',
@@ -304,6 +313,10 @@ exports.handler = async (event) => {
         checked({ hoa: refresh_hoa, permit: refresh_permit, visit: refresh_visit }[k]))
     : [];
   const isFullRefresh = refreshPicked.length === 3;
+
+  // Only an Area Edition order can carry the bundle, and only with a named
+  // property. Either condition failing drops it rather than charging for it.
+  const wantsBundle = tier === 'area_edition' && checked(add_bundle) && Boolean(bundle_property.trim());
 
   const wantsBriefing =
     (add_briefing === 'yes' || add_briefing === 'on' || add_briefing === true) &&
@@ -341,10 +354,13 @@ exports.handler = async (event) => {
       isFullRefresh,
       refreshPicked,
     });
+    if (wantsBundle) addons.unshift(ADDON_VALUES.bundle_records);
     if (addons.length) dealProps.addons_purchased = addons.join(';');
 
-    // For Area Edition the property box holds zones, not an address.
-    if (property && !isArea) dealProps.property_address = property;
+    // For Area Edition the property box holds zones, not an address. A bundle
+    // order does name one real property, and that is what belongs here.
+    if (wantsBundle) dealProps.property_address = bundle_property.trim();
+    else if (property && !isArea) dealProps.property_address = property;
     if (ZONE_VALUES[zone]) dealProps.zone = ZONE_VALUES[zone];
     if (folio_real) dealProps.folio_real = folio_real;
 
@@ -369,6 +385,10 @@ exports.handler = async (event) => {
       `Zone: ${zone || 'not selected'}\n` +
       `${isArea ? 'Zones of interest' : 'Property location'}: ${property || 'not provided'}\n` +
       `Finca / Folio Real: ${folio_real || 'not provided'}\n` +
+      (wantsBundle
+        ? `BUNDLE: Records Edition check added ($200)\n`
+          + `Records Edition property: ${bundle_property.trim()}\n`
+        : '') +
       `Entity: ${entity || 'not provided'}\n` +
       `HOA: ${hoa || 'not provided'}\n` +
       `Agent or attorney: ${agent_or_attorney || 'not provided'}\n` +
@@ -415,6 +435,7 @@ exports.handler = async (event) => {
         lineItems.push({ price: REFRESH_ADDONS[key].price, quantity: 1 });
       }
     }
+    if (wantsBundle) lineItems.push({ price: BUNDLE_RECORDS.price, quantity: 1 });
     if (briefing) lineItems.push({ price: briefing.price, quantity: 1 });
 
     // Everything the buyer already told us rides along as metadata, so the
@@ -426,6 +447,8 @@ exports.handler = async (event) => {
       property_or_zones: clip(property),
       zone: clip(zone, 60),
       folio_real: clip(folio_real, 80),
+      bundle_records: wantsBundle ? 'yes' : 'no',
+      bundle_property: wantsBundle ? clip(bundle_property) : undefined,
       entity: clip(entity),
       hoa: clip(hoa),
       agent_or_attorney: clip(agent_or_attorney),
