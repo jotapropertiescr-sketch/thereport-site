@@ -46,6 +46,7 @@ const ADDON_VALUES = {
   hoa:                 'HOA Financial Health $125',
   permit:              'Permit Compliance $100',
   visit:               'Site Visit/Condition Check $225',
+  bundle_records:      'Records Edition Add-On $200',
 };
 
 // Form zone values mapped to the HubSpot Zone property's stored values.
@@ -193,7 +194,13 @@ exports.handler = async (event) => {
     ? []
     : refreshKeys.split(',').map((s) => s.trim()).filter((k) => ADDON_VALUES[k]);
 
+  // Area + Records Edition Bundle, rebuilt from metadata so the deal shows
+  // it however the buyer arrived.
+  const isBundle = session.metadata?.bundle_records === 'yes';
+  const bundleProperty = (session.metadata?.bundle_property || '').trim();
+
   const addonList = [];
+  if (isBundle) addonList.push(ADDON_VALUES.bundle_records);
   if (isFullRefresh) addonList.push(ADDON_VALUES.full_refresh);
   else {
     if (isAddon) addonList.push(ADDON_VALUES[tier]);
@@ -224,7 +231,8 @@ exports.handler = async (event) => {
       };
       if (isTier) props.report_tier = TIER_VALUES[tier];
       if (addonValue) props.addons_purchased = addonValue;
-      if (fields.propertyaddress) props.property_address = fields.propertyaddress;
+      if (isBundle && bundleProperty) props.property_address = bundleProperty;
+      else if (fields.propertyaddress) props.property_address = fields.propertyaddress;
       if (ZONE_VALUES[fields.zone]) props.zone = ZONE_VALUES[fields.zone];
       if (fields.folioreal) props.folio_real = fields.folioreal;
 
@@ -245,7 +253,8 @@ exports.handler = async (event) => {
       // but a direct-link purchase or an edited link could differ.
       if (isTier) props.report_tier = TIER_VALUES[tier];
       if (addonValue) props.addons_purchased = addonValue;
-      if (fields.propertyaddress) props.property_address = fields.propertyaddress;
+      if (isBundle && bundleProperty) props.property_address = bundleProperty;
+      else if (fields.propertyaddress) props.property_address = fields.propertyaddress;
       if (ZONE_VALUES[fields.zone]) props.zone = ZONE_VALUES[fields.zone];
       if (fields.folioreal) props.folio_real = fields.folioreal;
       await hs(`/crm/v3/objects/deals/${dealId}`, 'PATCH', { properties: props });
@@ -266,6 +275,7 @@ exports.handler = async (event) => {
       `PAYMENT RECEIVED\n` +
       `Amount: $${amount.toFixed(2)} ${(session.currency || 'usd').toUpperCase()}\n` +
       `${classification}\n` +
+      (isBundle ? `Bundle: Records Edition check on ${bundleProperty || 'see deal'}\n` : '') +
       (briefingAddon ? `Add-on purchased: ${ADDON_VALUES[briefingAddon]}\n` : '') +
       `Stripe session: ${session.id}\n` +
       `Paid: ${paidAt}\n\n` +
