@@ -326,6 +326,10 @@
   }
   .summary-line b{color:var(--rust);}
   .field-row{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;}
+  /* The browser's own [hidden] rule is display:none, but any author rule that
+     sets display (like .field-row above) outranks it. Without this, the hidden
+     attribute does nothing and conditional rows show up permanently. */
+  [hidden]{display:none !important;}
   .field{display:flex; flex-direction:column; gap:6px;}
   .field.full{grid-column:1 / -1;}
   label{font-size:12.5px; font-weight:600; color:var(--navy); letter-spacing:0.02em;}
