@@ -280,6 +280,7 @@ exports.handler = async (event) => {
     referral_source = '',
     add_briefing = '',
     zone = '',
+    folio_real = '',
     refresh_hoa = '',
     refresh_permit = '',
     refresh_visit = '',
@@ -345,6 +346,7 @@ exports.handler = async (event) => {
     // For Area Edition the property box holds zones, not an address.
     if (property && !isArea) dealProps.property_address = property;
     if (ZONE_VALUES[zone]) dealProps.zone = ZONE_VALUES[zone];
+    if (folio_real) dealProps.folio_real = folio_real;
 
     const deal = await hs('/crm/v3/objects/deals', 'POST', {
       properties: dealProps,
@@ -366,6 +368,7 @@ exports.handler = async (event) => {
         : '') +
       `Zone: ${zone || 'not selected'}\n` +
       `${isArea ? 'Zones of interest' : 'Property location'}: ${property || 'not provided'}\n` +
+      `Finca / Folio Real: ${folio_real || 'not provided'}\n` +
       `Entity: ${entity || 'not provided'}\n` +
       `HOA: ${hoa || 'not provided'}\n` +
       `Agent or attorney: ${agent_or_attorney || 'not provided'}\n` +
@@ -422,6 +425,7 @@ exports.handler = async (event) => {
       hs_product_id: HS_PRODUCT_IDS[tier] || '',
       property_or_zones: clip(property),
       zone: clip(zone, 60),
+      folio_real: clip(folio_real, 80),
       entity: clip(entity),
       hoa: clip(hoa),
       agent_or_attorney: clip(agent_or_attorney),
