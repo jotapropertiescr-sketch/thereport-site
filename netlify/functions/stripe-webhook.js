@@ -111,6 +111,7 @@ function readAnswers(session) {
   if (m.property_or_zones && !out.propertyaddress) out.propertyaddress = m.property_or_zones;
   if (m.zone && !out.zone) out.zone = m.zone;
   if (m.folio_real && !out.folioreal) out.folioreal = m.folio_real;
+  if (m.listing_ref && !out.listingref) out.listingref = m.listing_ref;
   for (const key of ['entity', 'hoa', 'agent_or_attorney', 'timeline', 'referral_source', 'client_notes']) {
     if (m[key]) out[key] = m[key];
   }
@@ -235,6 +236,7 @@ exports.handler = async (event) => {
       else if (fields.propertyaddress) props.property_address = fields.propertyaddress;
       if (ZONE_VALUES[fields.zone]) props.zone = ZONE_VALUES[fields.zone];
       if (fields.folioreal) props.folio_real = fields.folioreal;
+      if (fields.listingref) props.listing_link_or_id = fields.listingref;
 
       const deal = await hs('/crm/v3/objects/deals', 'POST', {
         properties: props,
@@ -257,6 +259,7 @@ exports.handler = async (event) => {
       else if (fields.propertyaddress) props.property_address = fields.propertyaddress;
       if (ZONE_VALUES[fields.zone]) props.zone = ZONE_VALUES[fields.zone];
       if (fields.folioreal) props.folio_real = fields.folioreal;
+      if (fields.listingref) props.listing_link_or_id = fields.listingref;
       await hs(`/crm/v3/objects/deals/${dealId}`, 'PATCH', { properties: props });
     }
 
@@ -304,6 +307,7 @@ exports.handler = async (event) => {
         hs_task_body: fields.propertyaddress
           ? `Zone: ${fields.zone || 'not selected'}\n` +
             `Property location: ${fields.propertyaddress}\n` +
+            (fields.listingref ? `Listing: ${fields.listingref}\n` : '') +
             (fields.folioreal ? `Folio Real: ${fields.folioreal}\n` : '') +
             (fields.priorreport ? `Prior report date: ${fields.priorreport}\n` : '')
           : `Zones: ${fields.zones || 'see deal'}\n` +
