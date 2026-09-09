@@ -335,6 +335,9 @@
      sets display (like .field-row above) outranks it. Without this, the hidden
      attribute does nothing and conditional rows show up permanently. */
   [hidden]{display:none !important;}
+  .pick-link{color:inherit; text-decoration:underline; text-underline-offset:3px;
+    text-decoration-thickness:1px; cursor:pointer;}
+  .pick-link:hover{color:var(--rust);}
   .id-notice{
     border-left:3px solid var(--rust); background:rgba(181,101,29,0.07);
     padding:12px 14px; margin-bottom:16px; font-size:14.5px; color:var(--ink);
@@ -580,7 +583,7 @@
 
     <div class="form-shell">
       <span class="form-tab">Intake Form</span>
-      <div class="summary-line" id="summaryLine">Requesting: <b id="summaryTier">select an edition above</b></div>
+      <div class="summary-line" id="summaryLine">Requesting: <b id="summaryTier"><a href="#tiers" class="pick-link">select an edition above</a></b></div>
 
       <form id="intakeForm" name="report-request" method="POST" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="report-request">
@@ -907,7 +910,7 @@
     if(!tierKeyField.value){
       document.getElementById('tiers').scrollIntoView({behavior:'smooth', block:'start'});
       summaryTier.style.color = 'var(--rust)';
-      summaryTier.textContent = 'please select an edition above first';
+      summaryTier.innerHTML = '<a href="#tiers" class="pick-link">please select an edition above first</a>';
       return;
     }
 
