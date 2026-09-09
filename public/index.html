@@ -335,6 +335,10 @@
      sets display (like .field-row above) outranks it. Without this, the hidden
      attribute does nothing and conditional rows show up permanently. */
   [hidden]{display:none !important;}
+  .id-notice{
+    border-left:3px solid var(--rust); background:rgba(181,101,29,0.07);
+    padding:12px 14px; margin-bottom:16px; font-size:14.5px; color:var(--ink);
+  }
   .field{display:flex; flex-direction:column; gap:6px;}
   .field.full{grid-column:1 / -1;}
   label{font-size:12.5px; font-weight:600; color:var(--navy); letter-spacing:0.02em;}
@@ -661,6 +665,13 @@
         </div>
 
         <div class="field-row">
+          <div class="field full">
+            <label for="listing">Listing link or listing ID, if you have one</label>
+            <input type="text" id="listing" name="listing_ref" placeholder="Paste the listing URL, or the reference number and the site it is on">
+          </div>
+        </div>
+
+        <div class="field-row">
           <div class="field">
             <label for="entity">Entity name, if known</label>
             <input type="text" id="entity" name="entity" placeholder="Optional">
@@ -709,6 +720,8 @@
             </label>
           </div>
         </div>
+
+        <p class="id-notice" id="idNotice" hidden>Tell us the property somehow: an address, a Finca / Folio Real number, or a listing link. Any one of the three is enough to start.</p>
 
         <button type="submit" class="form-submit">Submit request</button>
         <p class="form-fine">Submitting the request form will take you to a secure checkout for your selected edition at the listed price. You will be asked to accept our <a href="terms.html" style="color:var(--rust);">Terms of Service</a>, which serve as the engagement agreement for the transaction. Once payment is completed, the request cannot be canceled and all payments are final. Please review the Terms of Service for our refund policy.</p>
@@ -895,6 +908,19 @@
       document.getElementById('tiers').scrollIntoView({behavior:'smooth', block:'start'});
       summaryTier.style.color = 'var(--rust)';
       summaryTier.textContent = 'please select an edition above first';
+      return;
+    }
+
+    // Records and Full work on one registered property, so the order has to
+    // point at one somehow. Area Edition is exempt: it works from zones.
+    var idFields = ['property','folio','listing'].map(function(id){
+      return document.getElementById(id).value.trim();
+    });
+    if(tierKeyField.value !== 'area_edition' && !idFields.some(Boolean)){
+      var notice = document.getElementById('idNotice');
+      notice.hidden = false;
+      document.getElementById('property').focus();
+      notice.scrollIntoView({behavior:'smooth', block:'center'});
       return;
     }
 
