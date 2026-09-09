@@ -288,6 +288,7 @@ exports.handler = async (event) => {
     add_briefing = '',
     zone = '',
     folio_real = '',
+    listing_ref = '',
     add_bundle = '',
     bundle_property = '',
     refresh_hoa = '',
@@ -363,6 +364,8 @@ exports.handler = async (event) => {
     else if (property && !isArea) dealProps.property_address = property;
     if (ZONE_VALUES[zone]) dealProps.zone = ZONE_VALUES[zone];
     if (folio_real) dealProps.folio_real = folio_real;
+    // HubSpot named this property listing_link_or_id, from the label.
+    if (listing_ref) dealProps.listing_link_or_id = listing_ref;
 
     const deal = await hs('/crm/v3/objects/deals', 'POST', {
       properties: dealProps,
@@ -385,6 +388,7 @@ exports.handler = async (event) => {
       `Zone: ${zone || 'not selected'}\n` +
       `${isArea ? 'Zones of interest' : 'Property location'}: ${property || 'not provided'}\n` +
       `Finca / Folio Real: ${folio_real || 'not provided'}\n` +
+      `Listing link or ID: ${listing_ref || 'not provided'}\n` +
       (wantsBundle
         ? `BUNDLE: Records Edition check added ($200)\n`
           + `Records Edition property: ${bundle_property.trim()}\n`
@@ -447,6 +451,7 @@ exports.handler = async (event) => {
       property_or_zones: clip(property),
       zone: clip(zone, 60),
       folio_real: clip(folio_real, 80),
+      listing_ref: clip(listing_ref, 300),
       bundle_records: wantsBundle ? 'yes' : 'no',
       bundle_property: wantsBundle ? clip(bundle_property) : undefined,
       entity: clip(entity),
