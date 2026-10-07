@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buying and Selling Property in Costa Rica | THE REPORT</title>
+<meta name="description" content="A plain-language, source-cited reference to how a Costa Rica property purchase and sale works: parties, steps, costs, taxes, ways to hold title, and legal limits.">
+<link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="favicon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1F3B57; --navy-deep:#13293D; --rust:#B5651D; --manila:#D8C7A1; --paper:#F4F4F0;
+    --ink:#1C2530; --ink-soft:#5B6570; --line:#D9D6CC; --white:#FFFFFF;
+  }
+  *{margin:0; padding:0; box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'IBM Plex Sans', sans-serif; color:var(--ink); background:var(--paper); line-height:1.65;}
+  .wrap{max-width:820px; margin:0 auto; padding:0 24px;}
+  nav{background:var(--paper); border-bottom:1px solid var(--line); padding:20px 0;}
+  nav .wrap{display:flex; justify-content:space-between; align-items:center; gap:12px;}
+  .nav-brand{font-family:'Source Serif 4', serif; font-weight:700; font-size:20px; color:var(--navy);}
+  .nav-brand a{color:inherit; text-decoration:none;}
+  .nav-brand span{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--rust); font-weight:600; letter-spacing:0.05em; margin-left:8px;}
+  .back{font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--navy); text-decoration:none; white-space:nowrap;}
+  main{padding:48px 0 80px;}
+  .seal{width:84px; height:84px; display:block; margin-bottom:18px;}
+  .eyebrow{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--rust); letter-spacing:0.08em; text-transform:uppercase; font-weight:600; margin-bottom:8px;}
+  h1{font-family:'Source Serif 4', serif; font-size:38px; line-height:1.15; color:var(--navy); margin-bottom:10px;}
+  .updated{font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:28px;}
+  .lede{font-size:18px; color:var(--ink); margin-bottom:22px;}
+  h2{font-family:'Source Serif 4', serif; font-size:26px; color:var(--navy); margin:48px 0 12px; padding-top:20px; border-top:2px solid var(--navy);}
+  h3{font-family:'Source Serif 4', serif; font-size:19px; color:var(--navy); margin:26px 0 8px;}
+  p{font-size:16px; margin-bottom:14px;}
+  ul,ol{margin:0 0 16px 22px;} li{margin-bottom:7px; font-size:16px;}
+  a{color:var(--rust);}
+  .glance{background:var(--white); border:1px solid var(--line); border-left:5px solid var(--navy); border-radius:4px; padding:20px 24px; margin:24px 0;}
+  .glance h3{margin-top:0;}
+  .glance li{font-size:15px;}
+  .note{background:#FBEFE3; border:1px solid var(--rust); border-radius:4px; padding:16px 20px; margin:18px 0;}
+  .note p{margin-bottom:0; font-size:15px;}
+  .toc{background:var(--white); border:1px solid var(--line); border-radius:4px; padding:18px 24px; margin:24px 0;}
+  .toc ol{margin-bottom:0; columns:2; column-gap:32px;} .toc li{font-size:15px; break-inside:avoid;}
+  .toc a{color:var(--navy); text-decoration:none;} .toc a:hover{text-decoration:underline;}
+  table{width:100%; border-collapse:collapse; margin:12px 0 22px; font-size:15px; background:var(--white);}
+  th,td{border:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top;}
+  th{background:var(--navy); color:var(--white); font-weight:600;}
+  .tbl{overflow-x:auto;}
+  .tag{display:inline-block; font-family:'IBM Plex Mono', monospace; font-size:11px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; padding:2px 8px; border-radius:3px; vertical-align:middle; margin-left:6px;}
+  .tag.flux{background:var(--manila); color:var(--navy-deep);}
+  sup.s{font-family:'IBM Plex Mono', monospace; font-size:11px; font-weight:600; margin-left:1px;}
+  sup.s a{color:var(--rust); text-decoration:none;}
+  .steps{counter-reset:step; list-style:none; margin-left:0;}
+  .steps li{counter-increment:step; position:relative; padding-left:46px; margin-bottom:14px;}
+  .steps li::before{content:counter(step); position:absolute; left:0; top:0; width:30px; height:30px; border-radius:50%; background:var(--navy); color:var(--white); font-family:'IBM Plex Mono', monospace; font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center;}
+  dl dt{font-weight:600; color:var(--navy); margin-top:12px;} dl dd{margin:0 0 6px;}
+  .sources li{font-size:14px;}
+  .verify{background:var(--navy-deep); color:var(--white); border-radius:4px; padding:22px 26px; margin:22px 0;}
+  .verify h3{color:var(--manila); margin-top:0;} .verify li,.verify p{color:rgba(255,255,255,0.9); font-size:15px;}
+  .verify a{color:var(--manila);}
+  footer{background:var(--navy-deep); padding:32px 0; text-align:center;}
+  footer p{color:rgba(255,255,255,0.6); font-size:13px; margin:0 0 6px;}
+  footer a{color:var(--manila);}
+  @media (max-width:640px){ h1{font-size:30px;} h2{font-size:23px;} .toc ol{columns:1;} .nav-brand span{display:none;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="nav-brand"><a href="index.html">THE REPORT<span>JOTA PROPERTIES CR</span></a></div>
+    <a class="back" href="index.html">← Back to site</a>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+    <img class="seal" src="the-report-icon-transparent.png" alt="THE REPORT seal">
+    <div class="eyebrow">THE REPORT | No Opinions Just Facts</div>
+    <h1>Buying and Selling Property in Costa Rica</h1>
+    <div class="updated">Reference guide &nbsp;·&nbsp; Current as of October 2026</div>
+    <p class="lede">How a Costa Rica property transaction is structured: who is involved, the steps in order, what it costs, what is taxed and who pays, how title can be held, and where the law limits what a buyer can own. Written from the statutes and government sources listed at the end.</p>
+
+    <div class="note"><p><strong>Information, not legal or tax advice.</strong> This guide describes how the law and common practice work. It does not recommend for or against any transaction and does not replace a licensed Costa Rican attorney (abogado y notario) or tax professional. Rules change. Items marked <span class="tag flux">In flux</span> were changing at the time of writing.</p></div>
+
+    <div class="glance">
+      <h3>At a glance</h3>
+      <ul>
+        <li>A sale of real estate is completed by a <strong>public deed</strong> signed before a notary and then <strong>recorded in the Registro Nacional</strong>.<sup class="s"><a href="#s1">1</a></sup></li>
+        <li>The transfer tax is <strong>1.5%</strong> of the deed value. Buyer and seller each owe half and are jointly liable for all of it.<sup class="s"><a href="#s2">2</a></sup></li>
+        <li>The municipal property tax is <strong>0.25%</strong> of declared value. A buyer can become liable for the prior owner's unpaid periods.<sup class="s"><a href="#s3">3</a></sup></li>
+        <li>Capital gains on a sale are taxed at <strong>15%</strong> of net gain, with a primary-residence exemption and an optional flat method for older assets.<sup class="s"><a href="#s4">4</a></sup></li>
+        <li>Foreigners may own most property on the same terms as citizens. <strong>The beachfront zone is restricted.</strong><sup class="s"><a href="#s7">7</a></sup></li>
+        <li>There is no mandatory licensing for real estate agents, no national MLS, and no title insurance. Agents typically work for the seller, and no inspection or verification is required by law.<sup class="s"><a href="#s10">10</a></sup></li>
+      </ul>
+    </div>
+
+    <div class="toc">
+      <strong>Contents</strong>
+      <ol>
+        <li><a href="#market">How the market is set up</a></li>
+        <li><a href="#parties">Who is involved</a></li>
+        <li><a href="#buying">Buying, step by step</a></li>
+        <li><a href="#selling">Selling, step by step</a></li>
+        <li><a href="#costs">Costs at closing</a></li>
+        <li><a href="#taxes">Taxes by role</a></li>
+        <li><a href="#title">Ways to hold title</a></li>
+        <li><a href="#limits">Legal limits on land</a></li>
+        <li><a href="#after">After closing</a></li>
+        <li><a href="#flux">What was changing</a></li>
+        <li><a href="#verifies">What THE REPORT verifies</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+        <li><a href="#sources">Sources</a></li>
+      </ol>
+    </div>
+
+    <h2 id="market">1. How the market is set up</h2>
+    <p>Costa Rica's property market works differently from the United States, Canada, or most of Europe. These are the structural facts a buyer is working within.</p>
+    <div class="tbl"><table>
+      <tr><th>Topic</th><th>How it works</th></tr>
+      <tr><td>Agent licensing</td><td>No mandatory licensing, training, or oversight applies to real estate agents or brokers. Anyone may legally act as one.<sup class="s"><a href="#s10">10</a></sup> A bill to regulate agents has been proposed, and none was in force as of mid-2026.<sup class="s"><a href="#s11">11</a></sup> <span class="tag flux">In flux</span></td></tr>
+      <tr><td>Whom the agent works for</td><td>Agents are typically paid by the seller, on commission, and typically represent the seller's interests. One agent can also work both sides of the same sale.<sup class="s"><a href="#s10">10</a></sup></td></tr>
+      <tr><td>Listing information</td><td>There is no national MLS. Listings are held by individual agents and brokerages, so information on one property can differ by source.</td></tr>
+      <tr><td>Title insurance</td><td>Title insurance companies do not operate as in the US. Title is verified through the Registro Nacional, and the notary-attorney carries out the title search and registration.<sup class="s"><a href="#s10">10</a></sup></td></tr>
+      <tr><td>Inspection and due diligence</td><td>No inspection or verification is required by law before a purchase. What gets checked is decided by the buyer and the professionals the buyer hires.<sup class="s"><a href="#s10">10</a></sup> Notarial due diligence is often bundled into the closing fee, and its scope varies by notary.</td></tr>
+      <tr><td>Association finances</td><td>Condominium and community fee levels, reserves, and special assessments are set within each association. Unpaid fees can become a lien on the unit.<sup class="s"><a href="#s8">8</a></sup></td></tr>
+    </table></div>
+    <p>The result is that a buyer's protection depends on which checks are actually ordered and by whom. Independent verification, meaning a check from a party with no commission and no stake in the sale, is described in <a href="#verifies">Section 11</a>.</p>
+
+    <h2 id="parties">2. Who is involved</h2>
+    <dl>
+      <dt>Buyer and seller</dt>
+      <dd>The seller must be the registered owner (or act through a valid power of attorney). If the owner is a company, the person signing must have authority recorded in the company's registry entry.</dd>
+      <dt>Notary (notario público)</dt>
+      <dd>A Costa Rican lawyer authorized as a notary prepares and signs the public deed, records it, and files the registry presentation. Either side may choose the notary, and by custom the buyer usually does. One notary can serve both sides, which is a common arrangement. Each side may also retain its own lawyer.</dd>
+      <dt>Real estate agent or broker</dt>
+      <dd>Not required for a sale. Agents are not subject to mandatory national licensing as of mid-2026. Commissions commonly range from 3% to 10%, are negotiated, and are normally paid by the seller unless the parties agree to share. An agent may represent both sides in one sale, called dual agency.</dd>
+      <dt>Registro Nacional</dt>
+      <dd>The national registry. It holds the property record (folio real), the survey plan (plano catastrado), and company records. A deed does not transfer title against third parties until it is recorded here.</dd>
+      <dt>Municipality</dt>
+      <dd>Collects the property tax, issues land-use and construction documentation, and holds the property's tax account.</dd>
+      <dt>Water and association entities</dt>
+      <dd>Depending on the area, water service is provided by AyA, a municipal service, or a community water association (ASADA). Condominiums and gated communities have an administrator and a fee structure under their own rules.</dd>
+    </dl>
+
+    <h2 id="buying">3. Buying, step by step</h2>
+    <ol class="steps">
+      <li><strong>Identify the property and the owner.</strong> Obtain the folio real number and the survey plan number. These identify the property in the registry independent of any street address.</li>
+      <li><strong>Review the registry record.</strong> A registry search shows the registered owner, liens, mortgages, annotations, easements, and boundary data. It reflects only what has been recorded as of the date pulled. Annotations, including preventive annotations (anotaciones preventivas) tied to a court or administrative claim, can appear in the record without being a mortgage, and they can hold up a transfer.<sup class="s"><a href="#s9">9</a></sup></li>
+      <li><strong>Check the owner's capacity.</strong> For individuals, identity and marital status. For companies, current status, legal representative, and tax standing, including the annual corporate tax under Law 9428.</li>
+      <li><strong>Confirm municipal tax status.</strong> Unpaid property tax follows the property.<sup class="s"><a href="#s3">3</a></sup> Municipalities issue tax-status certificates.</li>
+      <li><strong>Confirm physical and legal conditions.</strong> Survey plan versus the ground, access and easements, water and utility availability, river or spring setbacks,<sup class="s"><a href="#s6">6</a></sup> and whether buildings are permitted. In a condominium or association, request the accountant's fee statement and the governing documents.<sup class="s"><a href="#s8">8</a></sup></li>
+      <li><strong>Sign a purchase agreement.</strong> Often called a promesa de compraventa or option contract. It sets price, deposit, closing date, conditions, and who pays which costs. A deposit is commonly held by the notary, a lawyer, or an escrow arrangement. Terms vary by contract.</li>
+      <li><strong>Prepare the deed.</strong> The notary drafts the public deed, calculates taxes and fees, and updates the registry search close to signing.</li>
+      <li><strong>Sign the deed and pay at closing.</strong> Both parties sign before the notary. Price, transfer tax, notary fees, and any withholding are settled according to the agreement and the law.</li>
+      <li><strong>Record the deed.</strong> The notary presents it to the Registro Nacional. The registry will not record without proof the transfer tax was paid or an exemption applies.<sup class="s"><a href="#s2">2</a></sup></li>
+      <li><strong>Update the municipal account.</strong> Register the new owner for tax billing, water, electricity, and association fees.</li>
+    </ol>
+
+    <h2 id="selling">4. Selling, step by step</h2>
+    <ol class="steps">
+      <li><strong>Confirm ownership and clear the record.</strong> Resolve liens, outdated annotations, name discrepancies, and unpaid taxes before listing. If the owner is a company, confirm it is active and current on corporate tax.</li>
+      <li><strong>Choose a listing arrangement.</strong> An open listing lets several agents market the property. An exclusive listing gives one agent the right to sell for a fixed period, commonly three to six months. There is no national MLS.</li>
+      <li><strong>Set price and commission</strong> in writing with any agent.</li>
+      <li><strong>Obtain documents.</strong> Registry certificate, survey plan, municipal tax-status certificate, water and utility paid-up statements, and for condominiums the accountant's statement showing fees are current.<sup class="s"><a href="#s8">8</a></sup></li>
+      <li><strong>Sign the purchase agreement</strong> and receive the deposit under its terms.</li>
+      <li><strong>Calculate taxes.</strong> Seller-side items include half of the transfer tax, capital gains tax unless exempt, and any outstanding property tax. See Section 6.</li>
+      <li><strong>Sign the deed</strong> before the notary.</li>
+      <li><strong>File the capital gains declaration</strong> where it applies (Form D-162), and if the seller is a non-resident, confirm how the buyer's withholding is handled.<sup class="s"><a href="#s4">4</a></sup></li>
+      <li><strong>Close out accounts</strong> for utilities and association fees.</li>
+    </ol>
+
+    <h2 id="costs">5. Costs at closing</h2>
+    <p>Amounts depend on the deed value and the contract. This table shows which cost exists, who is responsible by default, and the basis.</p>
+    <div class="tbl"><table>
+      <tr><th>Item</th><th>Rate or basis</th><th>Who pays</th></tr>
+      <tr><td>Transfer tax (impuesto de traspaso)</td><td>1.5% of deed value<sup class="s"><a href="#s2">2</a></sup></td><td>Buyer and seller in equal parts; jointly liable for the full amount</td></tr>
+      <tr><td>Notary fee</td><td>Set by a fee tariff; the notary quotes it. Confirm the figure in writing before signing.</td><td>By agreement; by custom the buyer</td></tr>
+      <tr><td>Registry recording fees and stamps</td><td>Based on deed value under the fee schedules in force</td><td>By agreement; by custom the buyer</td></tr>
+      <tr><td>Real estate commission</td><td>Negotiated, commonly 3% to 10%</td><td>Seller, unless shared by agreement</td></tr>
+      <tr><td>Capital gains tax</td><td>15% of net gain, or optional 2.25% of price for older assets<sup class="s"><a href="#s4">4</a></sup></td><td>Seller</td></tr>
+      <tr><td>Withholding on non-resident seller</td><td>2.5%<sup class="s"><a href="#s4">4</a></sup></td><td>Withheld by the buyer from the seller's proceeds and remitted</td></tr>
+      <tr><td>Unpaid property tax, utilities, association fees</td><td>Actual balances</td><td>Seller up to closing, but arrears can attach to the property</td></tr>
+      <tr><td>Independent lawyer, if retained</td><td>By engagement</td><td>The party that hires them</td></tr>
+    </table></div>
+
+    <h2 id="taxes">6. Taxes by role</h2>
+
+    <h3>Transfer tax</h3>
+    <p>Law 6999 sets the transfer tax at 1.5% of the value in the deed. The tax arises when the deed is executed, is due within three months of the deed date, and is owed in equal parts by buyer and seller, who are jointly liable.<sup class="s"><a href="#s2">2</a></sup> The tax authority may adjust the value if it considers the declared price too low. The registry will not record the deed without proof of payment or of an exemption.</p>
+
+    <h3>Property tax (impuesto sobre bienes inmuebles)</h3>
+    <p>Law 7509 sets a rate of 0.25% of the declared value. Owners must update the declaration at least every five years. The current owner is jointly liable for prior unpaid periods and may seek reimbursement from the prior owner. Arrears are secured by a preferential legal mortgage, and the claim prescribes after three years. An individual's sole property valued below 45 base salaries is exempt.<sup class="s"><a href="#s3">3</a></sup></p>
+
+    <h3>Capital gains tax (Law 9635)</h3>
+    <ul>
+      <li><strong>Rate:</strong> 15% of the net gain, for gain accrued since July 1, 2019.<sup class="s"><a href="#s4">4</a></sup></li>
+      <li><strong>Older assets:</strong> for property acquired before July 1, 2019, the seller may instead elect 2.25% of the sale price.</li>
+      <li><strong>Exemption:</strong> a primary residence, as defined in the law and regulations.</li>
+      <li><strong>Filing:</strong> Form D-162.</li>
+      <li><strong>Non-resident seller:</strong> the buyer withholds 2.5% and remits it on Form 129 through the TRIBU-CR system within 15 days after the end of the month of the transaction.</li>
+    </ul>
+
+    <h3>Luxury home tax (Law 8683)</h3>
+    <p>Applies to residential properties above a value threshold, set at ₡143 million for 2026. It is declared and paid by the owner each year, with a filing window from January 1 to 15 on Form D-174. A buyer should confirm whether the property is subject to it.<sup class="s"><a href="#s5">5</a></sup></p>
+
+    <h3>Companies</h3>
+    <p>A property held through a Costa Rican company is subject to the company's own obligations, including the annual corporate tax under Law 9428 and registry beneficial-ownership reporting. Selling the shares of a company instead of the property changes which taxes and records apply. A buyer of a company inherits its liabilities.</p>
+
+    <h2 id="title">7. Ways to hold title</h2>
+    <div class="tbl"><table>
+      <tr><th>Structure</th><th>How it works</th><th>Records to check</th></tr>
+      <tr><td>Individual name</td><td>Title is registered to the person. Simplest chain of ownership.</td><td>Registry folio; identity and marital status</td></tr>
+      <tr><td>Costa Rican company (S.A. or S.R.L.)</td><td>The company owns the property. The buyer may acquire the property or the company shares.</td><td>Company registry status, legal representative, corporate tax, share ledger, beneficial-ownership filing</td></tr>
+      <tr><td>Co-ownership</td><td>Several people hold shares of one property.</td><td>Each owner's recorded share; authority of all co-owners to sign</td></tr>
+      <tr><td>Condominium unit</td><td>Individual unit plus a share of common areas under Law 7933.</td><td>Condominium regulation, administrator, accountant's fee statement</td></tr>
+      <tr><td>Concession</td><td>Right to use beachfront land granted by the municipality, not ownership.</td><td>Concession term, holder, municipal records, ownership restrictions</td></tr>
+    </table></div>
+
+    <h2 id="limits">8. Legal limits on land</h2>
+
+    <h3>Maritime zone (Law 6043)</h3>
+    <p>The maritime-terrestrial zone extends 200 meters from the high-tide line. The first 50 meters are public and cannot be privately held. The remaining 150 meters are restricted and can be used only under a municipal concession. Foreigners with fewer than five years of residency are barred from holding concessions, as are companies with majority foreign ownership.<sup class="s"><a href="#s7">7</a></sup></p>
+
+    <h3>River, stream, and spring setbacks (Forestry Law 7575, art. 33)</h3>
+    <ul>
+      <li>10 meters of protection along rivers and streams in urban areas, 15 meters in rural areas.</li>
+      <li>50 meters where the ground is broken (slope above 40%).</li>
+      <li>A 100-meter radius around permanent springs.</li>
+      <li>INVU sets the exact alignment parcel by parcel, and the setback restricts where building is allowed.<sup class="s"><a href="#s6">6</a></sup></li>
+    </ul>
+
+    <h3>Registry annotations and document fraud</h3>
+    <ul>
+      <li><strong>Annotations are not mortgages.</strong> A claim filed during a court or administrative proceeding can be annotated against a property. It may not look like a lien but can affect whether a transfer can be recorded.<sup class="s"><a href="#s9">9</a></sup></li>
+      <li><strong>Forged deeds and powers of attorney</strong> have been used to transfer properties out of the name of absent owners. A buyer should confirm that whoever signs for the owner holds a valid, recorded authority and that the registry record matches the documents presented.<sup class="s"><a href="#s9">9</a></sup></li>
+      <li><strong>Registry alert service.</strong> The Registro Nacional offers a paid alert service (Alerta Registral) that emails an owner when a document is filed against a registered property. The alert follows the filing and does not prevent it.<sup class="s"><a href="#s9">9</a></sup></li>
+    </ul>
+
+    <h3>Water, access, and building</h3>
+    <p>Water availability, legal access (an easement or a public road), and a municipal construction permit are each separate documents. A property can be properly titled and still lack any of them.</p>
+
+    <h2 id="after">9. After closing</h2>
+    <ul>
+      <li>Confirm the deed shows as recorded in the Registro Nacional and obtain an updated registry certificate.</li>
+      <li>Transfer the property tax account, water, electricity, and association billing.</li>
+      <li>Keep the deed, registry certificate, and proof of tax payments.</li>
+      <li>Property tax: calendar the five-year declaration update.<sup class="s"><a href="#s3">3</a></sup></li>
+      <li>Luxury home tax, if applicable: calendar the January filing.<sup class="s"><a href="#s5">5</a></sup></li>
+      <li>Company-held property: keep corporate tax and registry filings current.</li>
+    </ul>
+
+    <h2 id="flux">10. What was changing</h2>
+    <ul>
+      <li><strong>Resident withholding on sales.</strong> Resolution MH-DGT-RES-0039-2025 introduced a 2% withholding on resident sellers. It was repealed by Resolution 0051-2025 effective October 6, 2025, and the registry had suspended its application by circular DGL-007-2025. <span class="tag flux">In flux</span><sup class="s"><a href="#s4">4</a></sup></li>
+      <li><strong>Setback provisions.</strong> Article 33 bis of Law 10210, a related setback provision, was partly annulled in December 2025. The Forestry Law figures above remain the baseline. <span class="tag flux">In flux</span><sup class="s"><a href="#s6">6</a></sup></li>
+      <li><strong>Agent regulation.</strong> No mandatory national licensing existed as of mid-2026. <span class="tag flux">In flux</span></li>
+      <li><strong>Thresholds.</strong> The luxury home tax threshold is reset annually.</li>
+    </ul>
+
+    <h2 id="verifies">11. What THE REPORT verifies</h2>
+    <div class="verify">
+      <h3>Independent verification, fixed fee</h3>
+      <p>THE REPORT checks the records behind a specific property and states what was found, with the source and date of each check. No opinions, no recommendations.</p>
+      <p>Because the market has no agent licensing, no title insurance, and no required verification (Section 1), THE REPORT is built to supply the check that is otherwise left to chance: independent, fixed-fee, and with no commission or stake in whether a sale closes.</p>
+      <ul>
+        <li><strong>Records Edition:</strong> title, corporate status, and tax status on one named property.</li>
+        <li><strong>Full Edition:</strong> Records Edition plus HOA or condominium financial health, permit-to-construction compliance, river and stream setback check, a site visit, and a property condition snapshot.</li>
+        <li><strong>Area Edition:</strong> neighborhood and access comparison across up to three zones.</li>
+      </ul>
+      <p>THE REPORT takes no commission, holds no funds, and does not represent either side. See <a href="index.html">the full scope and pricing</a> and the <a href="terms.html">Terms of Service</a>.</p>
+    </div>
+
+    <h2 id="glossary">12. Glossary</h2>
+    <dl>
+      <dt>Abogado y notario</dt><dd>A lawyer who is also authorized as a notary public.</dd>
+      <dt>Escritura pública</dt><dd>The public deed that documents the sale.</dd>
+      <dt>Folio real</dt><dd>The registry number identifying a property record.</dd>
+      <dt>Plano catastrado</dt><dd>The registered survey plan that defines a parcel's boundaries.</dd>
+      <dt>Registro Nacional</dt><dd>The national registry of property, companies, and related records.</dd>
+      <dt>Impuesto de traspaso</dt><dd>Transfer tax.</dd>
+      <dt>Bienes inmuebles</dt><dd>Real property. Also the name of the municipal property tax.</dd>
+      <dt>Zona marítimo terrestre</dt><dd>The beachfront zone governed by Law 6043.</dd>
+      <dt>Concesión</dt><dd>A municipal grant of the right to use restricted beachfront land.</dd>
+      <dt>ASADA</dt><dd>A community water administration association.</dd>
+      <dt>INVU</dt><dd>The national housing and urbanism institute, which certifies setback alignments.</dd>
+      <dt>Promesa de compraventa</dt><dd>A purchase agreement or option contract signed before the deed.</dd>
+    </dl>
+
+    <h2 id="sources">13. Sources</h2>
+    <p style="font-size:14px; color:var(--ink-soft);">Statutes are published in the Procuraduría General de la República legal database (SCIJ, pgrweb.go.cr). Search by law number. Tax guidance is published by the Ministerio de Hacienda (hacienda.go.cr). Verify against the current text before relying on any figure.</p>
+    <ol class="sources">
+      <li id="s1">Registry recording of deeds: Registro Nacional (rnpdigital.com) and the Código Civil provisions on recording.</li>
+      <li id="s2">Ley 6999, Impuesto de Traspaso de Bienes Inmuebles, arts. 4, 6, 7, 8, and 15.</li>
+      <li id="s3">Ley 7509, Impuesto sobre Bienes Inmuebles, and its reforms.</li>
+      <li id="s4">Ley 9635, Fortalecimiento de las Finanzas Públicas (capital gains on real estate); Ministerio de Hacienda forms D-162 and 129 via TRIBU-CR; Resolutions MH-DGT-RES-0039-2025 and 0051-2025; Registro Nacional circular DGL-007-2025; KPMG tax alert, December 2025.</li>
+      <li id="s5">Ley 8683, Impuesto Solidario para el Fortalecimiento de Programas de Vivienda; Ministerio de Hacienda, Form D-174 and 2026 threshold.</li>
+      <li id="s6">Ley Forestal 7575, art. 33; Ley 10210, art. 33 bis, and the December 2025 Sala Constitucional ruling; INVU alignment certification.</li>
+      <li id="s7">Ley 6043, Zona Marítimo Terrestre.</li>
+      <li id="s8">Ley 7933, Ley Reguladora de la Propiedad en Condominio.</li>
+      <li id="s9">Registro Nacional records and annotation practice (rnpdigital.com); Alerta Registral service, as described by costaricalaw.com (law firm publication). Confirm current terms and fees with the Registro Nacional.</li>
+      <li id="s10">ECIJA, "Buyer Beware: What You Need to Know Before Buying Property in Costa Rica" (ecija.com).</li>
+      <li id="s11">"Real Estate Agent Regulation," costaricalaw.com (describes the proposed Regulation of Real Estate Contracts and Real Estate Agents bill; undated). Confirm status with the Asamblea Legislativa.</li>
+    </ol>
+
+    <div class="note"><p>Found an error or a rule that has changed? Write to <a href="mailto:contact@jotapropertiescr.com">contact@jotapropertiescr.com</a> and it will be checked against the source.</p></div>
+  </div>
+</main>
+
+<footer>
+  <p>THE REPORT by Jota Properties CR &nbsp;|&nbsp; <a href="index.html">Back to site</a> &nbsp;|&nbsp; <a href="terms.html">Terms</a></p>
+  <p>No Opinions Just Facts</p>
+</footer>
+
+</body>
+</html>
