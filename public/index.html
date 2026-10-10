@@ -109,7 +109,33 @@
     transition:background .2s ease;
   }
   .nav-cta:hover{background:var(--navy-deep);}
-  .nav-toggle{display:none;}
+  .nav-toggle{
+    display:none; background:none; border:0; cursor:pointer; padding:8px; margin-left:6px;
+    width:42px; height:40px; align-items:center; justify-content:center; flex:none;
+  }
+  .nav-toggle span{display:block; position:relative; width:22px; height:2px; background:var(--navy); transition:background .15s ease;}
+  .nav-toggle span::before, .nav-toggle span::after{
+    content:""; position:absolute; left:0; width:22px; height:2px; background:var(--navy);
+    transition:transform .2s ease, top .2s ease;
+  }
+  .nav-toggle span::before{top:-7px;}
+  .nav-toggle span::after{top:7px;}
+  .nav-toggle[aria-expanded="true"] span{background:transparent;}
+  .nav-toggle[aria-expanded="true"] span::before{top:0; transform:rotate(45deg);}
+  .nav-toggle[aria-expanded="true"] span::after{top:0; transform:rotate(-45deg);}
+
+  .mobile-menu{display:none; border-top:1px solid var(--line); background:var(--paper);}
+  .mobile-menu ul{list-style:none; margin:0; padding:8px 0;}
+  .mobile-menu li{margin:0;}
+  .mobile-menu a{
+    display:block; padding:14px 24px; font-size:16px; color:var(--navy);
+    text-decoration:none; border-bottom:1px solid rgba(0,0,0,0.05);
+  }
+  .mobile-menu a:active{background:rgba(0,0,0,0.04);}
+  .mobile-menu .mm-cta{
+    margin:14px 24px 20px; text-align:center; background:var(--rust); color:var(--white);
+    border:0; border-radius:3px; font-weight:600; padding:15px 20px;
+  }
 
   /* ---------- HERO ---------- */
   .hero{
@@ -410,7 +436,7 @@
   @media (max-width:860px){
     .hero-inner{grid-template-columns:1fr;}
     .stamp-wrap{order:-1; margin-bottom:8px;}
-    .stamp-wrap img{max-width:200px;}
+    .stamp-wrap .seal-img{max-width:200px;}
     .hero h1{font-size:38px;}
     .gap-grid{grid-template-columns:1fr;}
     .tier-grid{grid-template-columns:1fr;}
@@ -418,10 +444,12 @@
     .footer-top{grid-template-columns:1fr; gap:28px;}
     .field-row{grid-template-columns:1fr;}
     .nav-links{display:none;}
+    .nav-cta{display:none;}
+    .nav-toggle{display:flex;}
+    .mobile-menu.open{display:block;}
     .nav .wrap{padding:0 18px;}
     .nav-brand{font-size:16px; white-space:nowrap;}
     .nav-brand span{display:none;}
-    .nav-cta{padding:8px 13px; font-size:11px;}
   }
 </style>
 </head>
@@ -439,8 +467,51 @@
       <li><a href="#faq">FAQ</a></li>
     </ul>
     <a href="#get-started" class="nav-cta">Get Started</a>
+    <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <ul>
+      <li><a href="#why">Why This Exists</a></li>
+      <li><a href="#tiers">Editions</a></li>
+      <li><a href="#samples">Sample Reports</a></li>
+      <li><a href="buying-guide.html">Buying Guide</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a href="#get-started" class="mm-cta">Get Started</a>
   </div>
 </nav>
+
+<script>
+(function () {
+  var btn  = document.querySelector('.nav-toggle');
+  var menu = document.getElementById('mobile-menu');
+  if (!btn || !menu) return;
+
+  function setOpen(open) {
+    menu.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+
+  btn.addEventListener('click', function () {
+    setOpen(btn.getAttribute('aria-expanded') !== 'true');
+  });
+
+  // Close after a jump link, otherwise the menu covers the section you asked for.
+  menu.addEventListener('click', function (e) {
+    if (e.target.tagName === 'A') setOpen(false);
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') setOpen(false);
+  });
+
+  // Leaving mobile width with the menu open would strand it open.
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 860) setOpen(false);
+  });
+})();
+</script>
 
 <header class="hero">
   <video class="hero-video" autoplay muted loop playsinline poster="hero_bg_v4.jpg">
