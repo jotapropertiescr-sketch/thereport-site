@@ -370,6 +370,20 @@
   }
   .faq-a p{margin:0 0 20px 0; color:var(--ink-soft); font-size:15px; max-width:680px;}
 
+  /* ---------- BACK TO TOP ---------- */
+  /* Same component as the buying guide, so both pages behave identically. */
+  #top{
+    position:fixed; right:20px; bottom:20px; width:44px; height:44px; border-radius:50%;
+    /* Rust, not navy. This page has two navy bands and a navy footer, and a
+       navy button disappears against all three. Rust reads on navy and paper. */
+    background:var(--rust); color:var(--white); border:0; cursor:pointer; display:none;
+    align-items:center; justify-content:center; font-size:18px; line-height:1; z-index:60;
+    box-shadow:0 6px 18px rgba(0,0,0,0.30); transition:background .15s ease;
+  }
+  #top.show{display:flex;}
+  #top:hover{background:#8F4E16;}
+  @media print{ #top{display:none !important;} }
+
   /* ---------- FORM ---------- */
   .form-section{background:var(--navy-deep);}
   .form-section .section-head h2{color:var(--white);}
@@ -1015,6 +1029,22 @@
   </div>
 </footer>
 </div>
+
+<button id="top" type="button" aria-label="Back to top">&#8593;</button>
+
+<script>
+  // Back to top. Appears once the hero is well out of view.
+  (function () {
+    var btn = document.getElementById('top');
+    function onScroll(){ btn.classList.toggle('show', window.scrollY > 700); }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    onScroll();
+    btn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  })();
+</script>
 
 <script>
   // FAQ accordion
