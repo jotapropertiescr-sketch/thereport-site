@@ -280,6 +280,18 @@
   .tiers .section-head h2, .tiers .kicker{color:var(--white);}
   .tiers .kicker{color:var(--manila);}
   .tiers .section-head p{color:rgba(255,255,255,0.65);}
+  /* Note block. Rust rule on the left, same device the guide uses, retuned
+     for a navy band instead of cream. */
+  .note{
+    margin-top:22px; max-width:640px; padding:14px 18px;
+    background:rgba(255,255,255,0.055); border-left:3px solid var(--rust);
+  }
+  .note .note-label{
+    display:block; font-family:'IBM Plex Mono', monospace; font-size:10.5px;
+    font-weight:600; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--manila); margin-bottom:6px;
+  }
+  .tiers .note p{margin:0; color:rgba(255,255,255,0.80); font-size:15px;}
   .tier-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:22px;}
   .tier-card{
     position:relative;
@@ -659,6 +671,10 @@
       <span class="kicker">Three Editions</span>
       <h2>Pick the depth you need, right now.</h2>
       <p>No property yet, or already have one, either way there's a fixed-fee edition built for where you are in the decision.</p>
+      <div class="note">
+        <span class="note-label">Note</span>
+        <p>Every record is pulled fresh for your file and every finding is dated. Nothing is recycled, and nothing is quoted without the day it was checked.</p>
+      </div>
     </div>
     <div class="tier-grid">
 
@@ -934,6 +950,11 @@
     <div class="faq-item open">
       <button class="faq-q"><span>Do I still need a lawyer?</span><span class="plus">+</span></button>
       <div class="faq-a"><p>Yes, always. We complement a real estate attorney, we don't replace one. If you don't have a Costa Rica real estate attorney yet, we can refer one.</p></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q"><span>How current is the information?</span><span class="plus">+</span></button>
+      <div class="faq-a"><p>Every record is pulled at the time we do your work. Nothing is retrieved from a stored database or reused from an earlier engagement. Each section of your report carries the date that source was checked, so you know exactly what period the finding covers. One honest limit: registries reflect what has been filed and processed, so a document filed in the days before we check may not appear yet. We state what the record said on the date we read it, which is the only thing anyone can verify.</p></div>
     </div>
 
     <div class="faq-item">
