@@ -52,6 +52,35 @@
     transition:background .18s ease, border-color .18s ease, color .18s ease;}
   .social a:hover{background:#B5651D; border-color:#B5651D; color:#FFFFFF;}
   .social svg{width:17px; height:17px; fill:currentColor; display:block;}
+
+/* Visual refresh: THE REPORT editorial design system */
+body{background:radial-gradient(ellipse at 83% 1%,rgba(216,199,161,.13),transparent 33%),var(--paper);}
+nav{position:relative;z-index:2;}
+nav .wrap{max-width:1100px;}
+main .wrap{max-width:1060px;}
+main{padding-top:38px;}
+.report-hero{position:relative;overflow:hidden;isolation:isolate;display:grid;grid-template-columns:minmax(0,1.12fr) minmax(280px,.88fr);align-items:center;gap:16px;min-height:352px;padding:34px 24px 34px 0;margin:0 0 40px;border-bottom:2px solid var(--rust);}
+.report-hero:before{content:'';position:absolute;z-index:-1;inset:0 -12% 0 35%;background:radial-gradient(ellipse at 50% 48%,rgba(216,199,161,.29),transparent 67%);pointer-events:none;}
+.hero-copy{position:relative;z-index:1;}
+.hero-kicker{display:inline-block;background:var(--navy);padding:7px 13px;color:white;font:600 11px 'IBM Plex Mono',monospace;letter-spacing:.12em;margin-bottom:24px;}
+.hero-copy h1{font-family:'Source Serif 4',serif;font-size:clamp(36px,4vw,55px);line-height:1.12;color:var(--navy-deep);margin-bottom:18px;letter-spacing:-.025em;}
+.hero-copy .lede{font-size:16px;line-height:1.7;color:var(--ink-soft);max-width:540px;margin-bottom:0;}
+.hero-copy .updated{margin:0;color:var(--rust);}
+.report-illustration{min-width:0;position:relative;}
+.report-illustration svg{display:block;width:100%;height:auto;max-height:340px;overflow:visible;}
+/* Keep the informational body as editable, accessible HTML rather than embedding text in graphics */
+main .card{border:1px solid var(--line);border-left:3px solid var(--rust);background:#fffefa;box-shadow:0 12px 30px rgba(19,41,61,.035);border-radius:3px;}
+main .card h2{margin-top:0;}
+main .contact{border-top:3px solid var(--rust);background:linear-gradient(120deg,#13293D,#1F3B57);}
+main a:focus-visible{outline:2px solid var(--rust);outline-offset:3px;}
+main h2{scroll-margin-top:24px;}
+footer{margin-top:40px;}
+@media(max-width:700px){main .wrap{padding:0 20px;}main{padding-top:18px}.report-hero{grid-template-columns:1fr;gap:0;padding:26px 0 24px;min-height:0}.hero-copy h1{font-size:36px}.hero-kicker{margin-bottom:18px}.report-illustration{max-width:390px;margin:4px auto -8px;width:100%}.report-illustration svg{max-height:230px}.hero-copy .lede{font-size:15px}.report-hero:before{inset:35% -10% 0 0}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+
+main .wrap>h2,main .wrap>p,main .wrap>.highlight,main .wrap>table{max-width:830px;}
+main .wrap>h2{border-top:1px solid var(--line);padding-top:22px;}
+table.scope{background:#fffefa;box-shadow:0 8px 25px rgba(19,41,61,.04)}
 </style>
 </head>
 <body>
@@ -65,8 +94,7 @@
 
 <main>
   <div class="wrap">
-    <h1>Terms of Service</h1>
-    <div class="updated">Version 1.0 &nbsp;·&nbsp; Effective September 2026</div>
+    <section class="report-hero" aria-label="Page introduction"><div class="hero-copy"><span class="hero-kicker">LEGAL FRAMEWORK</span><h1>Terms of Service</h1><div class="updated">Version 1.0 &nbsp;·&nbsp; Effective September 2026</div></div><div class="report-illustration" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 340" role="presentation"><defs><filter id="drop" x="-30%" y="-40%" width="160%" height="190%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#13293D" flood-opacity=".11"/></filter><pattern id="grid" width="22" height="22" patternUnits="userSpaceOnUse"><path d="M22 0H0V22" fill="none" stroke="#D8C7A1" stroke-width=".6" opacity=".45"/></pattern></defs><rect x="4" y="10" width="450" height="310" fill="url(#grid)" opacity=".55"/><g fill="none" stroke="#D8C7A1" stroke-width="1" opacity=".55"><path d="M25 260c36-40 66-32 89-57s41-38 78-34 58-31 108-38 92 15 152-20"/><path d="M25 274c36-40 66-32 89-57s41-38 78-34 58-31 108-38 92 15 152-20"/><path d="M25 288c36-40 66-32 89-57s41-38 78-34 58-31 108-38 92 15 152-20"/></g><g filter="url(#drop)" transform="rotate(-11 235 160)"><rect x="127" y="32" width="233" height="270" rx="4" fill="#D8C7A1"/><rect x="142" y="18" width="233" height="270" rx="3" fill="#fffdf7" stroke="#D9D6CC" stroke-width="1.5"/><rect x="167" y="45" width="83" height="7" fill="#B5651D"/><text x="167" y="87" font-family="Georgia,serif" font-size="29" font-weight="bold" fill="#13293D">Terms of</text><text x="167" y="120" font-family="Georgia,serif" font-size="29" font-weight="bold" fill="#13293D">Service</text><path d="M167 139H350" stroke="#B5651D" stroke-width="1.5"/><g stroke="#C5C8CA" stroke-width="4" stroke-linecap="round"><path d="M167 161H340 M167 180H322 M167 199H338 M167 218H309 M167 237H344"/></g><text x="167" y="268" font-family="monospace" font-size="10" fill="#5B6570">VERSION 1.0 · SEP 2026</text></g><g transform="translate(332 232)"><circle r="48" fill="#F4F4F0" stroke="#B5651D" stroke-width="3"/><circle r="37" fill="none" stroke="#B5651D" stroke-width="1" stroke-dasharray="2 4"/><path d="m-19 0 12 12 26-29" fill="none" stroke="#1F3B57" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></g></svg></div></section>
 
     <h2>1. Acceptance of These Terms</h2>
     <p>These Terms are accepted by checking the acceptance box presented before payment. This replaces a separately signed engagement agreement; checking that box is the client's signature for purposes of this agreement, and it applies to the specific edition, property or zones, and fee confirmed at that step. If you do not accept these Terms, do not proceed to payment.</p>
@@ -152,7 +180,8 @@
     <a href="https://www.instagram.com/jotapropertiescr" target="_blank" rel="noopener" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.05 1.8.25 2.2.42.56.22.96.48 1.38.9.42.42.68.82.9 1.38.17.4.37 1 .42 2.2.06 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.05 1.2-.25 1.8-.42 2.2-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.4.17-1 .37-2.2.42-1.3.06-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.05-1.8-.25-2.2-.42-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.17-.4-.37-1-.42-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.05-1.2.25-1.8.42-2.2.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.4-.17 1-.37 2.2-.42C8.4 2.2 8.8 2.2 12 2.2Zm0 1.8c-3.14 0-3.5.01-4.74.07-.9.04-1.38.19-1.7.31-.43.17-.73.37-1.05.69-.32.32-.52.62-.69 1.05-.12.32-.27.8-.31 1.7C3.45 8.5 3.44 8.86 3.44 12s.01 3.5.07 4.74c.4.9.19 1.38.31 1.7.17.43.37.73.69 1.05.32.32.62.52 1.05.69.32.12.8.27 1.7.31 1.24.06 1.6.07 4.74.07s3.5-.01 4.74-.07c.9-.04 1.38-.19 1.7-.31.43-.17.73-.37 1.05-.69.32-.32.52-.62.69-1.05.12-.32.27-.8.31-1.7.06-1.24.07-1.6.07-4.74s-.01-3.5-.07-4.74c-.04-.9-.19-1.38-.31-1.7a2.83 2.83 0 0 0-.69-1.05 2.83 2.83 0 0 0-1.05-.69c-.32-.12-.8-.27-1.7-.31C15.5 4.01 15.14 4 12 4Zm0 3.06a4.94 4.94 0 1 1 0 9.88 4.94 4.94 0 0 1 0-9.88Zm0 1.8a3.14 3.14 0 1 0 0 6.28 3.14 3.14 0 0 0 0-6.28Zm5.14-3.2a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3Z"/></svg></a>
     <a href="https://www.youtube.com/@jotapropertiescr" target="_blank" rel="noopener" aria-label="YouTube" title="YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.9a3 3 0 0 0-2.1-2.1C19.5 4.3 12 4.3 12 4.3s-7.5 0-9.4.5A3 3 0 0 0 .5 6.9C0 8.8 0 12 0 12s0 3.2.5 5.1a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.1.5-5.1s0-3.2-.5-5.1ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z"/></svg></a>
     <a href="https://www.facebook.com/jotapropertiescr" target="_blank" rel="noopener" aria-label="Facebook" title="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07A12 12 0 1 0 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.8-4.69 4.54-4.69 1.32 0 2.7.24 2.7.24v2.96h-1.52c-1.5 0-1.96.93-1.96 1.89v2.26h3.34l-.53 3.49h-2.81V24A12 12 0 0 0 24 12.07Z"/></svg></a>
-    <a href="https://www.linkedin.com/company/the-report-by-jota-properties-cr" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05a3.74 3.74 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg></a>\n    <a href="https://www.tiktok.com/@jotapropertiescr" target="_blank" rel="noopener" aria-label="TikTok" title="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5 2.59 2.59 0 1 1 .77-5.06V9.69a5.67 5.67 0 0 0-.77-.05A5.68 5.68 0 1 0 15.54 15.3V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3a4.3 4.3 0 0 1-3.24-1.48Z"/></svg></a>
+    <a href="https://www.linkedin.com/company/the-report-by-jota-properties-cr" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05a3.74 3.74 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg></a>
+    <a href="https://www.tiktok.com/@jotapropertiescr" target="_blank" rel="noopener" aria-label="TikTok" title="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5 2.59 2.59 0 1 1 .77-5.06V9.69a5.67 5.67 0 0 0-.77-.05A5.68 5.68 0 1 0 15.54 15.3V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3a4.3 4.3 0 0 1-3.24-1.48Z"/></svg></a>
   </div>
 
   <p>THE REPORT by Jota Properties CR &nbsp;|&nbsp; <a href="index.html">Back to site</a> &nbsp;|&nbsp; <a href="buying-guide.html">Buying Guide</a></p>
