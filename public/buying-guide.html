@@ -576,5 +576,46 @@ dl dd{margin-left:15px}
   <p>No Opinions Just Facts</p>
 </footer>
 
+<script>
+/* Download the PDF, with a fallback.
+
+   The button points at a real file. If that file is missing from the server for
+   any reason, the browser would otherwise show a 404 page, which is the worst
+   possible outcome on the page we send every prospect to. So each click first
+   checks that the file is actually there. If it is, the download proceeds
+   normally. If it is not, we open the browser's print dialog instead, which
+   produces a PDF of this page from the @media print rules already in this file.
+   The reader still gets their PDF either way, and never sees an error. */
+(function () {
+  var links = document.querySelectorAll('a.dlbtn[href$=".pdf"]');
+  Array.prototype.forEach.call(links, function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      var url = a.getAttribute('href');
+      var original = a.textContent;
+      a.textContent = 'Preparing…';
+
+      var done = function (ok) {
+        a.textContent = original;
+        if (ok) {
+          var tmp = document.createElement('a');
+          tmp.href = url;
+          tmp.setAttribute('download', '');
+          document.body.appendChild(tmp);
+          tmp.click();
+          document.body.removeChild(tmp);
+        } else {
+          window.print();
+        }
+      };
+
+      fetch(url, { method: 'HEAD', cache: 'no-store' })
+        .then(function (r) { done(r.ok); })
+        .catch(function () { done(false); });
+    });
+  });
+})();
+</script>
+
 </body>
 </html>
