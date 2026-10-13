@@ -234,7 +234,11 @@
     font-family:'IBM Plex Mono', monospace; font-size:14px; letter-spacing:0.14em;
     text-transform:uppercase; color:var(--rust); font-weight:600; display:block; margin-bottom:16px;
   }
-  .section-head h2{font-size:42px; line-height:1.12; color:var(--navy);}
+  /* Every section heading, one rule. The Why This Exists h2 is not inside a
+     .section-head wrapper, so it is named here too, otherwise it falls back to
+     the browser default and that section drifts out of step with the rest. */
+  .section-head h2,
+  .gap-copy h2{font-size:30px; line-height:1.2; color:var(--navy);}
   .section-head p{color:var(--ink-soft); font-size:16px; max-width:560px;}
 
   /* ---------- THE GAP ---------- */
@@ -503,8 +507,8 @@
 
   /* ---------- RESPONSIVE ---------- */
   @media (max-width:860px){
-    /* 42px is right on desktop and crowds a phone, so step it back. */
-    .section-head h2{font-size:31px;}
+    /* Step back on phones so long headings stay at two lines. */
+    .section-head h2, .gap-copy h2{font-size:26px;}
     .kicker{font-size:13px;}
     .hero-inner{grid-template-columns:1fr;}
     .stamp-wrap{order:-1; margin-bottom:8px;}
