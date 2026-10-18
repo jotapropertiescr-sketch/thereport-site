@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TR-0000-0001 | Sample Area Edition | THE REPORT</title>
+<meta name="description" content="A redacted sample Area Edition from THE REPORT by Jota Properties CR. Illustrative only, not an issued report.">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/png" sizes="512x512" href="../favicon-512.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1F3B57; --navy-deep:#13293D; --rust:#B5651D; --manila:#D8C7A1;
+    --paper:#F4F4F0; --ink:#1C2530; --ink-soft:#5B6570; --line:#D9D6CC; --white:#FFFFFF;
+  }
+  *{margin:0; padding:0; box-sizing:border-box;}
+  body{font-family:'IBM Plex Sans', sans-serif; color:var(--ink); background:var(--paper); line-height:1.6; font-size:15px;}
+  .sheet{max-width:860px; margin:0 auto; background:var(--white); border-left:1px solid var(--line); border-right:1px solid var(--line);}
+  .pad{padding:0 54px;}
+
+  /* ---------- COVER ---------- */
+  .cover{background:var(--navy-deep); color:var(--white); padding:44px 54px 38px; position:relative;}
+  .cover .seal{width:86px; height:86px; position:absolute; top:40px; right:54px;}
+  .cover .mark{font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--manila); margin-bottom:26px;}
+  .cover h1{font-family:'Source Serif 4', serif; font-size:34px; line-height:1.15; margin-bottom:6px;}
+  .cover .edition{font-family:'IBM Plex Mono', monospace; font-size:13px; letter-spacing:0.1em; text-transform:uppercase; color:var(--rust); font-weight:600;}
+  .cover-meta{display:grid; grid-template-columns:repeat(2,1fr); gap:14px 32px; margin-top:30px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.18);}
+  .cover-meta div{font-size:13.5px;}
+  .cover-meta .k{display:block; font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--manila); margin-bottom:3px;}
+  .cover-meta .v{color:rgba(255,255,255,0.92);}
+  .idbar{background:var(--rust); color:var(--white); padding:11px 54px; font-family:'IBM Plex Mono', monospace; font-size:12.5px; letter-spacing:0.08em; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:32px 0 6px; border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:0;}
+  h2{font-family:'Source Serif 4', serif; font-size:20px; color:var(--navy); margin-bottom:4px;}
+  h2 .num{font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--rust); margin-right:10px; letter-spacing:0.08em;}
+  .checked{font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.09em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:16px;}
+  .checked b{color:var(--navy); font-weight:600;}
+  section p{margin-bottom:12px;}
+  section p:last-child{margin-bottom:0;}
+  .fieldrow{display:grid; grid-template-columns:200px 1fr; gap:6px 18px; margin-bottom:14px; font-size:14.5px;}
+  .fieldrow dt{font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.07em; text-transform:uppercase; color:var(--ink-soft); padding-top:2px;}
+  .fieldrow dd{color:var(--ink);}
+
+  /* Status of a section, stated rather than scored. No ratings anywhere. */
+  .state{display:inline-block; font-family:'IBM Plex Mono', monospace; font-size:11px; font-weight:600;
+    letter-spacing:0.09em; text-transform:uppercase; padding:4px 10px; margin-bottom:14px;}
+  .state.reported{background:var(--paper); color:var(--navy); border:1px solid var(--line);}
+  .state.flagged{background:#FBEFE3; color:#8F4E16; border:1px solid var(--rust);}
+  .state.notincluded{background:var(--paper); color:var(--ink-soft); border:1px dashed var(--line);}
+  .state.notcompleted{background:var(--paper); color:var(--ink-soft); border:1px dashed var(--rust);}
+
+  .note{background:var(--paper); border-left:3px solid var(--rust); padding:14px 18px; margin:14px 0; font-size:14.5px;}
+  .note .lbl{display:block; font-family:'IBM Plex Mono', monospace; font-size:10.5px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--rust); margin-bottom:6px;}
+
+  table{width:100%; border-collapse:collapse; margin:10px 0 16px; font-size:13.5px;}
+  th,td{border:1px solid var(--line); padding:8px 11px; text-align:left; vertical-align:top;}
+  th{background:var(--navy); color:var(--white); font-weight:600; font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.07em; text-transform:uppercase;}
+  td.date{font-family:'IBM Plex Mono', monospace; white-space:nowrap; font-size:12.5px;}
+
+  ul.flags{list-style:none; margin:0;}
+  ul.flags li{border-left:3px solid var(--rust); background:var(--paper); padding:12px 16px; margin-bottom:10px; font-size:14.5px;}
+  ul.flags li .when{display:block; font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--ink-soft); letter-spacing:0.07em; margin-top:6px;}
+
+  /* ---------- FOOTER ---------- */
+  .pagefoot{background:var(--paper); border-top:1px solid var(--line); padding:18px 54px; font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.06em; color:var(--ink-soft); display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap;}
+  .pagefoot b{color:var(--navy);}
+  .closing{background:var(--navy-deep); color:rgba(255,255,255,0.82); padding:30px 54px; font-size:13.5px;}
+  .closing h3{font-family:'Source Serif 4', serif; color:var(--white); font-size:17px; margin-bottom:10px;}
+  .closing a{color:var(--manila);}
+  .closing p{margin-bottom:10px;}
+  .closing p:last-child{margin-bottom:0;}
+
+  @media (max-width:720px){
+    .pad, .cover, .idbar, .pagefoot, .closing{padding-left:24px; padding-right:24px;}
+    .cover .seal{width:62px; height:62px; top:26px; right:24px;}
+    .cover h1{font-size:26px;}
+    .cover-meta{grid-template-columns:1fr;}
+    .fieldrow{grid-template-columns:1fr;}
+
+    /* A four-column matrix does not fit a phone, and a sideways-scrolling
+       table in a document people read end to end is worse than no table.
+       Each row becomes its own labelled block instead. The print rules below
+       are unaffected, so the PDF keeps the real table. */
+    table.manifest tr:first-child{display:none;}
+    table.manifest, table.manifest tbody, table.manifest tr, table.manifest td{display:block; width:100%;}
+    table.manifest tr{border:1px solid var(--line); margin-bottom:10px;}
+    table.manifest td{border:0; border-bottom:1px solid var(--line); padding:7px 11px;}
+    table.manifest tr td:last-child{border-bottom:0;}
+    table.manifest td::before{
+      content:attr(data-label);
+      display:block; font-family:'IBM Plex Mono', monospace; font-size:10px;
+      font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+      color:var(--rust); margin-bottom:2px;
+    }
+  }
+
+  /* ---------- PRINT ----------
+     The hosted page and the PDF are the same artefact. Printing to PDF must
+     reproduce it, including the ID bar on the cover and the ID in the running
+     footer of every sheet. */
+  @media print{
+    @page{ margin:14mm 13mm 24mm; }
+    body{background:#FFFFFF; font-size:11.3pt; line-height:1.5;}
+    .sheet{max-width:none; border:0; padding-bottom:6mm;}
+    .pad, .cover, .idbar, .pagefoot, .closing{padding-left:0; padding-right:0;}
+    .cover{background:#FFFFFF !important; color:#1C2530; border-bottom:2px solid var(--rust); padding-top:0;}
+    .cover h1{color:var(--navy-deep);}
+    .cover .mark{color:var(--rust);}
+    .cover-meta{border-top-color:var(--line);}
+    .cover-meta .k{color:var(--ink-soft);}
+    .cover-meta .v{color:var(--ink);}
+    .idbar{background:#FFFFFF !important; color:var(--navy) !important; border-bottom:1px solid var(--line); padding-left:0; padding-right:0;}
+    .closing{background:#FFFFFF !important; color:var(--ink);}
+    .closing h3{color:var(--navy-deep);}
+    .closing a{color:var(--rust);}
+    th{background:var(--navy) !important;}
+    /* Sections are long. Telling the engine to keep each one whole pushes a
+       section that will not fit onto a fresh sheet and leaves most of the
+       previous one blank, which is how the first proof came out. Let sections
+       flow and protect only the small things that read badly when split. */
+    section{break-inside:auto; page-break-inside:auto;}
+    h2{break-after:avoid; page-break-after:avoid;}
+    .checked, .state{break-after:avoid; page-break-after:avoid;}
+    p, dd, li{orphans:2; widows:2;}
+    table, ul.flags li, .note{break-inside:avoid; page-break-inside:avoid;}
+    table.manifest, table.manifest tbody{display:table;}
+    table.manifest tr{display:table-row; border:0;}
+    table.manifest tr:first-child{display:table-row;}
+    table.manifest td{display:table-cell; width:auto; border:1px solid var(--line); padding:8px 11px;}
+    table.manifest td::before{display:none;}
+    /* The footer is fixed on every sheet, so its height has to fit inside the
+       @page bottom margin. Left to wrap onto a second line it overlaps the
+       body text, which it did at Letter width. One line, no wrapping. */
+    .pagefoot{
+      position:fixed; bottom:0; left:0; right:0; background:#FFFFFF;
+      border-top:1px solid var(--line); padding:5px 0 0;
+      font-size:7.5pt; letter-spacing:0.015em; gap:10px;
+      flex-wrap:nowrap; white-space:nowrap; overflow:hidden;
+    }
+    .noprint{display:none !important;}
+  }
+
+  /* ---------- SAMPLE MARKING ----------
+     A sample must never be mistakable for an issued report, on screen or on
+     paper. The band prints. */
+  .samplebar{
+    background:#13293D; color:#D8C7A1; padding:10px 54px;
+    font-family:'IBM Plex Mono', monospace; font-size:12px; font-weight:600;
+    letter-spacing:0.12em; text-transform:uppercase; text-align:center;
+    border-bottom:1px solid rgba(255,255,255,0.18);
+  }
+  .samplebar b{color:#FFFFFF;}
+  .backlink{
+    display:block; max-width:860px; margin:0 auto; padding:14px 54px 0;
+    font-family:'IBM Plex Mono', monospace; font-size:12px;
+  }
+  .backlink a{color:#5B6570;}
+  @media (max-width:720px){ .samplebar{padding-left:24px; padding-right:24px;}
+    .backlink{padding-left:24px; padding-right:24px;} }
+  @media print{
+    .samplebar{background:#FFFFFF !important; color:#B5651D !important;
+      border-bottom:1px solid #D9D6CC; padding-left:0; padding-right:0;}
+    .samplebar b{color:#13293D;}
+  }
+</style>
+</head>
+<body>
+
+<div class="backlink noprint"><a href="../index.html#samples">&larr; Back to the samples</a> &nbsp;&nbsp;·&nbsp;&nbsp; <a href="../sample-area-edition-report.pdf" target="_blank" rel="noopener">Download as PDF</a></div>
+
+<div class="sheet">
+
+  <div class="samplebar">Sample &nbsp;·&nbsp; <b>not an issued report</b> &nbsp;·&nbsp; identifying details redacted</div>
+
+  <div class="cover">
+    <img class="seal" src="../the-report-seal-cream.png" alt="THE REPORT">
+    <div class="mark">THE REPORT &nbsp;·&nbsp; by Jota Properties CR</div>
+    <h1>Santa Ana and Atenas<br>Zone Comparison</h1>
+    <div class="edition">Area Edition</div>
+
+    <div class="cover-meta">
+      <div><span class="k">Report ID</span><span class="v">TR-0000-0001</span></div>
+      <div><span class="k">Prepared for</span><span class="v">A buyer choosing between two zones</span></div>
+      <div><span class="k">Work performed</span><span class="v">6 to 8 October 2026</span></div>
+      <div><span class="k">Issued</span><span class="v">9 October 2026</span></div>
+    </div>
+  </div>
+
+  <div class="idbar">
+    <span>SAMPLE TR-0000-0001</span>
+    <span>VERIFY AT JOTAPROPERTIESCR.COM/VERIFY</span>
+  </div>
+
+  <div class="pad">
+    <section>
+      <h2><span class="num">01</span>Scope and limitations</h2>
+      <div class="checked">Edition: <b>Area Edition</b> &nbsp;·&nbsp; Zones compared: <b>Santa Ana</b> and <b>Atenas</b> &nbsp;·&nbsp; No property examined</div>
+      <p>An Area Edition is commissioned before a property is chosen. It describes the conditions of living in two zones, drawn from the public record and from direct enquiry to the bodies that supply each service, so that the choice of neighborhood is made on facts rather than on what a listing says about a view.</p>
+      <p>No property was identified and no title, corporate, tax or permit record was examined. Nothing in this report describes any specific lot, house or listing, and nothing here should be read as a finding about one.</p>
+      <p>This is not a legal opinion, not a valuation, and not a recommendation that either zone is the better choice. Conditions change, and a finding accurate on the date it was checked may not describe the position today.</p>
+      <div class="note"><span class="lbl">About the figures in this sample</span>Values, dates and names here are illustrative and have been redacted or replaced. An issued report carries the actual values, the statement each one came from, and the date that statement was pulled.</div>
+
+    </section>
+
+    <section>
+      <h2><span class="num">02</span>Zones compared</h2>
+      <div class="checked">Defined with the client at engagement &nbsp;·&nbsp; Confirmed against cantonal boundaries on <b>06 October 2026</b></div>
+      <span class="state reported">Reported</span>
+      <dl class="fieldrow">
+        <dt>Zone A</dt><dd>Santa Ana, San José province. Districts of Pozos and Uruca, including Lindora</dd>
+        <dt>Zone B</dt><dd>Atenas, Alajuela province. Central district and Jesús</dd>
+        <dt>Elevation range</dt><dd>Approx. 900 to 1,100 m (Zone A) &nbsp;/&nbsp; approx. 600 to 900 m (Zone B)</dd>
+        <dt>Drive to Juan Santamaría</dt><dd>Measured on two weekday mornings, both zones, stated in section 04</dd>
+      </dl>
+      <p>Zones were defined by cantonal and district boundary rather than by the names used in listings. "Lindora" and "Río Oro" are commercial names, not administrative districts, and a listing using one may sit in a different district from the one a buyer assumes.</p>
+
+    </section>
+
+    <section>
+      <h2><span class="num">03</span>Water supply and reliability</h2>
+      <div class="checked">Sources: <b>AyA</b>, <b>ASADA Atenas</b>, municipal records &nbsp;·&nbsp; Checked <b>06 October 2026</b></div>
+      <span class="state flagged">Finding recorded</span>
+      <p><b>Zone A.</b> Supplied by AyA on the national network across the districts examined. Availability letters (carta de disponibilidad de agua) are issued by AyA directly, and the status of the supply at a given address is confirmable before purchase.</p>
+      <p><b>Zone B.</b> Supply is split. Part of the canton is served by AyA and part by ASADAs, which are community-run water associations operating under their own statutes. Where an ASADA supplies a lot, a new connection requires the ASADA's own availability letter, and some ASADAs operate waiting lists for new connections.</p>
+      <div class="note"><span class="lbl">Why this matters</span>A lot without a water availability letter cannot obtain a construction permit. Whether the supplying body is AyA or an ASADA, and whether it is currently issuing connections, is a question to settle before committing to a lot rather than after.</div>
+      <p>Dry-season pressure reductions were reported by both bodies for parts of each zone. The affected sectors and the months stated were recorded and supplied with this report.</p>
+
+    </section>
+
+    <section>
+      <h2><span class="num">04</span>Access, roads and travel</h2>
+      <div class="checked">Sources: <b>MOPT</b> route classification, municipal road inventory, direct observation &nbsp;·&nbsp; Checked <b>07 October 2026</b></div>
+      <span class="state reported">Reported</span>
+      <p>Route classification for every road serving each zone, stating which are national routes maintained by MOPT and which are cantonal roads maintained by the municipality. The distinction decides who is responsible for repair and how quickly it tends to happen.</p>
+      <p>Surface condition on the access roads was observed directly and is described plainly: paved, in repair, unpaved, or seasonal. Where a route is the only access to a sector, that is stated, because a single point of access is a different proposition from two.</p>
+      <p>Travel times to Juan Santamaría airport, to the nearest hospital, and into San José were measured on two weekday mornings in each zone and are reported with the times and dates they were measured, not as averages.</p>
+
+    </section>
+
+    <section>
+      <h2><span class="num">05</span>Electricity, internet and services</h2>
+      <div class="checked">Sources: <b>CNFL</b>, <b>ICE</b>, <b>Coopelesca</b> / local distributor, operator coverage maps &nbsp;·&nbsp; Checked <b>07 October 2026</b></div>
+      <span class="state reported">Reported</span>
+      <p>The supplying electricity utility for each zone is named, since the distributor differs by canton and so do connection procedures and tariffs.</p>
+      <p>Fixed internet availability is reported by technology actually available at the street, fibre, cable or fixed wireless, rather than by the operator's marketing coverage map. Where a sector is served only by fixed wireless or satellite, that is stated.</p>
+      <p>Distance to the nearest public clinic (EBAIS), private hospital, pharmacy, supermarket and school is given for each zone, measured from the district centre.</p>
+
+    </section>
+
+    <section>
+      <h2><span class="num">06</span>Zoning, land use and municipal rules</h2>
+      <div class="checked">Sources: <b>Plan Regulador</b> where in force, municipal Control Constructivo &nbsp;·&nbsp; Checked <b>08 October 2026</b></div>
+      <span class="state flagged">Finding recorded</span>
+      <p>Whether each canton has a Plan Regulador in force, what it permits in the sectors examined, and what the setback, height and coverage rules are where one applies.</p>
+      <div class="note"><span class="lbl">Limit of this section</span>A use-of-land certificate (uso de suelo) is issued by the municipality for a specific lot. This section describes the rules that govern each zone. It does not and cannot state what a particular lot is permitted to do, which is established per lot once a property is identified.</div>
+      <p>Where a canton has no Plan Regulador in force, that is stated, together with the national rules (INVU) that apply in its absence.</p>
+
+    </section>
+
+    <section>
+      <h2><span class="num">07</span>Terrain, hazard and environmental constraints</h2>
+      <div class="checked">Sources: <b>CNE</b> hazard mapping, <b>SENARA</b> aquifer vulnerability, <b>SETENA</b> requirements &nbsp;·&nbsp; Checked <b>08 October 2026</b></div>
+      <span class="state reported">Reported</span>
+      <p>Flood, landslide and seismic fault mapping published for each zone, with the sectors identified by the publishing body and the date of the mapping relied on.</p>
+      <p>Aquifer protection and recharge-area designations, where they apply, since these restrict what can be built and what drainage is permitted irrespective of the Plan Regulador.</p>
+      <p>Whether an environmental viability study (SETENA) is required for ordinary residential construction in each zone, and at what scale of project that requirement begins.</p>
+
+    </section>
+
+    <section>
+      <h2><span class="num">08</span>Property tax and holding costs</h2>
+      <div class="checked">Sources: <b>Municipalidad de Santa Ana</b>, <b>Municipalidad de Atenas</b>, <b>Hacienda</b> &nbsp;·&nbsp; Checked <b>08 October 2026</b></div>
+      <span class="state reported">Reported</span>
+      <p>Municipal property tax is levied at the national rate of 0.25% of the registered value, so the rate does not differ between the zones. What differs is the declared-value cycle each municipality runs and the additional municipal service charges applied, which are listed separately for each canton.</p>
+      <p>The solidarity tax on high-value homes (impuesto solidario) applies nationally above the threshold published by Hacienda for the year. The threshold in force on the date checked is stated, along with the obligation to declare.</p>
+      <p>Garbage, street lighting and other municipal service charges are listed per canton as published, with the date of the published schedule.</p>
+
+    </section>
+
+    <section>
+      <h2><span class="num">09</span>What the public record does not tell you</h2>
+      <div class="checked">Recorded as open questions, not as findings</div>
+      <span class="state reported">Reported</span>
+      <p>Items that came up during the work which no public record answers are recorded here as questions rather than left out. In this sample they include the current new-connection position of a community water association, which is set by its own board and is not published, and the condition of a cantonal road in the months after the rainy season, which is observable but not recorded anywhere.</p>
+      <p>Naming these is part of the work. A report that lists only what it could confirm leaves the reader to assume the rest was checked.</p>
+
+    </section>
+
+    <section>
+      <h2><span class="num">10</span>Findings flag log</h2>
+      <div class="checked">Every item recorded during the work, in the order found</div>
+      <ul class="flags">
+        <li>Part of Zone B is supplied by a community water association rather than by AyA. A new connection in those sectors depends on that association's own availability letter.
+          <span class="when">Section 03 &nbsp;·&nbsp; Recorded 06 October 2026</span></li>
+        <li>Dry-season pressure reductions were reported by the supplying bodies for identified sectors of both zones. The sectors and months stated were recorded.
+          <span class="when">Section 03 &nbsp;·&nbsp; Recorded 06 October 2026</span></li>
+        <li>Zoning rules differ materially between the two cantons in the sectors examined. Permitted use for any specific lot is established per lot and was not examined here.
+          <span class="when">Section 06 &nbsp;·&nbsp; Recorded 08 October 2026</span></li>
+      </ul>
+      <p>Findings are stated without characterising how serious they are and without a recommendation about what to do. Where nothing is recorded, this section says so rather than being left blank.</p>
+
+    </section>
+
+    <section>
+      <h2><span class="num">11</span>Delivery manifest</h2>
+      <div class="checked">Every source consulted for this report, whether or not it returned anything</div>
+      <table class="manifest">
+        <tr><th>Source</th><th>What was requested</th><th>Date</th><th>Result</th></tr>
+        <tr><td data-label="Source">AyA, Instituto Costarricense de Acueductos</td><td data-label="Requested">Supply status and availability position</td><td class="date" data-label="Date">06 Oct 2026</td><td data-label="Result">Returned</td></tr>
+        <tr><td data-label="Source">ASADA serving Zone B</td><td data-label="Requested">New-connection position</td><td class="date" data-label="Date">06 Oct 2026</td><td data-label="Result">Returned, verbal</td></tr>
+        <tr><td data-label="Source">MOPT route classification</td><td data-label="Requested">National vs cantonal road status</td><td class="date" data-label="Date">07 Oct 2026</td><td data-label="Result">Returned</td></tr>
+        <tr><td data-label="Source">Municipal road inventory, both cantons</td><td data-label="Requested">Maintenance responsibility</td><td class="date" data-label="Date">07 Oct 2026</td><td data-label="Result">Returned</td></tr>
+        <tr><td data-label="Source">Electricity distributor, each canton</td><td data-label="Requested">Supplying utility and connection procedure</td><td class="date" data-label="Date">07 Oct 2026</td><td data-label="Result">Returned</td></tr>
+        <tr><td data-label="Source">Plan Regulador, each canton</td><td data-label="Requested">Zoning in force</td><td class="date" data-label="Date">08 Oct 2026</td><td data-label="Result">Returned, one canton partial</td></tr>
+        <tr><td data-label="Source">CNE hazard mapping</td><td data-label="Requested">Flood and landslide designations</td><td class="date" data-label="Date">08 Oct 2026</td><td data-label="Result">Returned</td></tr>
+        <tr><td data-label="Source">SENARA</td><td data-label="Requested">Aquifer vulnerability designations</td><td class="date" data-label="Date">08 Oct 2026</td><td data-label="Result">Returned</td></tr>
+        <tr><td data-label="Source">Municipal tax schedules, both cantons</td><td data-label="Requested">Rates and service charges published</td><td class="date" data-label="Date">08 Oct 2026</td><td data-label="Result">Returned</td></tr>
+        <tr><td data-label="Source">Direct observation, both zones</td><td data-label="Requested">Road condition and travel times</td><td class="date" data-label="Date">07 Oct 2026</td><td data-label="Result">Completed</td></tr>
+      </table>
+      <p>A source that returned nothing, or that was not accessible, is listed anyway. What was not available is part of what this report tells you.</p>
+
+    </section>
+
+
+  </div>
+
+  <div class="pagefoot">
+    <span>SAMPLE <b>TR-0000-0001</b> &nbsp;·&nbsp; AREA EDITION &nbsp;·&nbsp; NOT AN ISSUED REPORT</span>
+    <span>VERIFY AT JOTAPROPERTIESCR.COM/VERIFY</span>
+  </div>
+
+  <div class="closing">
+    <h3>About this sample</h3>
+    <p>This is a redacted sample, published so that anyone can see the format and the standard of evidence before commissioning anything. It is not an issued report, it describes no real engagement, and the figures in it are illustrative.</p>
+    <p>An issued report carries a report ID in the <span style="font-family:'IBM Plex Mono',monospace;">TR-YYYY-NNNN</span> form and is published by THE REPORT at a permanent address. Anyone holding a copy may confirm it at <a href="../verify.html">jotapropertiescr.com/verify</a> using that ID, without permission from whoever supplied it. Where a copy differs from the published version, the published version governs.</p>
+    <p>Prepared independently. No commission is taken on any transaction, and THE REPORT has no stake in whether a property sells. Use of any report is governed by our <a href="../terms.html">Terms of Service</a>. To commission one, <a href="../index.html#get-started">start here</a>.</p>
+  </div>
+
+</div>
+
+</body>
+</html>
