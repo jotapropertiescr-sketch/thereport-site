@@ -242,6 +242,38 @@
   .gap-copy h2{font-size:30px; line-height:1.2; color:var(--navy);}
   .section-head p{color:var(--ink-soft); font-size:16px; max-width:560px;}
 
+  /* ---------- VERIFICATION ----------
+     Deliberately tighter than a full section. Verification is not a pitch, it
+     is a standing fact about every report, and it sits between the samples
+     and the order form because it answers the question a seller asks after
+     seeing what a report looks like: will a buyer believe one I paid for. */
+  #verification{padding:62px 0; background:var(--white); border-top:1px solid var(--line);}
+  .verify-box{
+    display:grid; grid-template-columns:1.15fr 0.85fr; gap:44px; align-items:center;
+    background:var(--paper); border:1px solid var(--line); border-left:3px solid var(--rust);
+    padding:34px 36px;
+  }
+  .verify-box h2{font-family:'Source Serif 4', serif; font-size:26px; line-height:1.25; color:var(--navy); margin-bottom:12px;}
+  .verify-box p{color:var(--ink-soft); font-size:15.5px; margin-bottom:12px;}
+  .verify-box p:last-of-type{margin-bottom:0;}
+  .verify-points{list-style:none; margin:0; padding:0;}
+  .verify-points li{
+    font-size:14.5px; color:var(--ink); padding:9px 0 9px 26px; position:relative;
+    border-bottom:1px solid var(--line);
+  }
+  .verify-points li:last-child{border-bottom:0;}
+  .verify-points li::before{
+    content:"→"; position:absolute; left:0; top:9px; color:var(--rust);
+    font-family:'IBM Plex Mono', monospace; font-size:13px;
+  }
+  .verify-act{margin-top:18px;}
+  .verify-try{
+    display:block; margin-top:12px; font-family:'IBM Plex Mono', monospace;
+    font-size:12px; letter-spacing:0.04em; color:var(--ink-soft);
+  }
+  .verify-try b{color:var(--navy);}
+  @media (max-width:860px){ .verify-box{grid-template-columns:1fr; gap:26px; padding:28px 24px;} }
+
   /* ---------- THE GAP ---------- */
   .gap-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:56px; align-items:start; position:relative;}
   .gap-photo{
@@ -605,6 +637,7 @@
       <li><a href="#tiers">Editions</a></li>
       <li><a href="#for-sellers">Sellers &amp; Agents</a></li>
       <li><a href="#samples">Sample Reports</a></li>
+          <li><a href="#verification">Verification</a></li>
       <li><a href="buying-guide.html">Buying Guide</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
@@ -840,7 +873,7 @@
     <div class="section-head">
       <span class="kicker">The Evidence, Up Front</span>
       <h2 style="color:var(--navy);">View a sample report before you request one.</h2>
-      <p>Every section, every table, the full evidence log, verified sources, not assumptions. Each sample is published the way a real report is published, so you can also see how <a href="verify.html" style="color:var(--rust);">verification</a> works before you commission anything. A PDF of each is downloadable from its page.</p>
+      <p>Every section, every table, the full evidence log, verified sources, not assumptions. Each sample is published the way a real report is published, so you can also see how <a href="#verification" style="color:var(--rust);">verification</a> works before you commission anything. A PDF of each is downloadable from its page.</p>
     </div>
     <div class="samples-grid">
       <div class="sample-card">
@@ -866,6 +899,31 @@
         <h3>Complete Verification Report</h3>
         <p style="font-size:14px;color:var(--ink-soft);margin:0;">The full report, HOA health, permits, site visit, and more.</p>
         <a href="r/TR-0000-0003.html" target="_blank" rel="noopener" class="sample-link">View Sample →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="verification">
+  <div class="wrap">
+    <div class="verify-box">
+      <div>
+        <span class="kicker">Verification</span>
+        <h2>Every report can be checked against the version we published.</h2>
+        <p>Each report carries a unique ID and is published by us at a permanent address. Anyone holding a copy can confirm it against that version, at no cost, without permission from whoever handed it to them.</p>
+        <p>This is what makes a report worth showing. A seller who commissions one is not asking a buyer to take their word for it, and a buyer who is given one does not have to.</p>
+      </div>
+      <div>
+        <ul class="verify-points">
+          <li>The published version is the authoritative one</li>
+          <li>Where a copy differs from it, it has no standing</li>
+          <li>Findings cannot be edited, removed or redacted</li>
+          <li>Checking is free and takes a few seconds</li>
+        </ul>
+        <div class="verify-act">
+          <a href="verify.html" class="btn btn-dark">Verify a report</a>
+          <span class="verify-try">Try it with a sample ID: <b>TR-0000-0002</b></span>
+        </div>
       </div>
     </div>
   </div>
