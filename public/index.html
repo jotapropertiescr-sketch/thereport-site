@@ -369,7 +369,9 @@
   .briefing-note .mono{color:var(--manila); font-size:11px; letter-spacing:0.08em; text-transform:uppercase; display:block; margin-bottom:8px;}
 
   /* ---------- SAMPLES ---------- */
-  .samples-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  /* Four samples now. Two across keeps the rows even; three across would
+     leave the fourth card stranded by itself. */
+  .samples-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:20px;}
   .sample-card{
     background:var(--white); border:1px solid var(--line); padding:24px;
     display:flex; flex-direction:column; gap:14px;
@@ -769,7 +771,8 @@
           <li>Cleared for you to share with any buyer</li>
         </ul>
         <button class="tier-select" data-tier="Listing Edition" data-price="$250" data-key="listing_edition">Select Listing Edition</button>
-        <a href="#for-sellers" class="tier-sample">Why sellers order it →</a>
+        <a href="#for-sellers" class="tier-sample">Why sellers order it &rarr;</a>
+        <a href="r/TR-0000-0004.html" class="tier-sample">View Sample &rarr;</a>
         </div>
       </div>
 
@@ -826,6 +829,7 @@
 
     <div class="sell-cta">
       <a href="#tiers" class="btn btn-primary">See the Listing Edition</a>
+      <a href="r/TR-0000-0004.html" target="_blank" rel="noopener" class="btn btn-ghost">View a sample</a>
       <span class="mono">$250 · 2–3 business days · yours to share with any buyer</span>
     </div>
   </div>
@@ -850,6 +854,12 @@
         <h3>Records Check Report</h3>
         <p style="font-size:14px;color:var(--ink-soft);margin:0;">Title, corporate status, and tax status on one property.</p>
         <a href="r/TR-0000-0002.html" target="_blank" rel="noopener" class="sample-link">View Sample →</a>
+      </div>
+      <div class="sample-card">
+        <span class="mono">SAMPLE · LISTING EDITION</span>
+        <h3>Seller's Listing Report</h3>
+        <p style="font-size:14px;color:var(--ink-soft);margin:0;">The same records check, commissioned by the seller and cleared to show any buyer.</p>
+        <a href="r/TR-0000-0004.html" target="_blank" rel="noopener" class="sample-link">View Sample →</a>
       </div>
       <div class="sample-card">
         <span class="mono">SAMPLE · FULL EDITION</span>
