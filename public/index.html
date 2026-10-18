@@ -12,12 +12,12 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="THE REPORT by Jota Properties CR">
 <meta property="og:title" content="THE REPORT | Independent Property Verification, Costa Rica">
-<meta property="og:description" content="Costa Rica has no title insurance and no national MLS. We verify what the public record actually says about a property, independently, before you commit money to it.">
+<meta property="og:description" content="Costa Rica has no title insurance and no national MLS. We verify what the public record says about a property, independently, before money moves. For buyers, sellers and agents.">
 <meta property="og:url" content="https://jotapropertiescr.com/">
 <meta property="og:image" content="https://jotapropertiescr.com/favicon-512.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="THE REPORT | Independent Property Verification, Costa Rica">
-<meta name="twitter:description" content="Costa Rica has no title insurance and no national MLS. We verify what the public record says, independently, before you buy.">
+<meta name="twitter:description" content="Costa Rica has no title insurance and no national MLS. We verify the public record, independently. For buyers, sellers and agents.">
 <meta name="twitter:image" content="https://jotapropertiescr.com/favicon-512.png">
 <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
 <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
@@ -90,6 +90,7 @@
   }
   .nav-brand{
     font-family:'Source Serif 4', serif;
+    white-space:nowrap;
     font-weight:700;
     font-size:19px;
     letter-spacing:0.02em;
@@ -104,10 +105,10 @@
     letter-spacing:0.08em;
     text-transform:uppercase;
   }
-  .nav-links{display:flex; gap:28px; list-style:none; margin:0; padding:0;}
+  .nav-links{display:flex; gap:22px; list-style:none; margin:0; padding:0; flex-wrap:nowrap;}
   .nav-links a{
     font-size:14px; font-weight:500; text-decoration:none; color:var(--ink);
-    position:relative; padding:4px 2px;
+    position:relative; padding:4px 2px; white-space:nowrap;
   }
   .nav-links a::after{
     content:""; position:absolute; left:0; right:0; bottom:-2px; height:1px;
@@ -296,7 +297,9 @@
     color:var(--manila); margin-bottom:6px;
   }
   .tiers .note p{margin:0; color:rgba(255,255,255,0.80); font-size:15px;}
-  .tier-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:22px;}
+  /* Two across, not four. The wrap is 1040px, so four columns would leave each
+     card around 230px, too narrow for the tab labels and the clipped corner. */
+  .tier-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:26px 22px;}
   .tier-card{
     position:relative;
     transition:transform .2s ease, box-shadow .2s ease;
@@ -346,6 +349,18 @@
     line-height:1.35; color:var(--ink-soft); text-decoration:none;
   }
   .tier-sample:hover{color:var(--rust);}
+
+  /* ---------- SELLERS & AGENTS ---------- */
+  #for-sellers{background:var(--white); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .sell-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:22px;}
+  .sell-card{background:var(--paper); border:1px solid var(--line); border-left:3px solid var(--rust); padding:24px 24px 22px;}
+  .sell-card .mono{
+    display:block; font-family:'IBM Plex Mono', monospace; font-size:11px; font-weight:600;
+    letter-spacing:0.1em; text-transform:uppercase; color:var(--rust); margin-bottom:10px;
+  }
+  .sell-card p{margin:0; font-size:15px; color:var(--ink); line-height:1.7;}
+  .sell-cta{display:flex; align-items:center; gap:20px; flex-wrap:wrap; margin-top:34px;}
+  .sell-cta .mono{font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.06em; color:var(--ink-soft); text-transform:uppercase;}
 
   .briefing-note{
     margin-top:34px; padding:20px 24px; background:rgba(255,255,255,0.05);
@@ -440,6 +455,9 @@
   input, select, textarea{
     font-family:'IBM Plex Sans', sans-serif; font-size:14.5px; padding:11px 12px;
     border:1px solid var(--line); background:var(--white); color:var(--ink);
+    /* A select sizes itself to its widest option, so without this a long
+       option label pushes the whole form wider than the phone screen. */
+    max-width:100%;
   }
   textarea{resize:vertical; min-height:80px;}
   .form-submit{
@@ -516,6 +534,7 @@
     .hero h1{font-size:38px;}
     .gap-grid{grid-template-columns:1fr;}
     .tier-grid{grid-template-columns:1fr;}
+    .sell-grid{grid-template-columns:1fr;}
     .samples-grid{grid-template-columns:1fr;}
     .footer-top{grid-template-columns:1fr; gap:28px;}
     .field-row{grid-template-columns:1fr;}
@@ -537,7 +556,7 @@
   "url": "https://jotapropertiescr.com/",
   "logo": "https://jotapropertiescr.com/favicon-512.png",
   "image": "https://jotapropertiescr.com/favicon-512.png",
-  "description": "Independent property verification for Costa Rica's Central Valley. Title and registry standing, municipal tax standing, corporate standing, HOA financial health, permit compliance and zone reality. Fixed fee, no commission.",
+  "description": "Independent property verification in Costa Rica. Records verification nationwide; area work and site visits in the Central Valley. Title and registry standing, municipal tax standing, corporate standing, HOA financial health, permit compliance and zone conditions. Fixed fee, no commission.",
   "slogan": "No Opinions Just Facts",
   "email": "contact@jotapropertiescr.com",
   "areaServed": [
@@ -570,7 +589,8 @@
     <ul class="nav-links">
       <li><a href="#why">Why This Exists</a></li>
       <li><a href="#tiers">Editions</a></li>
-      <li><a href="#samples">Sample Reports</a></li>
+      <li><a href="#for-sellers">For Sellers</a></li>
+      <li><a href="#samples">Samples</a></li>
       <li><a href="buying-guide.html">Buying Guide</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
@@ -581,6 +601,7 @@
     <ul>
       <li><a href="#why">Why This Exists</a></li>
       <li><a href="#tiers">Editions</a></li>
+      <li><a href="#for-sellers">Sellers &amp; Agents</a></li>
       <li><a href="#samples">Sample Reports</a></li>
       <li><a href="buying-guide.html">Buying Guide</a></li>
       <li><a href="#faq">FAQ</a></li>
@@ -630,10 +651,10 @@
     <div>
       <h1>Everything you need to know, that no one is telling you.</h1>
       <p class="tagline">No Opinions Just Facts</p>
-      <p class="sub">The independent, verified authority on Costa Rica's Central Valley property, neighborhoods, and zones. The facts you need to inform your decision.</p>
+      <p class="sub">If you want the facts about buying or selling property in Costa Rica, this is where you start. Independent verification of the public record, for buyers, for sellers, and for the agents who work with them.</p>
       <p class="sub2 mono">TITLE · TAXES · HOA HEALTH · PERMITS · NEIGHBORHOOD REALITY · LOCAL KNOW-HOW</p>
       <div class="hero-ctas">
-        <a href="#tiers" class="btn btn-primary">See the three editions</a>
+        <a href="#tiers" class="btn btn-primary">See the editions</a>
         <a href="#samples" class="btn btn-ghost">View a sample report</a>
       </div>
     </div>
@@ -690,9 +711,9 @@
 <section class="tiers" id="tiers">
   <div class="wrap">
     <div class="section-head">
-      <span class="kicker">Three Editions</span>
+      <span class="kicker">The Editions</span>
       <h2>Pick the depth you need, right now.</h2>
-      <p>No property yet, or already have one, either way there's a fixed-fee edition built for where you are in the decision.</p>
+      <p>Buying, selling, or still deciding where to look, there's a fixed-fee edition built for where you are. The fee is the same whoever orders it, and so are the findings.</p>
       <div class="note">
         <span class="note-label">Note</span>
         <p>Every record is pulled fresh for your file and every finding is dated. Nothing is recycled, and nothing is quoted without the day it was checked.</p>
@@ -753,11 +774,59 @@
         </div>
       </div>
 
+      <div class="tier-card">
+        <span class="tier-tab" style="background:var(--rust);">For sellers and agents</span>
+        <div class="tier-card-inner">
+        <div class="tier-name">Listing Edition</div>
+        <div class="tier-desc">The records verified before the listing goes up, in a form built to be shown to buyers.</div>
+        <div class="tier-price">$250</div>
+        <div class="tier-time mono">2–3 BUSINESS DAYS · REMOTE</div>
+        <ul class="tier-list">
+          <li>Title &amp; corporate status summary</li>
+          <li>Tax status summary</li>
+          <li>Findings flag log</li>
+          <li>Cleared for you to share with any buyer</li>
+        </ul>
+        <button class="tier-select" data-tier="Listing Edition" data-price="$250" data-key="listing_edition">Select Listing Edition</button>
+        <a href="#for-sellers" class="tier-sample">Why sellers order it →</a>
+        </div>
+      </div>
+
     </div>
 
     <div class="briefing-note">
       <span class="mono">Optional add-on, never bundled</span>
       THE BRIEFING at $9.99/month ($4.99/month with a Full Edition order), a quarterly update on what's changed across the zones we cover. Opt in anytime, cancel anytime, never anything about your specific property.
+    </div>
+  </div>
+</section>
+
+<section id="for-sellers">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">Sellers &amp; Agents</span>
+      <h2>A listing with the paperwork already done.</h2>
+      <p>Most of what slows a sale is a buyer waiting to find out whether anything is wrong. The Listing Edition answers that before they ask.</p>
+    </div>
+
+    <div class="sell-grid">
+      <div class="sell-card">
+        <span class="mono">For the seller</span>
+        <p>A clean record is worth something only if the buyer can see it. Right now you are paying for the market's general suspicion and getting nothing back for being in good standing. A dated, sourced verification attached to the listing separates your property from the one next to it, and it removes the questions that stall an offer.</p>
+      </div>
+      <div class="sell-card">
+        <span class="mono">For the agent</span>
+        <p>Costa Rica gives you no title insurance and no national MLS to stand behind you, so when a buyer asks whether the tax is current or the addition was permitted, the answer rests on your word. A third-party document takes that weight off you, shortens the diligence period, and makes your listing the one with the file already open.</p>
+      </div>
+      <div class="sell-card">
+        <span class="mono">Why it stays neutral</span>
+        <p>The fee is the same whether a buyer or a seller orders it, and the findings are the same either way. We take no commission and have no stake in whether the property sells. A Listing Edition reports what the records say on the day they were checked. It is not an endorsement, not a valuation, and not a statement that the property is a good buy.</p>
+      </div>
+    </div>
+
+    <div class="sell-cta">
+      <a href="#tiers" class="btn btn-primary">See the Listing Edition</a>
+      <span class="mono">$250 · 2–3 business days · yours to share with any buyer</span>
     </div>
   </div>
 </section>
@@ -867,6 +936,7 @@
               <option value="ciudad colon">Ciudad Colón</option>
               <option value="belen">Belén</option>
               <option value="other">Other Central Valley</option>
+              <option value="outside">Outside the Central Valley</option>
               <option value="multiple">Multiple zones (Area Edition)</option>
             </select>
           </div>
@@ -986,7 +1056,9 @@
 
     <div class="faq-item">
       <button class="faq-q"><span>What areas do you cover?</span><span class="plus">+</span></button>
-      <div class="faq-a"><p>Escazú, Santa Ana, Lindora, San Rafael, Belén, Alajuela, Atenas, and Ciudad Colón, Costa Rica's Central Valley.</p></div>
+      <div class="faq-a"><p><strong>Records and Listing Editions: anywhere in Costa Rica.</strong> Title, corporate standing and national tax status come from national systems, so the property can be in any province. Municipal tax standing is handled canton by canton and may add a day outside the areas we work in regularly.</p>
+      <p><strong>Area and Full Editions: the Central Valley.</strong> Escazú, Santa Ana, Lindora, San Rafael, Belén, Alajuela, Atenas and Ciudad Colón. Both depend on knowing the ground and, for the Full Edition, on us standing on it, so we only sell them where we can do that ourselves rather than hand the work to someone else.</p>
+      <p>Our free buying guide covers the whole country, not just the areas we verify in.</p></div>
     </div>
 
     <div class="faq-item">
@@ -1017,7 +1089,7 @@
       <div>
         <div class="footer-brand">THE REPORT</div>
         <div style="font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--rust); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:12px;">No Opinions Just Facts</div>
-        <p style="font-size:14px; max-width:280px; color:rgba(255,255,255,0.6);">By Jota Properties CR. Independent property verification for Costa Rica's Central Valley.</p>
+        <p style="font-size:14px; max-width:280px; color:rgba(255,255,255,0.6);">By Jota Properties CR. Independent property verification in Costa Rica.</p>
         <div class="seal-img" role="img" aria-label="THE REPORT seal" style="width:96px; height:96px; margin-top:18px;"></div>
       </div>
       <div>
@@ -1035,6 +1107,7 @@
         <ul>
           <li><a href="#why">Why This Exists</a></li>
           <li><a href="#tiers">Editions</a></li>
+          <li><a href="#for-sellers">Sellers &amp; Agents</a></li>
           <li><a href="#get-started">Request a report</a></li>
           <li><a href="#samples">View sample reports</a></li>
           <li><a href="buying-guide.html">Buying guide</a></li>
