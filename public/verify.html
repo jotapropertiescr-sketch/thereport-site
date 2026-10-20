@@ -84,9 +84,9 @@
 
     <div class="checker">
       <label for="reportId">Report ID</label>
-      <p class="hint">Printed on the cover and in the footer of every page. It looks like TR-2026-0001.</p>
+      <p class="hint">Printed on your report. It looks like <strong>TR-2026-0001-FQQ8SB</strong>. Include the six characters after the number, they are part of the ID.</p>
       <form class="row" id="verifyForm" novalidate>
-        <input type="text" id="reportId" name="reportId" placeholder="TR-2026-0001"
+        <input type="text" id="reportId" name="reportId" placeholder="TR-2026-0001-FQQ8SB"
                autocomplete="off" spellcheck="false" inputmode="text"
                aria-describedby="verifyMsg">
         <button type="submit" class="go">Look it up</button>
@@ -157,16 +157,28 @@
       return;
     }
 
-    // Accept TR-2026-0001, TR20260001 and 2026-0001, then normalise.
-    var m = raw.match(/^(?:TR[-–]?)?(\d{4})[-–]?(\d{4})$/);
+    /* An issued report is TR-YYYY-NNNN-CODE. The number identifies it and the
+       six-character code keeps it private: without the code the filename
+       cannot be guessed, so one client cannot read another client's report by
+       counting upwards. Published samples use year 0000 and carry no code. */
+    var m = raw.match(/^(?:TR[-\u2013]?)?(\d{4})[-\u2013]?(\d{4})(?:[-\u2013]?([A-Z2-9]{6}))?$/);
     if (!m) {
-      say('That does not look like a report ID. The format is TR-2026-0001.', 'err');
+      say('That does not look like a report ID. The format is TR-2026-0001-FQQ8SB.', 'err');
       input.focus();
       return;
     }
 
-    var id = 'TR-' + m[1] + '-' + m[2];
-    say('Opening ' + id + '…', 'ok');
+    var year = m[1], serial = m[2], code = m[3];
+    var isSample = year === '0000';
+
+    if (!isSample && !code) {
+      say('That ID is missing its six-character code. It is printed on the report, just after the number.', 'err');
+      input.focus();
+      return;
+    }
+
+    var id = 'TR-' + year + '-' + serial + (code ? '-' + code : '');
+    say('Opening ' + id + '\u2026', 'ok');
     window.location.href = 'r/' + id + '.html';
   });
 })();
