@@ -29,6 +29,11 @@
   .cover-meta div{font-size:13.5px;}
   .cover-meta .k{display:block; font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--manila); margin-bottom:3px;}
   .cover-meta .v{color:rgba(255,255,255,0.92);}
+  /* The verification ID carries the six-character code. The number alone
+     identifies the report; the code is what makes the published page private,
+     so it is printed once, here, rather than in every footer. */
+  .cover-meta .full{grid-column:1 / -1; padding-top:4px;}
+  .cover-meta .mono-id{font-family:'IBM Plex Mono', monospace; font-size:15px; letter-spacing:0.08em; color:var(--white);}
   .idbar{background:var(--rust); color:var(--white); padding:11px 54px; font-family:'IBM Plex Mono', monospace; font-size:12.5px; letter-spacing:0.08em; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;}
 
   /* ---------- SECTIONS ---------- */
@@ -160,6 +165,7 @@
       <div><span class="k">Prepared for</span><span class="v">Sample Client, owner</span></div>
       <div><span class="k">Work performed</span><span class="v">14 to 16 October 2026</span></div>
       <div><span class="k">Issued</span><span class="v">16 October 2026</span></div>
+      <div class="full"><span class="k">Verification ID</span><span class="v mono-id">TR-2026-0000-XXXXXX</span></div>
     </div>
   </div>
 
@@ -297,7 +303,7 @@
   <div class="closing">
     <h3>About this copy</h3>
     <p>This page is the version published by THE REPORT and is the authoritative text. Any PDF, printout or photograph of this report is a copy. Where a copy differs from this page in any respect, this page governs and the copy has no standing.</p>
-    <p>Anyone holding a copy may confirm it at <a href="../verify.html">jotapropertiescr.com/verify</a> using the report ID, without permission from whoever supplied it. If what you were given does not match what appears here, write to <a href="mailto:contact@jotapropertiescr.com">contact@jotapropertiescr.com</a>.</p>
+    <p>Anyone holding a copy may confirm it at <a href="../verify.html">jotapropertiescr.com/verify</a> using the full verification ID printed on the cover, without permission from whoever supplied it. The six characters after the number are part of the ID and keep this report reachable only by people holding it. If what you were given does not match what appears here, write to <a href="mailto:contact@jotapropertiescr.com">contact@jotapropertiescr.com</a>.</p>
     <p>Prepared independently. No commission is taken on any transaction involving this property, and THE REPORT has no stake in whether it sells. Use of this report is governed by our <a href="../terms.html">Terms of Service</a>.</p>
   </div>
 
