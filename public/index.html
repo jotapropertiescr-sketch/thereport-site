@@ -247,7 +247,6 @@
      is a standing fact about every report, and it sits between the samples
      and the order form because it answers the question a seller asks after
      seeing what a report looks like: will a buyer believe one I paid for. */
-  #verification{padding:62px 0; background:var(--white); border-top:1px solid var(--line);}
   .verify-box{
     display:grid; grid-template-columns:1.15fr 0.85fr; gap:44px; align-items:center;
     background:var(--paper); border:1px solid var(--line); border-left:3px solid var(--rust);
@@ -283,7 +282,7 @@
     margin-bottom:14px;
     background:
       linear-gradient(180deg, rgba(31,59,87,0.15) 0%, rgba(19,41,61,0.55) 100%),
-      url('church_bg_v2.jpg');
+      url('alajuela_bg.jpg');
     background-size:cover;
     background-position:center 40%;
   }
@@ -383,7 +382,6 @@
   .tier-sample:hover{color:var(--rust);}
 
   /* ---------- SELLERS & AGENTS ---------- */
-  #for-sellers{background:var(--white); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
   .sell-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:22px;}
   .sell-card{background:var(--paper); border:1px solid var(--line); border-left:3px solid var(--rust); padding:24px 24px 22px;}
   .sell-card .mono{
@@ -738,7 +736,7 @@
       <p class="ref-line">Every statement above is documented, with the statutes and government sources, in our free <a href="buying-guide.html">guide to buying and selling property in Costa Rica</a>.</p>
     </div>
     <div>
-      <div class="gap-photo"><span>Central Valley, Costa Rica</span></div>
+      <div class="gap-photo" role="img" aria-label="Aerial view over Alajuela, Costa Rica"><span>Alajuela, Costa Rica</span></div>
       <div class="fact-card">
         <span class="mono">On record</span>
         <p>A thirty-year Central Valley broker has said he's "hardly ever seen a buyer protected" against an underfunded HOA. Roughly four in five properties on the market here are condos or gated-community units carrying that exact risk.</p>
@@ -849,43 +847,13 @@
   </div>
 </section>
 
-<section id="for-sellers">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="kicker">Sellers &amp; Agents</span>
-      <h2>A listing with the paperwork already done.</h2>
-      <p>Most of what slows a sale is a buyer waiting to find out whether anything is wrong. The Listing Edition answers that before they ask.</p>
-    </div>
-
-    <div class="sell-grid">
-      <div class="sell-card">
-        <span class="mono">For the seller</span>
-        <p>A clean record is worth something only if the buyer can see it. Right now you are paying for the market's general suspicion and getting nothing back for being in good standing. A dated, sourced verification attached to the listing separates your property from the one next to it, and it removes the questions that stall an offer.</p>
-      </div>
-      <div class="sell-card">
-        <span class="mono">For the agent</span>
-        <p>Costa Rica gives you no title insurance and no national MLS to stand behind you, so when a buyer asks whether the tax is current or the addition was permitted, the answer rests on your word. A third-party document takes that weight off you, shortens the diligence period, and makes your listing the one with the file already open.</p>
-      </div>
-      <div class="sell-card">
-        <span class="mono">Why it stays neutral</span>
-        <p>The fee is the same whether a buyer or a seller orders it, and the findings are the same either way. We take no commission and have no stake in whether the property sells. A Listing Edition reports what the records say on the day they were checked. It is not an endorsement, not a valuation, and not a statement that the property is a good buy.</p>
-      </div>
-    </div>
-
-    <div class="sell-cta">
-      <a href="#tiers" class="btn btn-primary">See the Listing Edition</a>
-      <a href="r/TR-0000-0004.html" target="_blank" rel="noopener" class="btn btn-ghost">View a sample</a>
-      <span class="mono">$250 · 2–3 business days · yours to share with any buyer</span>
-    </div>
-  </div>
-</section>
 
 <section id="samples">
   <div class="wrap">
     <div class="section-head">
       <span class="kicker">The Evidence, Up Front</span>
       <h2 style="color:var(--navy);">View a sample report before you request one.</h2>
-      <p>Every section, every table, the full evidence log, verified sources, not assumptions. Each sample is published the way a real report is published, so you can also see how <a href="#verification" style="color:var(--rust);">verification</a> works before you commission anything. A PDF of each is downloadable from its page.</p>
+      <p>Every section, every table, the full evidence log, verified sources, not assumptions. Each sample is published the way a real report is published, so you can also see how <a href="verify.html" style="color:var(--rust);">verification</a> works before you commission anything. A PDF of each is downloadable from its page.</p>
     </div>
     <div class="samples-grid">
       <div class="sample-card">
@@ -916,30 +884,6 @@
   </div>
 </section>
 
-<section id="verification">
-  <div class="wrap">
-    <div class="verify-box">
-      <div>
-        <span class="kicker">Verification</span>
-        <h2>Every report can be checked against the version we published.</h2>
-        <p>Each report carries a unique ID and is published by us at a permanent address. Anyone holding a copy can confirm it against that version, at no cost, without permission from whoever handed it to them.</p>
-        <p>This is what makes a report worth showing. A seller who commissions one is not asking a buyer to take their word for it, and a buyer who is given one does not have to.</p>
-      </div>
-      <div>
-        <ul class="verify-points">
-          <li>The published version is the authoritative one</li>
-          <li>Where a copy differs from it, it has no standing</li>
-          <li>Findings cannot be edited, removed or redacted</li>
-          <li>Checking is free and takes a few seconds</li>
-        </ul>
-        <div class="verify-act">
-          <a href="verify.html" class="btn btn-dark">Verify a report</a>
-          <span class="verify-try">Try it with a sample ID: <b>TR-0000-0002</b></span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <section class="form-section" id="get-started">
   <div class="wrap" style="max-width:640px;">
@@ -1187,7 +1131,7 @@
         <ul>
           <li><a href="#why">Why This Exists</a></li>
           <li><a href="#tiers">Editions</a></li>
-          <li><a href="#for-sellers">Sellers &amp; Agents</a></li>
+          <li><a href="sellers-and-agents.html">Sellers &amp; Agents</a></li>
           <li><a href="#get-started">Request a report</a></li>
           <li><a href="#samples">View sample reports</a></li>
           <li><a href="buying-guide.html">Buying guide</a></li>
