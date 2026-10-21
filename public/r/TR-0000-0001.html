@@ -6,6 +6,7 @@
 <title>TR-0000-0001 | Sample Area Edition | THE REPORT</title>
 <meta name="description" content="A redacted sample Area Edition from THE REPORT by Jota Properties CR. Illustrative only, not an issued report.">
 <meta name="robots" content="index, follow">
+<link rel="canonical" href="https://jotapropertiescr.com/r/TR-0000-0001.html">
 <link rel="icon" type="image/png" sizes="512x512" href="../favicon-512.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -54,6 +55,22 @@
   .state.notcompleted{background:var(--paper); color:var(--ink-soft); border:1px dashed var(--rust);}
 
   .note{background:var(--paper); border-left:3px solid var(--rust); padding:14px 18px; margin:14px 0; font-size:14.5px;}
+
+  /* ---------- ZONE SUB-SECTION ----------
+     The zone dossier is one numbered section carrying several named parts.
+     They are sub-headings rather than sections of their own, so the eleven
+     fixed sections and their order stay exactly as published, while each
+     part still gets its own heading and its own source line and date. */
+  .zpart{margin:26px 0 0; padding-top:20px; border-top:1px solid var(--line);}
+  .zpart:first-of-type{margin-top:18px;}
+  .zpart h3{
+    font-family:'Source Serif 4', Georgia, serif; font-weight:600;
+    font-size:18px; line-height:1.3; color:var(--navy-deep); margin:0 0 6px;
+  }
+  .zpart .checked{margin-bottom:10px;}
+  @media (max-width:720px){
+    .zpart h3{font-size:16.5px;}
+  }
   .note .lbl{display:block; font-family:'IBM Plex Mono', monospace; font-size:10.5px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--rust); margin-bottom:6px;}
 
   table{width:100%; border-collapse:collapse; margin:10px 0 16px; font-size:13.5px;}
@@ -127,6 +144,15 @@
     .checked, .state{break-after:avoid; page-break-after:avoid;}
     p, dd, li{orphans:2; widows:2;}
     table, ul.flags li, .note{break-inside:avoid; page-break-inside:avoid;}
+    /* The manifest grew past a dozen rows. Kept whole it no longer fits after
+       the findings log and forces a six-line page, so let the table break and
+       protect the rows instead. */
+    table.manifest{break-inside:auto; page-break-inside:auto;}
+    table.manifest tr{break-inside:avoid; page-break-inside:avoid;}
+    /* A zone part is short enough to keep whole, and its heading must never
+       be the last thing on a sheet with its text overleaf. */
+    .zpart{break-inside:avoid; page-break-inside:avoid;}
+    .zpart h3{break-after:avoid; page-break-after:avoid;}
     table.manifest, table.manifest tbody{display:table;}
     table.manifest tr{display:table-row; border:0;}
     table.manifest tr:first-child{display:table-row;}
@@ -218,13 +244,29 @@
       </dl>
       <p>Zones were defined by cantonal and district boundary rather than by the names used in listings. "Lindora" and "Río Oro" are commercial names, not administrative districts, and a listing using one may sit in a different district from the one a buyer assumes.</p>
 
+      <div class="zpart">
+        <h3>About each zone</h3>
+        <div class="checked">Sources named inline &nbsp;·&nbsp; Reviewed <b>06 October 2026</b></div>
+        <p><b>Zone A.</b> Where the canton sits and what it adjoins, the corridor it is reached by, and the physical character of each district examined: the mix of gated developments and standalone houses, how built-up each sector is against the outlying parts of the same canton, and the commercial, medical and institutional anchors within a short drive. Private hospital campuses, business parks, schools, markets and the day a weekly <i>feria</i> runs are facts of the place, and are given with the operator named and, where recent, the date each opened or came into service.</p>
+        <p><b>Zone B.</b> The same account for the second canton, written to be read beside the first rather than as a separate report. Where the two differ in a way that would matter to the decision, elevation and climate, density, the character of the housing stock, the distance to private healthcare, that difference is stated plainly and neither zone is described as the better one.</p>
+        <p><b>Neither zone is one place.</b> The districts and sectors within each canton read differently from one another, and they are described separately rather than averaged. A buyer told only the name of a canton has been told very little.</p>
+        <div class="note"><span class="lbl">Observed, not recorded anywhere</span>Some of what matters about a sector is known rather than published: which streets flood first in a heavy afternoon, where traffic actually backs up against where a map suggests it should, how a sector has changed over the last two years. Anything here that comes from living in the Central Valley rather than from a record carries this label, so it is never read as a sourced finding. It is not a recommendation, and no zone is rated.</div>
+      </div>
+
+      <div class="zpart">
+        <h3>Current local conditions</h3>
+        <div class="checked">Position as at the date of this report, restated for every engagement</div>
+        <p>Anything live in either zone on the date this report was issued: roadworks and their stated duration, a water or sewer project underway, a zoning or Plan Regulador process in consultation, a municipal works programme, or a development in permitting that would change the immediate surroundings.</p>
+        <p>Where there is nothing unusual to report in a zone, this part says so in those words. It is restated for every engagement rather than left standing from a previous one, because a line that is never refreshed stops meaning anything.</p>
+      </div>
+
     </section>
 
     <section>
       <h2><span class="num">03</span>Water supply and reliability</h2>
       <div class="checked">Sources: <b>AyA</b>, <b>ASADA Atenas</b>, municipal records &nbsp;·&nbsp; Checked <b>06 October 2026</b></div>
       <span class="state flagged">Finding recorded</span>
-      <p><b>Zone A.</b> Supplied by AyA on the national network across the districts examined. Availability letters (carta de disponibilidad de agua) are issued by AyA directly, and the status of the supply at a given address is confirmable before purchase.</p>
+      <p><b>Zone A.</b> Supplied by AyA on the national network across the districts examined. Availability letters (<i>carta de disponibilidad de agua</i>) are issued by AyA directly, and the status of the supply at a given address is confirmable before purchase.</p>
       <p><b>Zone B.</b> Supply is split. Part of the canton is served by AyA and part by ASADAs, which are community-run water associations operating under their own statutes. Where an ASADA supplies a lot, a new connection requires the ASADA's own availability letter, and some ASADAs operate waiting lists for new connections.</p>
       <div class="note"><span class="lbl">Why this matters</span>A lot without a water availability letter cannot obtain a construction permit. Whether the supplying body is AyA or an ASADA, and whether it is currently issuing connections, is a question to settle before committing to a lot rather than after.</div>
       <p>Dry-season pressure reductions were reported by both bodies for parts of each zone. The affected sectors and the months stated were recorded and supplied with this report.</p>
@@ -272,12 +314,12 @@
     </section>
 
     <section>
-      <h2><span class="num">08</span>Property tax and holding costs</h2>
-      <div class="checked">Sources: <b>Municipalidad de Santa Ana</b>, <b>Municipalidad de Atenas</b>, <b>Hacienda</b> &nbsp;·&nbsp; Checked <b>08 October 2026</b></div>
+      <h2><span class="num">08</span>Municipal service charges and declaration cycles</h2>
+      <div class="checked">Sources: <b>Municipalidad de Santa Ana</b>, <b>Municipalidad de Atenas</b> &nbsp;·&nbsp; Checked <b>08 October 2026</b></div>
       <span class="state reported">Reported</span>
-      <p>Municipal property tax is levied at the national rate of 0.25% of the registered value, so the rate does not differ between the zones. What differs is the declared-value cycle each municipality runs and the additional municipal service charges applied, which are listed separately for each canton.</p>
-      <p>The solidarity tax on high-value homes (impuesto solidario) applies nationally above the threshold published by Hacienda for the year. The threshold in force on the date checked is stated, along with the obligation to declare.</p>
-      <p>Garbage, street lighting and other municipal service charges are listed per canton as published, with the date of the published schedule.</p>
+      <p>Garbage collection, street lighting and any other municipal service charges applied in each zone, listed per canton as published, with the date of the published schedule relied on. These are the recurring charges that differ between the cantons examined.</p>
+      <p>The declared-value cycle each municipality runs, which sets when an owner in that canton is next required to update the declaration. The cycle differs by municipality even though the obligation does not.</p>
+      <div class="note"><span class="lbl">What this section does not cover</span>Property tax and the solidarity tax on high-value homes are set nationally and do not differ between zones, so neither is reported here. Both are covered, with the governing law, in our <a href="../buying-guide.html">buying guide</a>, which is maintained and therefore current, where a figure printed in a dated report would not be. Tax on a specific property is reported only once a property is identified, in the Records, Listing and Full Editions.</div>
 
     </section>
 
