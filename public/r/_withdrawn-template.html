@@ -128,6 +128,11 @@
     @page{ margin:14mm 13mm 24mm; }
     body{background:#FFFFFF; font-size:11.3pt; line-height:1.5;}
     .sheet{max-width:none; border:0; padding-bottom:6mm;}
+    /* The cover block is short enough that its last meta row landed in the
+       running footer band and was overprinted by it. Keeping the cover whole
+       and pushing it clear of the footer fixes it without touching the
+       shared layout the issued reports use. */
+    .cover{break-inside:avoid; page-break-inside:avoid; margin-bottom:16mm;}
     .pad, .cover, .idbar, .pagefoot, .closing{padding-left:0; padding-right:0;}
     .cover{background:#FFFFFF !important; color:#1C2530; border-bottom:2px solid var(--rust); padding-top:0;}
     .cover h1{color:var(--navy-deep);}
