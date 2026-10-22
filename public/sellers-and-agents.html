@@ -58,7 +58,7 @@
   }
 
   /* ---------- HERO ---------- */
-  .hero{background:var(--navy-deep); color:var(--white); padding:72px 0 66px;}
+  .hero{color:var(--white);}
   .hero .kicker{font-family:'IBM Plex Mono', monospace; font-size:13px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--manila); display:block; margin-bottom:18px;}
   .hero h1{font-family:'Source Serif 4', serif; font-size:42px; line-height:1.12; margin-bottom:20px; max-width:17ch;}
   .hero p{font-size:18px; color:rgba(255,255,255,0.78); max-width:62ch;}
@@ -147,6 +147,50 @@
   .social svg{width:17px; height:17px; fill:currentColor; display:block;}
   footer p{color:rgba(255,255,255,0.6); font-size:13px; margin:0; max-width:none;}
   footer a{color:var(--manila);}
+
+  /* ---- Page header band ----
+     The buying guide's treatment, adopted as the standard for interior pages:
+     a navy field with the seal, kicker, headline and lede, closed by a rust
+     rule. The homepage keeps its video hero; the Terms and thank-you pages
+     keep their document panel. */
+  .ghero-band{
+    position:relative; overflow:hidden;
+    background:radial-gradient(ellipse at 78% 5%, #2d5672 0%, #142e45 44%, #0d2236 100%);
+    color:var(--white);
+    padding:68px 0 74px; margin-bottom:0;
+    border-bottom:5px solid var(--rust);
+  }
+  .ghero-band:before{
+    content:''; position:absolute; inset:0; pointer-events:none; opacity:.26;
+    background-image:repeating-radial-gradient(ellipse at 80% 95%, transparent 0 30px, rgba(216,199,161,.22) 31px 32px, transparent 33px 62px);
+    -webkit-mask-image:linear-gradient(90deg, transparent 34%, #000 100%);
+    mask-image:linear-gradient(90deg, transparent 34%, #000 100%);
+  }
+  .ghero-band:after{
+    content:''; position:absolute; right:-90px; bottom:-30px; width:50%; height:66%; opacity:.17;
+    background:linear-gradient(135deg, transparent 49%, #f2dcc0 50%, transparent 51%) center/55px 55px;
+    clip-path:polygon(0 100%, 11% 55%, 27% 78%, 45% 22%, 62% 55%, 79% 0%, 100% 30%, 100% 100%);
+  }
+  .ghero-band .wrap{position:relative; z-index:2;}
+  .ghero-band .seal{width:102px; height:102px; margin-bottom:20px; display:block;
+    filter:drop-shadow(0 5px 13px rgba(0,0,0,.24));}
+  .ghero-band .kicker{color:var(--manila);}
+  .ghero-band h1{color:var(--white); max-width:720px; font-size:clamp(36px,5vw,53px);
+    letter-spacing:-.025em; line-height:1.12; margin-bottom:14px;}
+  .ghero-band p, .ghero-band .lede{color:rgba(255,255,255,0.88); font-size:18px; max-width:710px;}
+  @media (max-width:760px){
+    .ghero-band{padding:44px 0 46px;}
+    .ghero-band h1{font-size:33px;}
+    .ghero-band .seal{width:78px; height:78px; margin-bottom:16px;}
+  }
+  @media print{
+    .ghero-band{background:#FFFFFF !important; color:#1C2530; padding:0; margin-bottom:18px;
+      border-bottom:2px solid #A83810;}
+    .ghero-band:before, .ghero-band:after{display:none;}
+    .ghero-band h1{color:#1F3B57;}
+    .ghero-band .kicker{color:#A83810;}
+    .ghero-band p, .ghero-band .lede{color:#1C2530;}
+  }
 </style>
 </head>
 <body>
@@ -163,8 +207,9 @@
   </div>
 </nav>
 
-<div class="hero">
+<div class="hero ghero-band">
   <div class="wrap">
+    <img class="seal" src="the-report-seal-cream.png" alt="" width="102" height="102">
     <span class="kicker">For Sellers &amp; Agents</span>
     <h1>The records verified before the listing goes up.</h1>
     <p>Most of what delays a sale in Costa Rica is not the price. It is the weeks spent establishing what the public record already says about the property, after an offer is on the table and everyone is waiting. This is that work, done first, by someone with no stake in the sale.</p>
