@@ -969,6 +969,14 @@
         <input type="hidden" id="tier" name="edition">
         <input type="hidden" id="tierKey" name="tier_key">
 
+        <!-- The Terms version in force when this page was published. Section 18 states that
+             the version applying to an order is recorded against that order at checkout, and
+             this is what records it. Raise this value in the same change that raises the
+             version in terms.html, then run archive_terms.py. The payload is built with
+             Object.fromEntries(formData), so it reaches the intake function and the Netlify
+             Forms backup without any further wiring. -->
+        <input type="hidden" id="termsVersion" name="terms_version" value="1">
+
         <div class="field-row">
           <div class="field full">
             <label for="timeline">Timeline</label>
