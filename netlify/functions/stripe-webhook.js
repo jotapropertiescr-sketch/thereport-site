@@ -37,8 +37,14 @@ const PAYMENT_RCVD_STAGE = 'presentationscheduled'; // "Payment Rcvd" in THE REP
 // having to open it.
 const AWAITING_OWNER_DOCS_STAGE = '4514711270';
 
-// Editions that depend on a document only the registered owner can obtain.
+// Editions that DEPEND on a document only the registered owner can obtain, so
+// the deal waits in Awaiting Owner Docs and the chase cadence runs.
 const OWNER_DOC_TIERS = ['listing_edition', 'full_edition'];
+
+// Editions that report a use-of-land certificate when one is supplied. Records
+// is here but not above: it is delivered on its normal schedule whether or not
+// a certificate arrives, so it goes to Payment Rcvd and gets no chase tasks.
+const USO_TIERS = ['records_edition', 'listing_edition', 'full_edition'];
 
 const TIER_VALUES = {
   area_edition:    'Area Edition ($150)',
@@ -209,8 +215,9 @@ exports.handler = async (event) => {
   const needsOwnerDocs =
     session.metadata?.owner_docs_required === 'yes' || OWNER_DOC_TIERS.includes(tier);
   const paidStage = needsOwnerDocs ? AWAITING_OWNER_DOCS_STAGE : PAYMENT_RCVD_STAGE;
+  const collectsUso = USO_TIERS.includes(tier) || Boolean(session.metadata?.uso_de_suelo_status);
   const usoStatus = session.metadata?.uso_de_suelo_status || '';
-  const usoLabel = needsOwnerDocs
+  const usoLabel = collectsUso
     ? (USO_LABELS[usoStatus] || USO_LABELS.not_answered)
     : 'not applicable to this edition';
 
@@ -327,6 +334,13 @@ exports.handler = async (event) => {
       (briefingAddon ? `Add-on purchased: ${ADDON_VALUES[briefingAddon]}\n` : '') +
       `Stripe session: ${session.id}\n` +
       `Paid: ${paidAt}\n\n` +
+      (!needsOwnerDocs && collectsUso
+        ? `USO DE SUELO, BUYER SIDE\n` +
+          `Status at intake: ${usoLabel}\n` +
+          `Report it if it arrives. Do NOT hold delivery for it: this edition ships on\n` +
+          `its normal schedule with that entry marked not provided if nothing reaches\n` +
+          `us in time.\n\n`
+        : '') +
       (needsOwnerDocs
         ? `OWNER DOCUMENTS OUTSTANDING\n` +
           `Uso de suelo: ${usoLabel}\n` +
@@ -419,17 +433,19 @@ exports.handler = async (event) => {
         },
         {
           days: 14,
-          subject: `DECISION due, uso de suelo: ${fields.propertyaddress || 'see deal'}`,
+          subject: `DELIVER marked, uso de suelo not received: ${fields.propertyaddress || 'see deal'}`,
           body:
-            `Tenth business day after payment. Under Terms section 4 the client now\n` +
-            `chooses, and this is the day they have to be asked.\n\n` +
+            `Tenth business day after payment. Under Terms section 4 the report is\n` +
+            `delivered now, with the use-of-land entry printed and marked "Not provided\n` +
+            `by owner. Not verified." The engagement is then complete.\n\n` +
             `Status at intake: ${usoLabel}\n` +
             `Property: ${fields.propertyaddress || 'see deal'}\n\n` +
-            `Contact the client and offer the two options: delivery of the report with\n` +
-            `the use-of-land entry printed and marked "Not provided by owner. Not\n` +
-            `verified.", or cancellation of the order and a full refund.\n\n` +
-            `If they do not respond within five business days, deliver with the entry\n` +
-            `marked not provided and the engagement is complete.\n\n` +
+            `No refund and no fee reduction. Every other section was performed, and the\n` +
+            `certificate is one only the registered owner can obtain. This was stated on\n` +
+            `the order form, the confirmation page and the Terms before payment.\n\n` +
+            `Send a short note with the report saying the certificate did not arrive in\n` +
+            `time and the entry reflects that. Do not apologise for it and do not imply\n` +
+            `the client failed; state what happened and move on.\n\n` +
             `Close this task if the certificate has already arrived.`,
           priority: 'HIGH',
         },
