@@ -15,7 +15,7 @@
 // Exact stored values, typos included, reproduced deliberately. A value that
 // does not match exactly is silently dropped by HubSpot.
 //
-//   report_tier        Area / Records / Full ONLY
+//   report_tier        Area / Records / Listing / Full ONLY
 //   addons_purchased   multi-select: refresh base, refresh add-ons,
 //                      Full Refresh bundle, and both BRIEFING rates.
 //   referral_source    "jotapropeties.com" is the stored value
@@ -37,6 +37,7 @@ const REFRESH_SUCCESS_URL = `${SITE}/refresh-confirmed.html?session_id={CHECKOUT
 const CANCEL_URL = `${SITE}/#get-started`;
 
 // Stripe price IDs. LIVE values, set 6 September 2026.
+// Listing Edition added 28 October 2026.
 // Sandbox equivalents, kept only for rollback:
 //   area price_1UAJjgANWNWwClOG8pk5JSlv | records price_1UAJinANWNWwClOGPWLmUdaY
 //   full price_1UAJhJANWNWwClOGrrKSGWTp | refresh price_1UC0rDANWNWwClOGXznf6Jou
@@ -46,6 +47,7 @@ const CANCEL_URL = `${SITE}/#get-started`;
 const PRICES = {
   area_edition:        { price: 'price_1UCjThAbJGZH8ax8CppydUns', mode: 'payment' },
   records_edition:     { price: 'price_1UCjTdAbJGZH8ax8IUcDN9eR', mode: 'payment' },
+  listing_edition:     { price: 'price_1URuliAbJGZH8ax8efLycmGl', mode: 'payment' },
   full_edition:        { price: 'price_1UCjTiAbJGZH8ax8hydXGDZ1', mode: 'payment' },
   annual_refresh:      { price: 'price_1UCjTiAbJGZH8ax8i5bnK1TX', mode: 'payment' }, // Records Refresh $175
   briefing_standard:   { price: 'price_1UCjTdAbJGZH8ax8q8UdWeym', mode: 'subscription' },
@@ -83,7 +85,22 @@ function briefingAddonFor(tier) {
 const TIER_VALUES = {
   area_edition:    'Area Edition ($150)',
   records_edition: 'Records Editon ($250)',
+  listing_edition: 'Listing Edition ($250)',
   full_edition:    'Full Edition ($750)',
+};
+
+// Editions where the engagement depends on a document only the registered
+// owner can obtain from the municipality. Used to decide whether the uso de
+// suelo question is expected on this order.
+const OWNER_DOC_TIERS = ['listing_edition', 'full_edition'];
+
+// The intake form's uso de suelo answers, in words a human reads on the deal
+// timeline. The form only shows the question on Listing and Full.
+const USO_LABELS = {
+  have_it:    'Client has it, emailing after checkout',
+  requesting: 'Requested from the municipality, not yet issued',
+  not_yet:    'Not yet requested',
+  not_owner:  'Client is not the owner and cannot request it',
 };
 
 // HubSpot's "Add-Ons Purchased" stored values, exactly as the property spells
@@ -289,6 +306,9 @@ exports.handler = async (event) => {
     zone = '',
     folio_real = '',
     listing_ref = '',
+    plano_catastrado = '',
+    uso_de_suelo_status = '',
+    terms_version = '',
     add_bundle = '',
     bundle_property = '',
     refresh_hoa = '',
@@ -303,6 +323,13 @@ exports.handler = async (event) => {
   const [firstname, ...restOfName] = name.trim().split(/\s+/);
   const lastname = restOfName.join(' ');
   const isArea = tier === 'area_edition';
+
+  // Listing and Full depend on a document only the registered owner can get
+  // from the municipality, so the uso de suelo answer is expected on those
+  // orders and meaningless on the others.
+  const expectsOwnerDocs = OWNER_DOC_TIERS.includes(tier);
+  const usoLabel = USO_LABELS[uso_de_suelo_status]
+    || (expectsOwnerDocs ? 'not answered at intake' : 'not applicable to this edition');
 
   // The buyer ticked the add-on box. Only meaningful on the four report
   // tiers; someone subscribing to THE BRIEFING alone cannot add it twice.
@@ -366,6 +393,10 @@ exports.handler = async (event) => {
     if (folio_real) dealProps.folio_real = folio_real;
     // HubSpot named this property listing_link_or_id, from the label.
     if (listing_ref) dealProps.listing_link_or_id = listing_ref;
+    // The survey plan number, supplied at intake when the client has it. The
+    // report states what the plan on file says; this is only the lookup key.
+    if (plano_catastrado) dealProps.plano_catastrado = plano_catastrado.trim();
+    if (terms_version) dealProps.terms_version_accepted = String(terms_version).trim();
 
     const deal = await hs('/crm/v3/objects/deals', 'POST', {
       properties: dealProps,
@@ -389,16 +420,23 @@ exports.handler = async (event) => {
       `${isArea ? 'Zones of interest' : 'Property location'}: ${property || 'not provided'}\n` +
       `Finca / Folio Real: ${folio_real || 'not provided'}\n` +
       `Listing link or ID: ${listing_ref || 'not provided'}\n` +
+      `Plano catastrado: ${plano_catastrado || 'not provided'}\n` +
       (wantsBundle
         ? `BUNDLE: Records Edition check added ($200)\n`
           + `Records Edition property: ${bundle_property.trim()}\n`
         : '') +
       `Entity: ${entity || 'not provided'}\n` +
       `HOA: ${hoa || 'not provided'}\n` +
+      `Uso de suelo (owner-provided): ${usoLabel}\n` +
+      (expectsOwnerDocs
+        ? `NOTE: delivery clock starts when the uso de suelo certificate is received.\n`
+          + `Hold this deal in Awaiting Owner Docs until it arrives.\n`
+        : '') +
       `Agent or attorney: ${agent_or_attorney || 'not provided'}\n` +
       `Timeline: ${timeline || 'not provided'}\n` +
       `Phone: ${phone || 'not provided'}\n` +
       `Heard about us: ${referral_source || 'not answered'}\n` +
+      `Terms version accepted: ${terms_version || 'not captured'}\n` +
       (notes ? `\nClient notes:\n${notes}\n` : '') +
       `\nSubmitted: ${new Date().toISOString()}\n` +
       `(Entity, HOA, agent, timeline and notes have no deal properties; they live here.)`;
@@ -452,6 +490,10 @@ exports.handler = async (event) => {
       zone: clip(zone, 60),
       folio_real: clip(folio_real, 80),
       listing_ref: clip(listing_ref, 300),
+      plano_catastrado: clip(plano_catastrado, 80),
+      uso_de_suelo_status: expectsOwnerDocs ? (uso_de_suelo_status || 'not_answered') : undefined,
+      owner_docs_required: expectsOwnerDocs ? 'yes' : 'no',
+      terms_version: clip(terms_version, 20),
       bundle_records: wantsBundle ? 'yes' : 'no',
       bundle_property: wantsBundle ? clip(bundle_property) : undefined,
       entity: clip(entity),
