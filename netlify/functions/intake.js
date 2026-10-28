@@ -89,10 +89,16 @@ const TIER_VALUES = {
   full_edition:    'Full Edition ($750)',
 };
 
-// Editions where the engagement depends on a document only the registered
-// owner can obtain from the municipality. Used to decide whether the uso de
-// suelo question is expected on this order.
+// Editions where the engagement DEPENDS on a document only the registered
+// owner can obtain, so the turnaround runs from receipt of it and the deal
+// waits in Awaiting Owner Docs.
 const OWNER_DOC_TIERS = ['listing_edition', 'full_edition'];
+
+// Editions that report a use-of-land certificate when one is supplied. Records
+// is here but not above: a buyer-side order is reported if the certificate
+// arrives and delivered on its normal schedule if it does not, so the answer
+// is captured without the order ever waiting on it.
+const USO_TIERS = ['records_edition', 'listing_edition', 'full_edition'];
 
 // The intake form's uso de suelo answers, in words a human reads on the deal
 // timeline. The form only shows the question on Listing and Full.
@@ -328,8 +334,9 @@ exports.handler = async (event) => {
   // from the municipality, so the uso de suelo answer is expected on those
   // orders and meaningless on the others.
   const expectsOwnerDocs = OWNER_DOC_TIERS.includes(tier);
+  const collectsUso = USO_TIERS.includes(tier);
   const usoLabel = USO_LABELS[uso_de_suelo_status]
-    || (expectsOwnerDocs ? 'not answered at intake' : 'not applicable to this edition');
+    || (collectsUso ? 'not answered at intake' : 'not applicable to this edition');
 
   // The buyer ticked the add-on box. Only meaningful on the four report
   // tiers; someone subscribing to THE BRIEFING alone cannot add it twice.
@@ -431,7 +438,11 @@ exports.handler = async (event) => {
       (expectsOwnerDocs
         ? `NOTE: delivery clock starts when the uso de suelo certificate is received.\n`
           + `Hold this deal in Awaiting Owner Docs until it arrives.\n`
-        : '') +
+        : collectsUso
+          ? `NOTE: buyer-side order. Report the certificate if it arrives, but do NOT\n`
+            + `hold delivery for it. This edition ships on its normal schedule with that\n`
+            + `entry marked not provided if nothing reaches us in time.\n`
+          : '') +
       `Agent or attorney: ${agent_or_attorney || 'not provided'}\n` +
       `Timeline: ${timeline || 'not provided'}\n` +
       `Phone: ${phone || 'not provided'}\n` +
@@ -491,7 +502,7 @@ exports.handler = async (event) => {
       folio_real: clip(folio_real, 80),
       listing_ref: clip(listing_ref, 300),
       plano_catastrado: clip(plano_catastrado, 80),
-      uso_de_suelo_status: expectsOwnerDocs ? (uso_de_suelo_status || 'not_answered') : undefined,
+      uso_de_suelo_status: collectsUso ? (uso_de_suelo_status || 'not_answered') : undefined,
       owner_docs_required: expectsOwnerDocs ? 'yes' : 'no',
       terms_version: clip(terms_version, 20),
       bundle_records: wantsBundle ? 'yes' : 'no',
