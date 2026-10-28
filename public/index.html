@@ -527,6 +527,11 @@
   .addon-line b{color:var(--rust); white-space:nowrap;}
   .uso-note{font-size:13px; line-height:1.55; color:var(--ink-soft); margin:9px 0 0;
     padding-left:11px; border-left:2px solid var(--rust);}
+  /* Scannable qualifier beside a field label, because the paragraph below it
+     tells the truth and most people will not read it. */
+  .flabel-tag{font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:0.06em;
+    text-transform:uppercase; color:var(--rust); border:1px solid var(--rust);
+    border-radius:2px; padding:1px 5px; margin-left:8px; vertical-align:1px; font-weight:600;}
   .save-note{font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.04em;
     color:var(--ink-soft); font-weight:600; white-space:nowrap;}
   .form-confirm{
@@ -831,6 +836,7 @@
           <li>Survey plan (plano catastrado) on file</li>
           <li>Tax status summary</li>
           <li>Zone dossier for the property's zone</li>
+          <li>Land-use certificate (uso de suelo), reported if supplied</li>
           <li>Findings flag log</li>
         </ul>
         <button class="tier-select" data-tier="Records Edition" data-price="$250" data-key="records_edition">Select Records Edition</button>
@@ -1071,7 +1077,7 @@
 
         <div class="field-row" id="usoRow" hidden>
           <div class="field full">
-            <label for="usoStatus">Land-use certificate (uso de suelo)</label>
+            <label for="usoStatus">Land-use certificate (uso de suelo)<span class="flabel-tag" id="usoTag">optional</span></label>
             <select id="usoStatus" name="uso_de_suelo_status">
               <option value="">Select one</option>
               <option value="have_it">I have it and will email it after checkout</option>
@@ -1079,14 +1085,23 @@
               <option value="not_yet">I have not requested it yet</option>
               <option value="not_owner">I am not the owner and cannot request it</option>
             </select>
-            <p class="uso-note">Owner-provided. Only the registered owner may request this certificate from the
-            municipality, so we cannot obtain it for you. After checkout, upload it at
+            <p class="uso-note" id="usoNoteOwner">Owner-provided, and this is the document that sets your delivery
+            date. You can place the order without it. Only the registered owner may request this
+            certificate from the municipality, so we cannot obtain it for you. After checkout, upload it at
             <a href="https://www.dropbox.com/request/6023am9n19nb1qzrw6of" target="_blank" rel="noopener">our secure upload page</a>
             (no account needed) or email it to contact@jotapropertiescr.com, naming the file or the subject line with
             the property address. We confirm receipt either way. The 2 to 3 business day turnaround runs from receipt
             of all owner-provided documents. Municipal issuance times vary and are outside our control. If the
-            certificate has not reached us by the tenth business day after payment, we will contact you and you may
-            choose delivery with that entry marked not provided, or a full refund.</p>
+            certificate has not reached us by the tenth business day after payment, we deliver the report with that
+            entry printed and marked not provided, since the rest of the work is done either way.</p>
+            <p class="uso-note" id="usoNoteBuyer" hidden>Optional, and reported if we receive it. Only the registered
+            owner may request this certificate from the municipality, so if you are not the owner you would need to ask
+            the owner or listing agent for a copy. If you have one, upload it at
+            <a href="https://www.dropbox.com/request/6023am9n19nb1qzrw6of" target="_blank" rel="noopener">our secure upload page</a>
+            (no account needed) or email it to contact@jotapropertiescr.com, naming the file or the subject line with
+            the property address. <b>Your delivery is not held waiting for it.</b> This edition is delivered 2 to 3
+            business days from checkout either way, and if no certificate reaches us in time that entry is printed and
+            marked not provided.</p>
           </div>
         </div>
 
@@ -1310,14 +1325,30 @@
     syncBundleProperty();
   }
 
-  // The use-of-land certificate is only ever supplied by the registered owner,
-  // so it is asked for on the two editions an owner or listing agent commissions.
-  // Switching tiers clears it, so a stale answer cannot ride along on another order.
+  // The use-of-land certificate is asked for on the three property editions.
+  // It reads the same in the report whichever edition carries it, but the
+  // promise differs: on Listing and Full the owner is the client or in the
+  // loop, so the turnaround runs from receipt of their documents. Records is a
+  // buyer-side order and is never held waiting on a seller's paperwork, so it
+  // gets the second note instead. Switching tiers clears the answer, so a
+  // stale one cannot ride along on another order.
   var usoRow = document.getElementById('usoRow');
   var usoStatus = document.getElementById('usoStatus');
+  var usoNoteOwner = document.getElementById('usoNoteOwner');
+  var usoNoteBuyer = document.getElementById('usoNoteBuyer');
+  var usoTag = document.getElementById('usoTag');
   function syncUso(tierKey){
-    var on = (tierKey === 'listing_edition' || tierKey === 'full_edition');
+    var ownerSide = (tierKey === 'listing_edition' || tierKey === 'full_edition');
+    var on = ownerSide || tierKey === 'records_edition';
     usoRow.hidden = !on;
+    usoNoteOwner.hidden = !ownerSide;
+    usoNoteBuyer.hidden = ownerSide;
+    // The certificate is never required to place an order, so the tag never
+    // says "required". On the owner-side editions it sets the delivery date,
+    // which is what "expected" is telling them. The answer IS required there,
+    // because an unanswered question is worse than any of the four answers.
+    usoTag.textContent = ownerSide ? 'expected' : 'optional';
+    usoStatus.required = ownerSide;
     if (!on) usoStatus.value = '';
   }
 
