@@ -6,6 +6,13 @@
 <title>TR-0000-0004 | Sample Listing Edition | THE REPORT</title>
 <meta name="description" content="A redacted sample Listing Edition from THE REPORT by Jota Properties CR. Illustrative only, not an issued report.">
 <meta name="robots" content="index, follow">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sample Listing Edition | THE REPORT">
+<meta property="og:description" content="A redacted sample of the records verification commissioned before a property is listed, built to be handed to buyers. Anyone holding a copy can confirm it against the version we publish.">
+<meta property="og:url" content="https://jotapropertiescr.com/r/TR-0000-0004.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sample Listing Edition | THE REPORT">
+<meta name="twitter:description" content="A redacted sample of the records verification commissioned before a property is listed, built to be handed to buyers. Anyone holding a copy can confirm it against the version we publish.">
 <link rel="canonical" href="https://jotapropertiescr.com/r/TR-0000-0004.html">
 <link rel="icon" type="image/png" sizes="512x512" href="../favicon-512.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
@@ -140,6 +147,9 @@
     .checked, .state{break-after:avoid; page-break-after:avoid;}
     p, dd, li{orphans:2; widows:2;}
     table, ul.flags li, .note{break-inside:avoid; page-break-inside:avoid;}
+    /* Three orphan lines of the closing block landed on a sheet of their own.
+       It is short enough to keep whole. */
+    .closing{break-inside:avoid; page-break-inside:avoid;}
     /* The manifest grew past a dozen rows. Kept whole it no longer fits after
        the findings log and forces a six-line page, so let the table break and
        protect the rows instead. */
@@ -157,9 +167,14 @@
     /* The footer is fixed on every sheet, so its height has to fit inside the
        @page bottom margin. Left to wrap onto a second line it overlaps the
        body text, which it did at Letter width. One line, no wrapping. */
+    /* The footer is fixed, so body text can flow down to meet it and there is no
+       way to reserve a band per page in paged media. An opaque background and a
+       rule at the top of that box paint over the descenders of the last line,
+       which clipped text at the tightest break. Transparent, no rule: a close
+       line now reads as tight spacing instead of cut letters. */
     .pagefoot{
-      position:fixed; bottom:0; left:0; right:0; background:#FFFFFF;
-      border-top:1px solid var(--line); padding:5px 6mm 0;
+      position:fixed; bottom:0; left:0; right:0; background:transparent;
+      border-top:0; padding:5px 6mm 0;
       font-size:7.5pt; letter-spacing:0.015em; gap:10px;
       flex-wrap:nowrap; white-space:nowrap; overflow:hidden;
     }
@@ -256,12 +271,16 @@
 
     <section>
       <h2><span class="num">04</span>Title and registry standing</h2>
-      <div class="checked">Source: <b>Registro Nacional, Bienes Inmuebles</b> &nbsp;·&nbsp; Checked <b>12 October 2026</b></div>
+      <div class="checked">Sources: <b>Registro Nacional, Bienes Inmuebles</b> checked <b>12 October 2026</b> &nbsp;·&nbsp; <b>Registro Nacional, Catastro</b> checked <b>12 October 2026</b></div>
       <span class="state flagged">Finding recorded</span>
       <p>The registered owner on the date checked, the instrument under which title was acquired, and the date that instrument was recorded.</p>
       <p>Charges appearing against the finca on the date checked: one mortgage in first rank in favour of a Costa Rican bank, recorded with its date and principal, and one annotation. Each is reported with the date it was entered and the party recorded.</p>
       <div class="note"><span class="lbl">A finding is not a defect</span>A mortgage on a listed property is ordinary and is usually released at closing. It is reported because it is on the register, not because it is a problem. This report does not characterise findings, and a seller showing this report is showing the record, not a verdict on it.</div>
       <p>No usufruct, habitation right or recorded easement appeared against the finca on the date checked. That is stated as nothing appearing on that date, not as a guarantee that nothing exists.</p>
+      <p><b>Plano catastrado.</b> The registered survey plan for this finca: the plan number, the date it was registered, whether it is linked to the folio real, and whether the area and the owner shown on the plan agree with the folio. Where those figures do not agree, each is stated with its source and the difference is recorded as a finding rather than reconciled here.</p>
+      <p>Where no plan is found on file for the finca, or a plan cannot be located from the information available at the time of the check, that is recorded as a finding and stated as such rather than left out.</p>
+      <div class="note"><span class="lbl">Limit of this section</span>This reports what the survey plan on file states. It is not a survey and does not confirm boundaries on the ground.</div>
+
 
     </section>
 
@@ -346,7 +365,10 @@
         <h3>Zoning, land use and municipal rules</h3>
         <div class="checked">Sources: <b>Plan Regulador</b> where in force, municipal Control Constructivo &nbsp;·&nbsp; Reviewed <b>08 October 2026</b></div>
         <p>Whether this canton has a Plan Regulador in force, what it permits in this sector, and the setback, height and coverage rules that apply here. Where the canton has none in force, that is stated together with the national rules (INVU) that apply in its absence.</p>
-        <div class="note"><span class="lbl">Limit of this section</span>A use-of-land certificate (<i>uso de suelo</i>) is issued by the municipality for a specific lot. This section describes the rules governing the zone. What this particular lot is permitted to do is established per lot, and is reported above where it was obtained for this engagement.</div>
+        <p><b>Municipal GIS and zoning layers.</b> Where the municipality publishes a public GIS or zoning layer, it is consulted and named here with the date it was viewed. Coverage and currency vary between cantons. A published layer is informational only. It does not substitute for the use-of-land certificate and is not presented as a guarantee of the position for any particular lot.</p>
+        <div class="note"><span class="lbl">Limit of this section</span>A use-of-land certificate (<i>uso de suelo</i>) is issued by the municipality for a specific lot. Everything above describes the rules governing the zone. What this particular lot is permitted to do is established per lot, and is reported immediately below.</div>
+        <p><b>Use-of-land certificate (<i>uso de suelo</i>).</b> Property-specific, and supplied by the owner at intake, because only the registered owner may request it from the municipality. Where it is provided, this report states the date on the certificate, the municipality that issued it, the permitted use stated on it, and whether that permitted use matches the property&rsquo;s current or listed use. Where the two differ, both are stated and the difference is recorded as a finding.</p>
+        <div class="note"><span class="lbl">Where it is not provided</span>The line is printed and marked <b>Not provided by owner. Not verified.</b> The report is delivered on schedule rather than held, and the absence is stated rather than left out, because a line that quietly disappears makes a missing certificate look like a clean one.</div>
       </div>
 
       <div class="zpart">
@@ -403,11 +425,13 @@
       <table class="manifest">
         <tr><th>Source</th><th>What was requested</th><th>Date</th><th>Result</th></tr>
         <tr><td data-label="Source">Registro Nacional, Bienes Inmuebles</td><td data-label="Requested">Folio real, charges and annotations</td><td class="date" data-label="Date">12 Oct 2026</td><td data-label="Result">Returned</td></tr>
-        <tr><td data-label="Source">Registro Nacional, catastral map</td><td data-label="Requested">Plano match to registry record</td><td class="date" data-label="Date">12 Oct 2026</td><td data-label="Result">Returned</td></tr>
+        <tr><td data-label="Source">Registro Nacional, Catastro</td><td data-label="Requested">Plano catastrado: number, date, finca link, area and owner</td><td class="date" data-label="Date">12 Oct 2026</td><td data-label="Result">Returned</td></tr>
         <tr><td data-label="Source">Registro Nacional, Personas Jur&iacute;dicas</td><td data-label="Requested">Corporate status and representation</td><td class="date" data-label="Date">13 Oct 2026</td><td data-label="Result">Returned</td></tr>
         <tr><td data-label="Source">Municipalidad de Santa Ana</td><td data-label="Requested">Property tax account statement</td><td class="date" data-label="Date">13 Oct 2026</td><td data-label="Result">Returned</td></tr>
         <tr><td data-label="Source">Hacienda, TRIBU-CR</td><td data-label="Requested">National tax obligations</td><td class="date" data-label="Date">13 Oct 2026</td><td data-label="Result">Returned</td></tr>
         <tr><td data-label="Source">RTBF beneficial ownership register</td><td data-label="Requested">Ultimate ownership</td><td class="date" data-label="Date">13 Oct 2026</td><td data-label="Result">Not publicly accessible</td></tr>
+        <tr><td data-label="Source">Municipality, use-of-land certificate</td><td data-label="Requested">Uso de suelo, supplied by the owner</td><td class="date" data-label="Date">13 Oct 2026</td><td data-label="Result">Returned</td></tr>
+        <tr><td data-label="Source">Municipal GIS / zoning layer</td><td data-label="Requested">Published zoning layer, where the municipality publishes one</td><td class="date" data-label="Date">13 Oct 2026</td><td data-label="Result">Consulted</td></tr>
         <tr><td data-label="Source">Zone dossier, Pozos, Santa Ana</td><td data-label="Requested">Maintained zone content for this sector</td><td class="date" data-label="Date">08 Oct 2026</td><td data-label="Result">Last reviewed, carried in full</td></tr>
       </table>
       <p>A source that returned nothing, or that was not accessible, is listed anyway. What was not available is part of what this report tells you.</p>
