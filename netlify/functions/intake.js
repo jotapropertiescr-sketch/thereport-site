@@ -89,10 +89,12 @@ const TIER_VALUES = {
   full_edition:    'Full Edition ($750)',
 };
 
-// Editions where the engagement DEPENDS on a document only the registered
-// owner can obtain, so the turnaround runs from receipt of it and the deal
-// waits in Awaiting Owner Docs.
-const OWNER_DOC_TIERS = ['listing_edition', 'full_edition'];
+// Editions commissioned by an owner or listing agent, where a certificate is
+// reasonably expected to exist already. This changes how the order form is
+// worded and nothing else: no edition's delivery waits for a certificate,
+// because municipal issuance takes roughly ten to thirty days and cannot fit
+// any delivery window.
+const OWNER_SIDE_TIERS = ['listing_edition', 'full_edition'];
 
 // Editions that report a use-of-land certificate when one is supplied. Records
 // is here but not above: a buyer-side order is reported if the certificate
@@ -333,7 +335,7 @@ exports.handler = async (event) => {
   // Listing and Full depend on a document only the registered owner can get
   // from the municipality, so the uso de suelo answer is expected on those
   // orders and meaningless on the others.
-  const expectsOwnerDocs = OWNER_DOC_TIERS.includes(tier);
+  const ownerSide = OWNER_SIDE_TIERS.includes(tier);
   const collectsUso = USO_TIERS.includes(tier);
   const usoLabel = USO_LABELS[uso_de_suelo_status]
     || (collectsUso ? 'not answered at intake' : 'not applicable to this edition');
@@ -434,15 +436,14 @@ exports.handler = async (event) => {
         : '') +
       `Entity: ${entity || 'not provided'}\n` +
       `HOA: ${hoa || 'not provided'}\n` +
-      `Uso de suelo (owner-provided): ${usoLabel}\n` +
-      (expectsOwnerDocs
-        ? `NOTE: delivery clock starts when the uso de suelo certificate is received.\n`
-          + `Hold this deal in Awaiting Owner Docs until it arrives.\n`
-        : collectsUso
-          ? `NOTE: buyer-side order. Report the certificate if it arrives, but do NOT\n`
-            + `hold delivery for it. This edition ships on its normal schedule with that\n`
-            + `entry marked not provided if nothing reaches us in time.\n`
-          : '') +
+      `Uso de suelo (client-supplied): ${usoLabel}\n` +
+      (collectsUso
+        ? `NOTE: do NOT wait for this certificate. Municipal issuance runs roughly\n`
+          + `ten to thirty days, so one requested now cannot reach the delivery window.\n`
+          + `Deliver on the normal schedule, marked not provided if it is not in hand,\n`
+          + `and reissue under the same ID free of charge if it arrives within thirty\n`
+          + `days of delivery.\n`
+        : '') +
       `Agent or attorney: ${agent_or_attorney || 'not provided'}\n` +
       `Timeline: ${timeline || 'not provided'}\n` +
       `Phone: ${phone || 'not provided'}\n` +
@@ -503,7 +504,7 @@ exports.handler = async (event) => {
       listing_ref: clip(listing_ref, 300),
       plano_catastrado: clip(plano_catastrado, 80),
       uso_de_suelo_status: collectsUso ? (uso_de_suelo_status || 'not_answered') : undefined,
-      owner_docs_required: expectsOwnerDocs ? 'yes' : 'no',
+      owner_side_order: ownerSide ? 'yes' : 'no',
       terms_version: clip(terms_version, 20),
       bundle_records: wantsBundle ? 'yes' : 'no',
       bundle_property: wantsBundle ? clip(bundle_property) : undefined,
