@@ -150,6 +150,9 @@
     .checked, .state{break-after:avoid; page-break-after:avoid;}
     p, dd, li{orphans:2; widows:2;}
     table, ul.flags li, .note{break-inside:avoid; page-break-inside:avoid;}
+    /* Three orphan lines of the closing block landed on a sheet of their own.
+       It is short enough to keep whole. */
+    .closing{break-inside:avoid; page-break-inside:avoid;}
     table.manifest, table.manifest tbody{display:table;}
     table.manifest tr{display:table-row; border:0;}
     table.manifest tr:first-child{display:table-row;}
@@ -158,9 +161,14 @@
     /* The footer is fixed on every sheet, so its height has to fit inside the
        @page bottom margin. Left to wrap onto a second line it overlaps the
        body text, which it did at Letter width. One line, no wrapping. */
+    /* The footer is fixed, so body text can flow down to meet it and there is no
+       way to reserve a band per page in paged media. An opaque background and a
+       rule at the top of that box paint over the descenders of the last line,
+       which clipped text at the tightest break. Transparent, no rule: a close
+       line now reads as tight spacing instead of cut letters. */
     .pagefoot{
-      position:fixed; bottom:0; left:0; right:0; background:#FFFFFF;
-      border-top:1px solid var(--line); padding:5px 6mm 0;
+      position:fixed; bottom:0; left:0; right:0; background:transparent;
+      border-top:0; padding:5px 6mm 0;
       font-size:7.5pt; letter-spacing:0.015em; gap:10px;
       flex-wrap:nowrap; white-space:nowrap; overflow:hidden;
     }
