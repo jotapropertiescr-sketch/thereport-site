@@ -525,6 +525,8 @@
     background:var(--paper); border:1px solid var(--line); border-left:3px solid var(--rust); padding:14px 16px;}
   .addon-line input{margin-top:3px; width:16px; height:16px; flex:none; accent-color:var(--rust); cursor:pointer;}
   .addon-line b{color:var(--rust); white-space:nowrap;}
+  .uso-note{font-size:13px; line-height:1.55; color:var(--ink-soft); margin:9px 0 0;
+    padding-left:11px; border-left:2px solid var(--rust);}
   .save-note{font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.04em;
     color:var(--ink-soft); font-weight:600; white-space:nowrap;}
   .form-confirm{
@@ -808,6 +810,7 @@
         <ul class="tier-list">
           <li>Zone dossier, up to 3 zones compared</li>
           <li>Water, access, utilities, zoning and hazard mapping</li>
+          <li>Municipal GIS layers, where published</li>
           <li>What the public record does not tell you</li>
           <li>Delivery manifest</li>
         </ul>
@@ -825,6 +828,7 @@
         <div class="tier-time mono">2–3 BUSINESS DAYS · REMOTE</div>
         <ul class="tier-list">
           <li>Title &amp; corporate status summary</li>
+          <li>Survey plan (plano catastrado) on file</li>
           <li>Tax status summary</li>
           <li>Zone dossier for the property's zone</li>
           <li>Findings flag log</li>
@@ -843,8 +847,10 @@
         <div class="tier-time mono">2–3 BUSINESS DAYS · REMOTE</div>
         <ul class="tier-list">
           <li>Title &amp; corporate status summary</li>
+          <li>Survey plan (plano catastrado) on file</li>
           <li>Tax status summary</li>
           <li>Zone dossier for the property's zone</li>
+          <li>Land-use certificate (uso de suelo), owner-provided</li>
           <li>Findings flag log</li>
           <li>Cleared for you to share with any buyer</li>
         </ul>
@@ -863,6 +869,7 @@
         <div class="tier-time mono">5–7 BUSINESS DAYS · SITE VISIT</div>
         <ul class="tier-list">
           <li>Everything in Records Edition, zone dossier included</li>
+          <li>Land-use certificate (uso de suelo), owner-provided</li>
           <li>HOA / condo financial health</li>
           <li>Permit compliance, including setback alignment</li>
           <li>Property condition snapshot + photos</li>
@@ -1025,6 +1032,13 @@
 
         <div class="field-row">
           <div class="field full">
+            <label for="plano">Plano catastrado number, if known</label>
+            <input type="text" id="plano" name="plano_catastrado" placeholder="Optional. The survey plan number, e.g. SJ-0000000-0000">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field full">
             <label for="listing">Listing link or listing ID, if you have one</label>
             <input type="text" id="listing" name="listing_ref" placeholder="Paste the listing URL, or the reference number and the site it is on">
           </div>
@@ -1052,6 +1066,24 @@
           <div class="field full">
             <label for="notes">Anything else we should know</label>
             <textarea id="notes" name="notes"></textarea>
+          </div>
+        </div>
+
+        <div class="field-row" id="usoRow" hidden>
+          <div class="field full">
+            <label for="usoStatus">Land-use certificate (uso de suelo)</label>
+            <select id="usoStatus" name="uso_de_suelo_status">
+              <option value="">Select one</option>
+              <option value="have_it">I have it and will email it after checkout</option>
+              <option value="requesting">I have requested it from the municipality</option>
+              <option value="not_yet">I have not requested it yet</option>
+              <option value="not_owner">I am not the owner and cannot request it</option>
+            </select>
+            <p class="uso-note">Owner-provided. Only the registered owner may request this certificate from the
+            municipality, so we cannot obtain it for you. Email it to contact@jotapropertiescr.com after checkout
+            and we will confirm receipt. Delivery is 2 to 3 business days from receipt of all owner-provided
+            documents. Municipal issuance times vary and are outside our control. If it is not provided, the
+            report is delivered on schedule with that entry printed and marked not provided.</p>
           </div>
         </div>
 
@@ -1275,6 +1307,17 @@
     syncBundleProperty();
   }
 
+  // The use-of-land certificate is only ever supplied by the registered owner,
+  // so it is asked for on the two editions an owner or listing agent commissions.
+  // Switching tiers clears it, so a stale answer cannot ride along on another order.
+  var usoRow = document.getElementById('usoRow');
+  var usoStatus = document.getElementById('usoStatus');
+  function syncUso(tierKey){
+    var on = (tierKey === 'listing_edition' || tierKey === 'full_edition');
+    usoRow.hidden = !on;
+    if (!on) usoStatus.value = '';
+  }
+
   addBundle.addEventListener('change', syncBundleProperty);
 
   // Tier select buttons -> scroll to form + fill summary + set hidden fields
@@ -1294,6 +1337,7 @@
       // Switching tiers clears it, so an unchecked-but-remembered box can never
       // add $200 to a Records or Full order.
       syncBundle(btn.getAttribute('data-key') === 'area_edition');
+    syncUso(btn.getAttribute('data-key'));
 
       // THE BRIEFING is discounted when bought alongside a Full Edition.
       var briefingPrice = document.getElementById('briefingPrice');
