@@ -391,6 +391,67 @@ exports.handler = async (event) => {
       }],
     });
 
+    // Owner-document chase cadence. The free HubSpot tier has no workflows,
+    // so the reminders are created here as dated tasks instead: one chase on
+    // business day two, and the waiver-or-refund decision on business day ten,
+    // which is the deadline the Terms state. Both are tasks for YOU, not
+    // emails to the client, so nothing is sent without a person deciding.
+    if (needsOwnerDocs) {
+      const DAY = 24 * 60 * 60 * 1000;
+      // Business days, approximated by skipping weekends: 2 business days is
+      // ~4 calendar days, 10 business days is ~14.
+      const chaseTasks = [
+        {
+          days: 4,
+          subject: `Chase uso de suelo: ${fields.propertyaddress || 'see deal'}`,
+          body:
+            `Two business days since payment and the certificate has not been logged.\n\n` +
+            `Status at intake: ${usoLabel}\n` +
+            `Property: ${fields.propertyaddress || 'see deal'}\n\n` +
+            `Check the upload folder and contact@jotapropertiescr.com before writing.\n` +
+            `If it has arrived, move the deal to Verification In Progress, close this\n` +
+            `task and the day ten task, and count 2 to 3 business days from the date\n` +
+            `it landed.\n\n` +
+            `If it has not, send a short reminder. Only the registered owner can\n` +
+            `request it from the municipality, so ask where the request stands\n` +
+            `rather than asking again for the document.`,
+          priority: 'MEDIUM',
+        },
+        {
+          days: 14,
+          subject: `DECISION due, uso de suelo: ${fields.propertyaddress || 'see deal'}`,
+          body:
+            `Tenth business day after payment. Under Terms section 4 the client now\n` +
+            `chooses, and this is the day they have to be asked.\n\n` +
+            `Status at intake: ${usoLabel}\n` +
+            `Property: ${fields.propertyaddress || 'see deal'}\n\n` +
+            `Contact the client and offer the two options: delivery of the report with\n` +
+            `the use-of-land entry printed and marked "Not provided by owner. Not\n` +
+            `verified.", or cancellation of the order and a full refund.\n\n` +
+            `If they do not respond within five business days, deliver with the entry\n` +
+            `marked not provided and the engagement is complete.\n\n` +
+            `Close this task if the certificate has already arrived.`,
+          priority: 'HIGH',
+        },
+      ];
+
+      for (const t of chaseTasks) {
+        await hs('/crm/v3/objects/tasks', 'POST', {
+          properties: {
+            hs_task_subject: t.subject,
+            hs_task_body: t.body,
+            hs_task_status: 'NOT_STARTED',
+            hs_task_priority: t.priority,
+            hs_timestamp: Date.now() + t.days * DAY,
+          },
+          associations: [{
+            to: { id: dealId },
+            types: [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: 216 }],
+          }],
+        });
+      }
+    }
+
     // Annual Refresh reminder. Eleven months out, so the outreach lands
     // before the anniversary rather than after it. This is a task for YOU,
     // not an email to the client: the refresh stays client-initiated, and
