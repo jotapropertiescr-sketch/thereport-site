@@ -5,7 +5,7 @@
 // Env vars required:
 //   STRIPE_WEBHOOK_SECRET   whsec_... from the endpoint you create in Stripe
 //   HUBSPOT_TOKEN           same private app token as intake.js
-//   TERMS_VERSION           e.g. "1.0"  (bump when you publish new terms)
+//   TERMS_VERSION           e.g. "1"  (bump when you publish new terms)
 //
 // Stripe dashboard > Developers > Webhooks > add endpoint:
 //   https://jotapropertiescr.com/.netlify/functions/stripe-webhook
@@ -16,7 +16,7 @@
 // Exact stored values, typos included, reproduced deliberately. See the same
 // block in intake.js. Keep the two files in sync.
 //
-//   report_tier        Area / Records / Full ONLY.
+//   report_tier        Area / Records / Listing / Full ONLY.
 //   addons_purchased   multi-select: refresh base, refresh add-ons,
 //                      Full Refresh bundle, and both BRIEFING rates.
 //   zone               dropdown, values capitalized (see ZONE_VALUES below).
@@ -29,10 +29,31 @@ const crypto = require('crypto');
 const HS = 'https://api.hubapi.com';
 const PAYMENT_RCVD_STAGE = 'presentationscheduled'; // "Payment Rcvd" in THE REPORT pipeline
 
+// "Awaiting Owner Docs", added Oct 2026, sits between Payment Rcvd and
+// Verification In Progress. Listing and Full orders land here instead of
+// Payment Rcvd, because the delivery clock does not start until the owner's
+// uso de suelo certificate arrives. The stage is the queue: a deal sitting
+// here is a deal waiting on a document, visible on the board without anyone
+// having to open it.
+const AWAITING_OWNER_DOCS_STAGE = '4514711270';
+
+// Editions that depend on a document only the registered owner can obtain.
+const OWNER_DOC_TIERS = ['listing_edition', 'full_edition'];
+
 const TIER_VALUES = {
   area_edition:    'Area Edition ($150)',
   records_edition: 'Records Editon ($250)',   // typo: Editon
+  listing_edition: 'Listing Edition ($250)',
   full_edition:    'Full Edition ($750)',
+};
+
+// The intake form's uso de suelo answers, in words a human reads.
+const USO_LABELS = {
+  have_it:      'Client has it, emailing after checkout',
+  requesting:   'Requested from the municipality, not yet issued',
+  not_yet:      'Not yet requested',
+  not_owner:    'Client is not the owner and cannot request it',
+  not_answered: 'Not answered at intake',
 };
 
 // HubSpot's "Add-Ons Purchased" stored values, exactly as the property spells
@@ -112,6 +133,7 @@ function readAnswers(session) {
   if (m.zone && !out.zone) out.zone = m.zone;
   if (m.folio_real && !out.folioreal) out.folioreal = m.folio_real;
   if (m.listing_ref && !out.listingref) out.listingref = m.listing_ref;
+  if (m.plano_catastrado && !out.planocatastrado) out.planocatastrado = m.plano_catastrado;
   for (const key of ['entity', 'hoa', 'agent_or_attorney', 'timeline', 'referral_source', 'client_notes']) {
     if (m[key]) out[key] = m[key];
   }
@@ -180,6 +202,18 @@ exports.handler = async (event) => {
   const isTier = Boolean(TIER_VALUES[tier]);
   const isAddon = Boolean(ADDON_VALUES[tier]);
 
+  // Listing and Full wait on the owner's uso de suelo certificate, so they
+  // land in Awaiting Owner Docs rather than Payment Rcvd. The metadata flag
+  // is set by intake.js; the tier list is the fallback for a direct-link
+  // purchase that carries no flag.
+  const needsOwnerDocs =
+    session.metadata?.owner_docs_required === 'yes' || OWNER_DOC_TIERS.includes(tier);
+  const paidStage = needsOwnerDocs ? AWAITING_OWNER_DOCS_STAGE : PAYMENT_RCVD_STAGE;
+  const usoStatus = session.metadata?.uso_de_suelo_status || '';
+  const usoLabel = needsOwnerDocs
+    ? (USO_LABELS[usoStatus] || USO_LABELS.not_answered)
+    : 'not applicable to this edition';
+
   // A BRIEFING subscription bought alongside a report rides in metadata.
   const briefingKey = session.metadata?.briefing_addon;
   const briefingAddon = briefingKey && briefingKey !== 'none' && ADDON_VALUES[briefingKey]
@@ -210,6 +244,11 @@ exports.handler = async (event) => {
   if (briefingAddon) addonList.push(ADDON_VALUES[briefingAddon]);
   const addonValue = addonList.join(';');
 
+  // The version of the Terms the buyer accepted. The checkout checkbox is the
+  // signature, so this is the moment acceptance happens. The form's hidden
+  // field rides in metadata; the env var is the fallback.
+  const termsVersion = (session.metadata?.terms_version || process.env.TERMS_VERSION || '').trim();
+
   try {
     // intake.js sets both, so either one identifies the deal it created.
     let dealId = session.client_reference_id || session.metadata?.hs_deal_id || null;
@@ -226,7 +265,7 @@ exports.handler = async (event) => {
       const props = {
         dealname: `${session.customer_details?.name || email} - ${tier.replace(/_/g, ' ')}`,
         pipeline: 'default',
-        dealstage: PAYMENT_RCVD_STAGE,
+        dealstage: paidStage,
         amount: String(amount),
         referral_source: 'Other',
       };
@@ -237,6 +276,8 @@ exports.handler = async (event) => {
       if (ZONE_VALUES[fields.zone]) props.zone = ZONE_VALUES[fields.zone];
       if (fields.folioreal) props.folio_real = fields.folioreal;
       if (fields.listingref) props.listing_link_or_id = fields.listingref;
+      if (fields.planocatastrado) props.plano_catastrado = fields.planocatastrado;
+      if (termsVersion) props.terms_version_accepted = termsVersion;
 
       const deal = await hs('/crm/v3/objects/deals', 'POST', {
         properties: props,
@@ -248,7 +289,7 @@ exports.handler = async (event) => {
       dealId = deal.id;
     } else {
       const props = {
-        dealstage: PAYMENT_RCVD_STAGE,
+        dealstage: paidStage,
         amount: String(amount),
       };
       // Confirm classification at payment time. intake.js set this already,
@@ -260,6 +301,10 @@ exports.handler = async (event) => {
       if (ZONE_VALUES[fields.zone]) props.zone = ZONE_VALUES[fields.zone];
       if (fields.folioreal) props.folio_real = fields.folioreal;
       if (fields.listingref) props.listing_link_or_id = fields.listingref;
+      if (fields.planocatastrado) props.plano_catastrado = fields.planocatastrado;
+      // Acceptance happens at checkout, so the accepted version is recorded
+      // here rather than at form submission.
+      if (termsVersion) props.terms_version_accepted = termsVersion;
       await hs(`/crm/v3/objects/deals/${dealId}`, 'PATCH', { properties: props });
     }
 
@@ -282,9 +327,18 @@ exports.handler = async (event) => {
       (briefingAddon ? `Add-on purchased: ${ADDON_VALUES[briefingAddon]}\n` : '') +
       `Stripe session: ${session.id}\n` +
       `Paid: ${paidAt}\n\n` +
+      (needsOwnerDocs
+        ? `OWNER DOCUMENTS OUTSTANDING\n` +
+          `Uso de suelo: ${usoLabel}\n` +
+          `Plano catastrado: ${fields.planocatastrado || 'not provided'}\n` +
+          `Deal placed in Awaiting Owner Docs. The 2 to 3 business day clock does\n` +
+          `not start until the certificate is received. Move the deal to\n` +
+          `Verification In Progress on the day it arrives, and that is the date\n` +
+          `the turnaround runs from.\n\n`
+        : '') +
       `TERMS ACCEPTANCE\n` +
       `Accepted: ${accepted ? 'YES' : 'NOT RECORDED - INVESTIGATE'}\n` +
-      `Terms version: ${process.env.TERMS_VERSION || 'unset'}\n` +
+      `Terms version: ${termsVersion || 'unset'}\n` +
       `Accepted at: ${accepted ? paidAt : 'n/a'}\n\n` +
       `CHECKOUT ANSWERS\n` +
       (Object.keys(fields).length
@@ -301,18 +355,32 @@ exports.handler = async (event) => {
     });
 
     // Work queue: one task per paid order so nothing sits unnoticed.
+    // On an edition that waits on owner documents the task says so, because
+    // the first action is chasing a certificate rather than pulling records.
     await hs('/crm/v3/objects/tasks', 'POST', {
       properties: {
-        hs_task_subject: `Begin work: ${tier.replace(/_/g, ' ')}`,
-        hs_task_body: fields.propertyaddress
-          ? `Zone: ${fields.zone || 'not selected'}\n` +
-            `Property location: ${fields.propertyaddress}\n` +
-            (fields.listingref ? `Listing: ${fields.listingref}\n` : '') +
-            (fields.folioreal ? `Folio Real: ${fields.folioreal}\n` : '') +
-            (fields.priorreport ? `Prior report date: ${fields.priorreport}\n` : '')
-          : `Zones: ${fields.zones || 'see deal'}\n` +
-            `Timeline: ${fields.timeline || 'not provided'}\n` +
-            (fields.priorities ? `Priorities: ${fields.priorities}\n` : ''),
+        hs_task_subject: needsOwnerDocs
+          ? `Request uso de suelo, then begin work: ${tier.replace(/_/g, ' ')}`
+          : `Begin work: ${tier.replace(/_/g, ' ')}`,
+        hs_task_body:
+          (needsOwnerDocs
+            ? `WAITING ON OWNER DOCUMENTS. Clock has not started.\n` +
+              `Uso de suelo: ${usoLabel}\n` +
+              `Only the registered owner can request this from the municipality.\n` +
+              `Email contact@jotapropertiescr.com is where it arrives. Log the date\n` +
+              `it lands, move the deal to Verification In Progress, and count the\n` +
+              `2 to 3 business days from there.\n\n`
+            : '') +
+          (fields.propertyaddress
+            ? `Zone: ${fields.zone || 'not selected'}\n` +
+              `Property location: ${fields.propertyaddress}\n` +
+              (fields.listingref ? `Listing: ${fields.listingref}\n` : '') +
+              (fields.folioreal ? `Folio Real: ${fields.folioreal}\n` : '') +
+              (fields.planocatastrado ? `Plano catastrado: ${fields.planocatastrado}\n` : '') +
+              (fields.priorreport ? `Prior report date: ${fields.priorreport}\n` : '')
+            : `Zones: ${fields.zones || 'see deal'}\n` +
+              `Timeline: ${fields.timeline || 'not provided'}\n` +
+              (fields.priorities ? `Priorities: ${fields.priorities}\n` : '')),
         hs_task_status: 'NOT_STARTED',
         hs_task_priority: tier === 'full_edition' ? 'HIGH' : 'MEDIUM',
         hs_timestamp: Date.now(),
@@ -330,6 +398,9 @@ exports.handler = async (event) => {
     // Refresh purchases qualify too: a returning client is the likeliest
     // buyer of the next refresh, and without this they fall out of the
     // follow-up loop entirely after their second purchase.
+    // Listing Edition is included: a seller still holding the property a year
+    // later is a plausible refresh buyer, and the task is reviewed by hand
+    // before anything is sent, so a property that sold is simply closed out.
     if (tier !== 'area_edition' && (isTier || tier === 'annual_refresh')) {
       const ELEVEN_MONTHS = 334 * 24 * 60 * 60 * 1000;
       await hs('/crm/v3/objects/tasks', 'POST', {
