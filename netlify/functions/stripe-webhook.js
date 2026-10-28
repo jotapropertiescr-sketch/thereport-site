@@ -29,21 +29,15 @@ const crypto = require('crypto');
 const HS = 'https://api.hubapi.com';
 const PAYMENT_RCVD_STAGE = 'presentationscheduled'; // "Payment Rcvd" in THE REPORT pipeline
 
-// "Awaiting Owner Docs", added Oct 2026, sits between Payment Rcvd and
-// Verification In Progress. Listing and Full orders land here instead of
-// Payment Rcvd, because the delivery clock does not start until the owner's
-// uso de suelo certificate arrives. The stage is the queue: a deal sitting
-// here is a deal waiting on a document, visible on the board without anyone
-// having to open it.
-const AWAITING_OWNER_DOCS_STAGE = '4514711270';
+// The "Awaiting Owner Docs" stage (id 4514711270) exists in the pipeline but
+// is deliberately unused. It was added when delivery waited on the owner's
+// certificate; that rule was dropped once it became clear municipal issuance
+// takes roughly ten to thirty days and so cannot fit any delivery window.
+// Nothing routes there now. Left documented rather than deleted so the stage
+// is not mistaken for an oversight.
 
-// Editions that DEPEND on a document only the registered owner can obtain, so
-// the deal waits in Awaiting Owner Docs and the chase cadence runs.
-const OWNER_DOC_TIERS = ['listing_edition', 'full_edition'];
-
-// Editions that report a use-of-land certificate when one is supplied. Records
-// is here but not above: it is delivered on its normal schedule whether or not
-// a certificate arrives, so it goes to Payment Rcvd and gets no chase tasks.
+// Editions that report a use-of-land certificate when one is supplied.
+// All three property editions do, and none of them waits for one.
 const USO_TIERS = ['records_edition', 'listing_edition', 'full_edition'];
 
 const TIER_VALUES = {
@@ -208,13 +202,13 @@ exports.handler = async (event) => {
   const isTier = Boolean(TIER_VALUES[tier]);
   const isAddon = Boolean(ADDON_VALUES[tier]);
 
-  // Listing and Full wait on the owner's uso de suelo certificate, so they
-  // land in Awaiting Owner Docs rather than Payment Rcvd. The metadata flag
-  // is set by intake.js; the tier list is the fallback for a direct-link
-  // purchase that carries no flag.
-  const needsOwnerDocs =
-    session.metadata?.owner_docs_required === 'yes' || OWNER_DOC_TIERS.includes(tier);
-  const paidStage = needsOwnerDocs ? AWAITING_OWNER_DOCS_STAGE : PAYMENT_RCVD_STAGE;
+  // Nothing waits any more. Municipal issuance of a uso de suelo runs from
+  // roughly ten days to thirty across the cantons served, so a certificate
+  // requested after an order is placed cannot reach any delivery window
+  // whoever requests it. Every paid order therefore goes straight to Payment
+  // Rcvd and is worked immediately; a certificate that turns up later is
+  // handled by reissuing the report under the same ID.
+  const paidStage = PAYMENT_RCVD_STAGE;
   const collectsUso = USO_TIERS.includes(tier) || Boolean(session.metadata?.uso_de_suelo_status);
   const usoStatus = session.metadata?.uso_de_suelo_status || '';
   const usoLabel = collectsUso
@@ -334,21 +328,15 @@ exports.handler = async (event) => {
       (briefingAddon ? `Add-on purchased: ${ADDON_VALUES[briefingAddon]}\n` : '') +
       `Stripe session: ${session.id}\n` +
       `Paid: ${paidAt}\n\n` +
-      (!needsOwnerDocs && collectsUso
-        ? `USO DE SUELO, BUYER SIDE\n` +
+      (collectsUso
+        ? `USO DE SUELO\n` +
           `Status at intake: ${usoLabel}\n` +
-          `Report it if it arrives. Do NOT hold delivery for it: this edition ships on\n` +
-          `its normal schedule with that entry marked not provided if nothing reaches\n` +
-          `us in time.\n\n`
-        : '') +
-      (needsOwnerDocs
-        ? `OWNER DOCUMENTS OUTSTANDING\n` +
-          `Uso de suelo: ${usoLabel}\n` +
           `Plano catastrado: ${fields.planocatastrado || 'not provided'}\n` +
-          `Deal placed in Awaiting Owner Docs. The 2 to 3 business day clock does\n` +
-          `not start until the certificate is received. Move the deal to\n` +
-          `Verification In Progress on the day it arrives, and that is the date\n` +
-          `the turnaround runs from.\n\n`
+          `Deliver on the normal schedule. Nothing waits for this certificate:\n` +
+          `municipalities take roughly ten to thirty days to issue one, so a request\n` +
+          `made now cannot land inside the window. Report it if it is already in\n` +
+          `hand, mark it not provided if not, and reissue under the same ID free of\n` +
+          `charge if it arrives within thirty days of delivery.\n\n`
         : '') +
       `TERMS ACCEPTANCE\n` +
       `Accepted: ${accepted ? 'YES' : 'NOT RECORDED - INVESTIGATE'}\n` +
@@ -369,21 +357,14 @@ exports.handler = async (event) => {
     });
 
     // Work queue: one task per paid order so nothing sits unnoticed.
-    // On an edition that waits on owner documents the task says so, because
-    // the first action is chasing a certificate rather than pulling records.
     await hs('/crm/v3/objects/tasks', 'POST', {
       properties: {
-        hs_task_subject: needsOwnerDocs
-          ? `Request uso de suelo, then begin work: ${tier.replace(/_/g, ' ')}`
-          : `Begin work: ${tier.replace(/_/g, ' ')}`,
+        hs_task_subject: `Begin work: ${tier.replace(/_/g, ' ')}`,
         hs_task_body:
-          (needsOwnerDocs
-            ? `WAITING ON OWNER DOCUMENTS. Clock has not started.\n` +
-              `Uso de suelo: ${usoLabel}\n` +
-              `Only the registered owner can request this from the municipality.\n` +
-              `Email contact@jotapropertiescr.com is where it arrives. Log the date\n` +
-              `it lands, move the deal to Verification In Progress, and count the\n` +
-              `2 to 3 business days from there.\n\n`
+          (collectsUso
+            ? `Uso de suelo at intake: ${usoLabel}\n` +
+              `Do not wait for it. Deliver on the normal schedule, marked not provided\n` +
+              `if it is not in hand.\n\n`
             : '') +
           (fields.propertyaddress
             ? `Zone: ${fields.zone || 'not selected'}\n` +
@@ -405,67 +386,40 @@ exports.handler = async (event) => {
       }],
     });
 
-    // Owner-document chase cadence. The free HubSpot tier has no workflows,
-    // so the reminders are created here as dated tasks instead: one chase on
-    // business day two, and the waiver-or-refund decision on business day ten,
-    // which is the deadline the Terms state. Both are tasks for YOU, not
-    // emails to the client, so nothing is sent without a person deciding.
-    if (needsOwnerDocs) {
+    // Reissue window. Nothing is chased before delivery, because a certificate
+    // cannot be issued inside the delivery window in any canton served. What
+    // matters instead is the thirty day window after delivery, during which a
+    // certificate that arrives is added by reissuing the report under the same
+    // verification ID at no charge. The free HubSpot tier has no workflows, so
+    // the reminder is created here as a dated task. It is a task for YOU, not
+    // an email to the client.
+    if (collectsUso && usoStatus !== 'have_it') {
       const DAY = 24 * 60 * 60 * 1000;
-      // Business days, approximated by skipping weekends: 2 business days is
-      // ~4 calendar days, 10 business days is ~14.
-      const chaseTasks = [
-        {
-          days: 4,
-          subject: `Chase uso de suelo: ${fields.propertyaddress || 'see deal'}`,
-          body:
-            `Two business days since payment and the certificate has not been logged.\n\n` +
+      await hs('/crm/v3/objects/tasks', 'POST', {
+        properties: {
+          hs_task_subject: `Uso de suelo reissue window closing: ${fields.propertyaddress || 'see deal'}`,
+          hs_task_body:
+            `The thirty day free reissue window on this report closes in a few days.\n\n` +
             `Status at intake: ${usoLabel}\n` +
             `Property: ${fields.propertyaddress || 'see deal'}\n\n` +
-            `Check the upload folder and contact@jotapropertiescr.com before writing.\n` +
-            `If it has arrived, move the deal to Verification In Progress, close this\n` +
-            `task and the day ten task, and count 2 to 3 business days from the date\n` +
-            `it landed.\n\n` +
-            `If it has not, send a short reminder. Only the registered owner can\n` +
-            `request it from the municipality, so ask where the request stands\n` +
-            `rather than asking again for the document.`,
-          priority: 'MEDIUM',
+            `Check the upload folder and contact@jotapropertiescr.com. If a certificate\n` +
+            `arrived, reissue the report under the SAME verification ID with the\n` +
+            `use-of-land entry completed, republish it so the hosted version is current,\n` +
+            `and send it over. No charge.\n\n` +
+            `If nothing arrived, close this task. The delivered report stands with the\n` +
+            `entry marked not provided, and a certificate after this point is a new\n` +
+            `engagement at the applicable fee.\n\n` +
+            `Worth one short note to the client either way: it is a reason to be in\n` +
+            `touch that costs nothing and reads as service rather than selling.`,
+          hs_task_status: 'NOT_STARTED',
+          hs_task_priority: 'MEDIUM',
+          hs_timestamp: Date.now() + 26 * DAY,
         },
-        {
-          days: 14,
-          subject: `DELIVER marked, uso de suelo not received: ${fields.propertyaddress || 'see deal'}`,
-          body:
-            `Tenth business day after payment. Under Terms section 4 the report is\n` +
-            `delivered now, with the use-of-land entry printed and marked "Not provided\n` +
-            `by owner. Not verified." The engagement is then complete.\n\n` +
-            `Status at intake: ${usoLabel}\n` +
-            `Property: ${fields.propertyaddress || 'see deal'}\n\n` +
-            `No refund and no fee reduction. Every other section was performed, and the\n` +
-            `certificate is one only the registered owner can obtain. This was stated on\n` +
-            `the order form, the confirmation page and the Terms before payment.\n\n` +
-            `Send a short note with the report saying the certificate did not arrive in\n` +
-            `time and the entry reflects that. Do not apologise for it and do not imply\n` +
-            `the client failed; state what happened and move on.\n\n` +
-            `Close this task if the certificate has already arrived.`,
-          priority: 'HIGH',
-        },
-      ];
-
-      for (const t of chaseTasks) {
-        await hs('/crm/v3/objects/tasks', 'POST', {
-          properties: {
-            hs_task_subject: t.subject,
-            hs_task_body: t.body,
-            hs_task_status: 'NOT_STARTED',
-            hs_task_priority: t.priority,
-            hs_timestamp: Date.now() + t.days * DAY,
-          },
-          associations: [{
-            to: { id: dealId },
-            types: [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: 216 }],
-          }],
-        });
-      }
+        associations: [{
+          to: { id: dealId },
+          types: [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: 216 }],
+        }],
+      });
     }
 
     // Annual Refresh reminder. Eleven months out, so the outreach lands
