@@ -1080,28 +1080,21 @@
             <label for="usoStatus">Land-use certificate (uso de suelo)<span class="flabel-tag" id="usoTag">optional</span></label>
             <select id="usoStatus" name="uso_de_suelo_status">
               <option value="">Select one</option>
-              <option value="have_it">I have it and will email it after checkout</option>
+              <option value="have_it">I have it and will send it after checkout</option>
               <option value="requesting">I have requested it from the municipality</option>
               <option value="not_yet">I have not requested it yet</option>
               <option value="not_owner">I am not the owner and cannot request it</option>
             </select>
-            <p class="uso-note" id="usoNoteOwner">Owner-provided, and this is the document that sets your delivery
-            date. You can place the order without it. Only the registered owner may request this
-            certificate from the municipality, so we cannot obtain it for you. After checkout, upload it at
-            <a href="https://www.dropbox.com/request/6023am9n19nb1qzrw6of" target="_blank" rel="noopener">our secure upload page</a>
+            <p class="uso-note">Client-supplied, and reported in full if we receive it. Requirements differ by canton:
+            some municipalities issue one to any applicant holding the survey plan, others only to the registered owner.
+            Published issuance times run from about ten days to thirty, so <b>a certificate requested today will not be
+            ready inside your delivery window</b>, whoever requests it.</p>
+            <p class="uso-note"><b>Your delivery is never held for it.</b> If you already have the certificate, upload
+            it at <a href="https://www.dropbox.com/request/6023am9n19nb1qzrw6of" target="_blank" rel="noopener">our secure upload page</a>
             (no account needed) or email it to contact@jotapropertiescr.com, naming the file or the subject line with
-            the property address. We confirm receipt either way. The 2 to 3 business day turnaround runs from receipt
-            of all owner-provided documents. Municipal issuance times vary and are outside our control. If the
-            certificate has not reached us by the tenth business day after payment, we deliver the report with that
-            entry printed and marked not provided, since the rest of the work is done either way.</p>
-            <p class="uso-note" id="usoNoteBuyer" hidden>Optional, and reported if we receive it. Only the registered
-            owner may request this certificate from the municipality, so if you are not the owner you would need to ask
-            the owner or listing agent for a copy. If you have one, upload it at
-            <a href="https://www.dropbox.com/request/6023am9n19nb1qzrw6of" target="_blank" rel="noopener">our secure upload page</a>
-            (no account needed) or email it to contact@jotapropertiescr.com, naming the file or the subject line with
-            the property address. <b>Your delivery is not held waiting for it.</b> This edition is delivered 2 to 3
-            business days from checkout either way, and if no certificate reaches us in time that entry is printed and
-            marked not provided.</p>
+            the property address. If it reaches us within 30 days of delivery, we reissue your report under the same
+            verification ID with that entry completed, at no charge. If it never arrives, the entry is printed and
+            marked not provided, so the gap is visible rather than silent.</p>
           </div>
         </div>
 
@@ -1334,19 +1327,17 @@
   // stale one cannot ride along on another order.
   var usoRow = document.getElementById('usoRow');
   var usoStatus = document.getElementById('usoStatus');
-  var usoNoteOwner = document.getElementById('usoNoteOwner');
-  var usoNoteBuyer = document.getElementById('usoNoteBuyer');
   var usoTag = document.getElementById('usoTag');
   function syncUso(tierKey){
+    // Owner-side editions are commissioned by the seller or listing agent, so
+    // a certificate is reasonably expected to exist. A buyer ordering Records
+    // may have no way to get one. No edition's delivery waits either way, so
+    // the tag is about likelihood, never about a requirement, and it never
+    // says "required". The ANSWER is required on the owner-side editions,
+    // because an unanswered question is worse than any of the four answers.
     var ownerSide = (tierKey === 'listing_edition' || tierKey === 'full_edition');
     var on = ownerSide || tierKey === 'records_edition';
     usoRow.hidden = !on;
-    usoNoteOwner.hidden = !ownerSide;
-    usoNoteBuyer.hidden = ownerSide;
-    // The certificate is never required to place an order, so the tag never
-    // says "required". On the owner-side editions it sets the delivery date,
-    // which is what "expected" is telling them. The answer IS required there,
-    // because an unanswered question is worse than any of the four answers.
     usoTag.textContent = ownerSide ? 'expected' : 'optional';
     usoStatus.required = ownerSide;
     if (!on) usoStatus.value = '';
