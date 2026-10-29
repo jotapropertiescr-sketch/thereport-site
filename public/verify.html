@@ -50,6 +50,27 @@
     padding:13px 26px; cursor:pointer; transition:background .15s ease;
   }
   .go:hover{background:var(--rust);}
+  /* The second lookup shares the checker shell. It needs its own input id so
+     the finca field can accept digits and hyphens without the uppercase
+     transform that suits a report ID. */
+  #fincaNo{
+    flex:1 1 240px; font-family:'IBM Plex Mono', monospace; font-size:17px; letter-spacing:0.06em;
+    padding:13px 14px; border:1px solid var(--line); background:var(--white); color:var(--ink);
+    max-width:100%;
+  }
+  #fincaNo:focus{outline:2px solid var(--rust); outline-offset:1px;}
+  .results{margin-top:18px;}
+  .results ol{list-style:none; margin:0; padding:0;}
+  .results li{border-top:1px solid var(--line); padding:14px 0; margin:0;}
+  .results li:first-child{border-top:0;}
+  .r-id{font-family:'IBM Plex Mono', monospace; font-size:15px; color:var(--navy); font-weight:600;}
+  .r-meta{font-size:13.5px; color:var(--ink-soft); margin-top:4px;}
+  .r-latest{font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:0.06em;
+    text-transform:uppercase; color:var(--rust); border:1px solid var(--rust);
+    border-radius:2px; padding:1px 5px; margin-left:8px; vertical-align:1px;}
+  .results .foot{font-size:13.5px; color:var(--ink-soft); margin:14px 0 0; padding-top:12px;
+    border-top:1px solid var(--line);}
+
   .msg{margin-top:14px; font-size:14px; min-height:21px;}
   .msg.err{color:#B00020;}
   .msg.ok{color:var(--ink-soft);}
@@ -152,6 +173,19 @@
       <div class="msg" id="verifyMsg" role="status" aria-live="polite"></div>
     </div>
 
+    <div class="checker" style="margin-top:22px;">
+      <label for="fincaNo">Or look up a property</label>
+      <p class="hint">Enter the finca (folio real) number to see the Listing Edition reports published on that property. Reports ordered by buyers do not appear here; those are checkable by ID only.</p>
+      <form class="row" id="fincaForm" novalidate>
+        <input type="text" id="fincaNo" name="fincaNo" placeholder="1-123456-000"
+               autocomplete="off" spellcheck="false" inputmode="text"
+               aria-describedby="fincaMsg">
+        <button type="submit" class="go">Look it up</button>
+      </form>
+      <div class="msg" id="fincaMsg" role="status" aria-live="polite"></div>
+      <div class="results" id="fincaResults" hidden></div>
+    </div>
+
     <h2>Why this matters</h2>
     <p>This is what makes a report worth showing. A seller who commissions one is not asking a buyer to take their word for it, and a buyer who is given one does not have to.</p>
     <ul>
@@ -160,6 +194,14 @@
       <li>Findings cannot be edited, removed or redacted. Altering a report ends the permission to share it immediately.</li>
       <li>Checking is free, takes a few seconds, and needs no permission from whoever handed you the copy.</li>
     </ul>
+
+    <h2>More than one report on the same property</h2>
+    <p>A property can carry several Listing Edition reports. An owner may commission one and an agent another, or a listing may be re-checked months later. That is normal and it is not a contradiction.</p>
+    <p>Every order is a fresh check with its own ID and its own dates. We never resell or reissue an earlier report under a new ID. Where two reports differ, the ordinary reason is that the public record moved between the dates they were pulled, and each is accurate as of its own date.</p>
+    <div class="flag">
+      <p><strong>The most recent report reflects the latest records checked. Earlier reports show the records as of their own dates.</strong></p>
+    </div>
+    <p>The property lookup above lists Listing Edition reports only, newest first. Those are commissioned to be shown to buyers, so they are findable by property. Reports ordered by a buyer, the Area, Records and Full Editions, never appear there. They belong to the person who paid for them, and remain checkable by ID alone.</p>
 
     <h2>What you are checking</h2>
     <p>The version published here is the authoritative one. A report can be a PDF, a printout, or a photograph, and any of those can be changed after we issue it. The copy at the address below cannot, because we control it.</p>
@@ -238,6 +280,119 @@
     var id = 'TR-' + year + '-' + serial + (code ? '-' + code : '');
     say('Opening ' + id + '\u2026', 'ok');
     window.location.href = 'r/' + id + '.html';
+  });
+})();
+
+/* Lookup by property. Unlike the ID lookup above, this one cannot be pure
+   routing: a finca number does not map to a filename. It reads a published
+   index of Listing Edition reports instead.
+
+   Only Listing Edition reports are in that index, and that is the whole point
+   of it. A Listing report is commissioned to be shown to buyers, so being
+   findable by property is the service. An Area, Records or Full Edition is
+   bought by a buyer for themselves, and listing it here would tell a seller
+   that someone is checking their property. Those stay reachable by ID only.
+
+   The index carries no owner names and no addresses: a finca number, a report
+   ID, the issue date and the zone. Everything beyond that is in the report,
+   behind the six-character code. */
+(function () {
+  var form = document.getElementById('fincaForm');
+  var input = document.getElementById('fincaNo');
+  var msg = document.getElementById('fincaMsg');
+  var out = document.getElementById('fincaResults');
+  if (!form) return;
+
+  var index = null;
+
+  function say(text, cls) {
+    msg.textContent = text;
+    msg.className = 'msg ' + (cls || '');
+  }
+
+  /* Finca numbers are written inconsistently: with hyphens, with spaces, with
+     or without the three-digit horizontal/right suffix. Compare on digits
+     alone so a buyer copying from a listing is not punished for the format. */
+  function normalise(v) {
+    return (v || '').replace(/\D/g, '');
+  }
+
+  function render(rows) {
+    if (!rows.length) {
+      out.hidden = true;
+      out.innerHTML = '';
+      say('No Listing Edition report has been published for that finca number. '
+        + 'That does not mean a report was never ordered on the property: reports '
+        + 'ordered by buyers are not listed here.', 'err');
+      return;
+    }
+
+    var html = '<ol>';
+    rows.forEach(function (r, i) {
+      html += '<li>'
+        + '<a class="r-id" href="r/' + r.id + '.html">' + r.id + '</a>'
+        + (i === 0 && rows.length > 1 ? '<span class="r-latest">most recent</span>' : '')
+        + '<div class="r-meta">Issued ' + r.issued
+        + (r.zone ? ' &nbsp;\u00b7&nbsp; ' + r.zone : '')
+        + '</div></li>';
+    });
+    html += '</ol>';
+    if (rows.length > 1) {
+      html += '<p class="foot">The most recent report reflects the latest records checked. '
+        + 'Earlier reports show the records as of their own dates.</p>';
+    } else {
+      html += '<p class="foot">This report shows the records as of the dates stated in it. '
+        + 'Records change, so a later check can differ.</p>';
+    }
+
+    out.innerHTML = html;
+    out.hidden = false;
+    say(rows.length === 1
+      ? 'One Listing Edition report published on this property.'
+      : rows.length + ' Listing Edition reports published on this property, newest first.', 'ok');
+  }
+
+  function lookup(digits) {
+    var rows = index.filter(function (r) {
+      return normalise(r.finca) === digits;
+    });
+    rows.sort(function (a, b) {
+      return (b.issued || '').localeCompare(a.issued || '');
+    });
+    render(rows);
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var digits = normalise(input.value);
+
+    if (!digits) {
+      out.hidden = true;
+      say('Enter the finca (folio real) number. It looks like 1-123456-000.', 'err');
+      input.focus();
+      return;
+    }
+    if (digits.length < 6) {
+      out.hidden = true;
+      say('That is too short for a finca number. It looks like 1-123456-000.', 'err');
+      input.focus();
+      return;
+    }
+
+    if (index) { lookup(digits); return; }
+
+    say('Checking\u2026', 'ok');
+    fetch('listing-index.json', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (data) {
+        index = Array.isArray(data) ? data : [];
+        lookup(digits);
+      })
+      .catch(function () {
+        out.hidden = true;
+        say('The property lookup is unavailable right now. You can still check a '
+          + 'report by its ID above, or write to contact@jotapropertiescr.com.', 'err');
+      });
   });
 })();
 </script>
