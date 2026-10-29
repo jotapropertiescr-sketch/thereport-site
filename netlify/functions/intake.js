@@ -316,6 +316,8 @@ exports.handler = async (event) => {
     listing_ref = '',
     plano_catastrado = '',
     uso_de_suelo_status = '',
+    listing_ordered_by = '',
+    agent_authorized = '',
     terms_version = '',
     add_bundle = '',
     bundle_property = '',
@@ -337,6 +339,16 @@ exports.handler = async (event) => {
   // orders and meaningless on the others.
   const ownerSide = OWNER_SIDE_TIERS.includes(tier);
   const collectsUso = USO_TIERS.includes(tier);
+
+  // A Listing Edition may be ordered by the owner or by the agent marketing
+  // the property. An agent must confirm they are authorized to market it,
+  // because the report is published and quoted against the listing. The
+  // confirmation is recorded on the deal rather than merely validated in the
+  // browser, where it proves nothing.
+  const isListing = tier === 'listing_edition';
+  const orderedBy = isListing ? (listing_ordered_by || 'not stated') : '';
+  const agentConfirmed = (agent_authorized === 'yes'
+    || agent_authorized === 'on' || agent_authorized === true);
   const usoLabel = USO_LABELS[uso_de_suelo_status]
     || (collectsUso ? 'not answered at intake' : 'not applicable to this edition');
 
@@ -449,6 +461,15 @@ exports.handler = async (event) => {
       `Phone: ${phone || 'not provided'}\n` +
       `Heard about us: ${referral_source || 'not answered'}\n` +
       `Terms version accepted: ${terms_version || 'not captured'}\n` +
+      (isListing
+        ? `LISTING EDITION ORDER\n` +
+          `Ordered by: ${orderedBy === 'owner' ? 'the registered owner'
+            : orderedBy === 'agent' ? 'an agent marketing the property' : 'NOT STATED - check'}\n` +
+          (orderedBy === 'agent'
+            ? `Agent authorization confirmed: ${agentConfirmed ? 'YES' : 'NO - DO NOT PROCEED, confirm first'}\n`
+            : '') +
+          `This report is published and may be listed publicly by finca number.\n`
+        : '') +
       (notes ? `\nClient notes:\n${notes}\n` : '') +
       `\nSubmitted: ${new Date().toISOString()}\n` +
       `(Entity, HOA, agent, timeline and notes have no deal properties; they live here.)`;
@@ -504,6 +525,8 @@ exports.handler = async (event) => {
       listing_ref: clip(listing_ref, 300),
       plano_catastrado: clip(plano_catastrado, 80),
       uso_de_suelo_status: collectsUso ? (uso_de_suelo_status || 'not_answered') : undefined,
+      listing_ordered_by: isListing ? orderedBy : undefined,
+      agent_authorized: isListing && orderedBy === 'agent' ? (agentConfirmed ? 'yes' : 'no') : undefined,
       owner_side_order: ownerSide ? 'yes' : 'no',
       terms_version: clip(terms_version, 20),
       bundle_records: wantsBundle ? 'yes' : 'no',
