@@ -848,7 +848,7 @@
         <span class="tier-tab">For sellers and agents</span>
         <div class="tier-card-inner">
         <div class="tier-name">Listing Edition</div>
-        <div class="tier-desc">The records verified before the listing goes up, in a form built to be shown to buyers.</div>
+        <div class="tier-desc">An independent, dated and verifiable record of what the public sources say, commissioned before you list and built to be shown to buyers.</div>
         <div class="tier-price">$250</div>
         <div class="tier-time mono">2–3 BUSINESS DAYS · REMOTE</div>
         <ul class="tier-list">
@@ -1072,6 +1072,24 @@
           <div class="field full">
             <label for="notes">Anything else we should know</label>
             <textarea id="notes" name="notes"></textarea>
+          </div>
+        </div>
+
+        <div class="field-row" id="listingRoleRow" hidden>
+          <div class="field full">
+            <label for="listingRole">Who is ordering this Listing Edition</label>
+            <select id="listingRole" name="listing_ordered_by">
+              <option value="">Select one</option>
+              <option value="owner">I am the registered owner</option>
+              <option value="agent">I am the agent marketing this property</option>
+            </select>
+            <label class="addon-line" for="agentAuth" id="agentAuthRow" hidden style="margin-top:14px;">
+              <input type="checkbox" id="agentAuth" name="agent_authorized" value="yes">
+              <span>I confirm I am authorized by the owner to market this property.</span>
+            </label>
+            <p class="uso-note" id="agentAuthNote" hidden>Where an agent orders without the owner involved,
+            owner-provided items such as the use-of-land certificate are printed and marked
+            <b>Not provided by owner. Not verified.</b> The report is not held or reduced for it.</p>
           </div>
         </div>
 
@@ -1343,6 +1361,37 @@
     if (!on) usoStatus.value = '';
   }
 
+  /* A Listing Edition may be ordered by the owner or by the agent marketing
+     the property, and the difference matters: an agent ordering without the
+     owner cannot supply owner-held documents, and should not be able to
+     commission a published report on someone else's property without stating
+     they are authorised to market it. The confirmation is required of agents
+     and never shown to owners, who are not confirming anything about
+     themselves. */
+  var listingRoleRow = document.getElementById('listingRoleRow');
+  var listingRole = document.getElementById('listingRole');
+  var agentAuthRow = document.getElementById('agentAuthRow');
+  var agentAuth = document.getElementById('agentAuth');
+  var agentAuthNote = document.getElementById('agentAuthNote');
+
+  function syncAgentAuth() {
+    var isAgent = listingRole.value === 'agent';
+    agentAuthRow.hidden = !isAgent;
+    agentAuthNote.hidden = !isAgent;
+    agentAuth.required = isAgent;
+    if (!isAgent) agentAuth.checked = false;
+  }
+
+  function syncListingRole(tierKey) {
+    var on = (tierKey === 'listing_edition');
+    listingRoleRow.hidden = !on;
+    listingRole.required = on;
+    if (!on) { listingRole.value = ''; }
+    syncAgentAuth();
+  }
+
+  listingRole.addEventListener('change', syncAgentAuth);
+
   addBundle.addEventListener('change', syncBundleProperty);
 
   // Tier select buttons -> scroll to form + fill summary + set hidden fields
@@ -1363,6 +1412,7 @@
       // add $200 to a Records or Full order.
       syncBundle(btn.getAttribute('data-key') === 'area_edition');
     syncUso(btn.getAttribute('data-key'));
+      syncListingRole(btn.getAttribute('data-key'));
 
       // THE BRIEFING is discounted when bought alongside a Full Edition.
       var briefingPrice = document.getElementById('briefingPrice');
