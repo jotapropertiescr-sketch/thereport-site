@@ -130,6 +130,30 @@
   .notlist li:last-child{border-bottom:0;}
   .notlist li::before{content:"—"; position:absolute; left:0; color:var(--rust); font-family:'IBM Plex Mono', monospace;}
 
+  /* Attorney comments. A list, so a second quote drops in as another <figure>
+     with no layout work. Deliberately plain: a mark, the words, the name.
+     Nothing that frames these as endorsements, because they are not. */
+  .quotes{display:grid; gap:26px;}
+  .quote{
+    background:var(--paper); border:1px solid var(--line); border-left:3px solid var(--rust);
+    padding:28px 30px 24px; margin:0;
+  }
+  section.alt .quote{background:var(--paper);}
+  .quote blockquote{
+    font-family:'Source Serif 4', serif; font-size:19px; line-height:1.55;
+    color:var(--navy); margin:0 0 18px; max-width:none;
+  }
+  .quote figcaption{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.06em;
+    text-transform:uppercase; color:var(--ink-soft); line-height:1.7;
+  }
+  .quote figcaption b{color:var(--rust); font-weight:600;}
+  .quotes-fine{margin-top:22px; font-size:14px; color:var(--ink-soft);}
+  @media (max-width:700px){
+    .quote{padding:22px 22px 20px;}
+    .quote blockquote{font-size:17.5px;}
+  }
+
   /* ---------- CTA ---------- */
   .cta{background:var(--navy-deep); color:var(--white); padding:64px 0;}
   .cta h2{color:var(--white);}
@@ -383,6 +407,26 @@
     </ul>
     <p style="margin-top:22px;">There are also no scores, no ratings and no risk grades anywhere in a report. The moment a document starts grading properties it becomes a judgment, and a judgment is the one thing a seller could reasonably object to. Facts, dated and sourced, are not something anyone has to argue with.</p>
     <p>Where someone else is better placed than we are, we say so and point you to them. Coastal site work, legal opinions and structural questions all belong with people who do that for a living, and we take nothing for sending you there.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap narrow">
+    <span class="kicker">From attorneys working in this market</span>
+    <h2>Where a report sits alongside legal review.</h2>
+    <p>Comments from Costa Rican real estate attorneys on what an independent, dated record of the public sources is useful for, and what it does not replace.</p>
+
+    <div class="quotes">
+      <figure class="quote">
+        <blockquote>&ldquo;Buyers often commit to a property before an attorney is involved. A dated, independent report on the public record gives them something concrete to start from, and it works alongside the legal review, not in place of it.&rdquo;</blockquote>
+        <figcaption><b>Marco Fern&aacute;ndez</b><br>Attorney, RE&amp;B Abogados</figcaption>
+      </figure>
+
+      <!-- Second attorney quote goes here. Copy the figure above, replace the
+           blockquote text and the figcaption, and nothing else needs changing. -->
+    </div>
+
+    <p class="quotes-fine">Quoted with permission. THE REPORT has no referral arrangement with any law firm, pays nothing for these comments, and receives nothing for sending work to an attorney. A report is not a legal opinion and does not replace review by a licensed Costa Rican attorney.</p>
   </div>
 </section>
 
