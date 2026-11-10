@@ -308,6 +308,34 @@
   .fact-card p{margin:0; font-size:14.5px; color:var(--ink-soft);}
 
   /* ---------- TIERS ---------- */
+  /* Attorney comments. Built as a list so a second quote drops in as another
+     <figure> with no layout work. Deliberately plain: a mark, the words, the
+     name. Nothing that frames these as endorsements, because they are not. */
+  .quotes{display:grid; gap:26px; max-width:860px;}
+  .quote{
+    background:var(--white); border:1px solid var(--line); border-left:3px solid var(--rust);
+    padding:28px 30px 24px; position:relative;
+    /* This page resets box-sizing only, so a <figure> keeps the browser's
+       default 40px side margin and the card would sit indented. */
+    margin:0;
+  }
+  .quote blockquote{
+    font-family:'Source Serif 4', serif; font-size:19.5px; line-height:1.55;
+    color:var(--navy); margin:0 0 18px;
+  }
+  .quote figcaption{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.06em;
+    text-transform:uppercase; color:var(--ink-soft); line-height:1.7;
+  }
+  .quote figcaption b{color:var(--rust); font-weight:600;}
+  .quotes-fine{
+    max-width:860px; margin-top:22px; font-size:14px; color:var(--ink-soft);
+  }
+  @media (max-width:700px){
+    .quote{padding:22px 22px 20px;}
+    .quote blockquote{font-size:17.5px;}
+  }
+
   .tiers{
     background:var(--navy-deep);
   }
@@ -810,6 +838,28 @@
         <p>Records and Listing Editions anywhere in Costa Rica. Area and Full Editions in the Central Valley, where we can stand on the property ourselves.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<section id="attorneys">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">From attorneys working in this market</span>
+      <h2>Where a report sits alongside legal review.</h2>
+      <p>Comments from Costa Rican real estate attorneys on what an independent, dated record of the public sources is useful for, and what it does not replace.</p>
+    </div>
+
+    <div class="quotes">
+      <figure class="quote">
+        <blockquote>&ldquo;Buyers often commit to a property before an attorney is involved. A dated, independent report on the public record gives them something concrete to start from, and it works alongside the legal review, not in place of it.&rdquo;</blockquote>
+        <figcaption><b>Marco Fern&aacute;ndez</b><br>Attorney, RE&amp;B Abogados</figcaption>
+      </figure>
+
+      <!-- Second attorney quote goes here. Copy the figure above, replace the
+           blockquote text and the figcaption, and nothing else needs changing. -->
+    </div>
+
+    <p class="quotes-fine">Quoted with permission. THE REPORT has no referral arrangement with any law firm, pays nothing for these comments, and receives nothing for sending work to an attorney. A report is not a legal opinion and does not replace review by a licensed Costa Rican attorney.</p>
   </div>
 </section>
 
