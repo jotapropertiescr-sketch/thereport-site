@@ -71,10 +71,12 @@
 
   /* ---------- SECTIONS ---------- */
   section{padding:68px 0;}
-  section.alt{background:var(--white); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
-  /* Where two paper sections sit next to each other, a hairline keeps them
-     from reading as one block. Alternating the background instead would
-     only move the collision to the next join. */
+  /* The change of background is the divider. A hairline on top of it is a
+     second separator doing the same job, so these carry none. */
+  section.alt{background:var(--white);}
+  /* The one place two paper sections meet, where there is no colour change
+     to do the work. Alternating the background there instead would only move
+     the collision to the next join. */
   section.ruled{border-top:1px solid var(--line);}
   .kicker{font-family:'IBM Plex Mono', monospace; font-size:13px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--rust); display:block; margin-bottom:14px;}
   h2{font-family:'Source Serif 4', serif; font-size:30px; line-height:1.2; color:var(--navy); margin-bottom:18px;}
